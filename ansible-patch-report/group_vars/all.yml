@@ -1,4 +1,4 @@
-ansible_user: root
+ansible_user: sameer
 ansible_ssh_pass: Sameer@19
 ansible_become: true
 ansible_become_method: sudo

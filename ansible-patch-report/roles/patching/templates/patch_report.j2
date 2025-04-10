@@ -3,10 +3,12 @@ Patch Report for {{ inventory_hostname }}
 
 Generated On: {{ ansible_date_time.date }} at {{ ansible_date_time.time }}
 
-{% if patch_output.stdout and 'No packages marked for update' not in patch_output.stdout %}
+Operating System: {{ ansible_distribution }} {{ ansible_distribution_version }}
+
+{% if patch_output.stdout %}
 Pending Updates:
 ----------------
 {{ patch_output.stdout }}
 {% else %}
-🎉 No package updates are available. System is fully patched.
+🎉 No updates available or system already patched.
 {% endif %}

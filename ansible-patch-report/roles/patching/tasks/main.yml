@@ -1,37 +1,30 @@
-- name: Patch and report systems
-  hosts: all
-  become: true
-  tasks:
+- name: Ensure remote report directory exists
+  file:
+    path: "{{ patch_report_path }}"
+    state: directory
+    mode: '0755'
 
-    - name: Ensure report directory
-      file:
-        path: "/home/ansible/reports"
-        state: directory
-      when: ansible_os_family in ["RedHat", "Debian", "Suse"]
+- name: Check for available updates based on OS
+  shell: |
+    {% if ansible_os_family == 'RedHat' %}
+    dnf check-update || true
+    {% elif ansible_os_family == 'Debian' %}
+    apt list --upgradeable || true
+    {% elif ansible_os_family == 'Suse' %}
+    zypper list-updates || true
+    {% else %}
+    echo "Unsupported OS"
+    {% endif %}
+  register: patch_output
+  changed_when: false
 
-    - name: Check updates on RHEL
-      shell: dnf check-update || true
-      register: patch_output
-      changed_when: false
-      when: ansible_os_family == "RedHat"
+- name: Save formatted patch report to file on remote host
+  template:
+    src: patch_report.j2
+    dest: "{{ patch_report_path }}/{{ inventory_hostname }}_patch_report.txt"
 
-    - name: Check updates on Ubuntu
-      shell: apt list --upgradeable || true
-      register: patch_output
-      changed_when: false
-      when: ansible_os_family == "Debian"
-
-    - name: Check updates on SUSE
-      shell: zypper list-updates || true
-      register: patch_output
-      changed_when: false
-      when: ansible_os_family == "Suse"
-
-    - name: Save patch report
-      template:
-        src: "roles/patching/templates/patch_report.j2"
-        dest: "/home/ansible/reports/{{ inventory_hostname }}_patch_report.txt"
-
+- name: Apply updates based on OS
+  block:
     - name: Apply updates on RHEL
       dnf:
         name: '*'
@@ -49,11 +42,10 @@
         name: '*'
         state: latest
       when: ansible_os_family == "Suse"
+  become: true
 
-    - name: Fetch patch report
-      fetch:
-        src: "/home/ansible/reports/{{ inventory_hostname }}_patch_report.txt"
-        dest: "./reports/"
-        flat: yes
-
-  
+- name: Fetch patch report from remote host to control machine
+  fetch:
+    src: "{{ patch_report_path }}/{{ inventory_hostname }}_patch_report.txt"
+    dest: "./reports/"
+    flat: yes
