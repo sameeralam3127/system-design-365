@@ -1,0 +1,8 @@
+ansible_user: root
+ansible_ssh_pass: Sameer@19
+ansible_become: true
+ansible_become_method: sudo
+ansible_become_user: root
+ansible_become_pass: Sameer@19
+
+patch_report_path: "/home/ansible/reports"

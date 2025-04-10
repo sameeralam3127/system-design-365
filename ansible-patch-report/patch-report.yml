@@ -1,0 +1,5 @@
+- name: Patch RHEL systems and generate reports
+  hosts: rhel
+  become: true
+  roles:
+    - patching

@@ -1,0 +1,59 @@
+- name: Patch and report systems
+  hosts: all
+  become: true
+  tasks:
+
+    - name: Ensure report directory
+      file:
+        path: "/home/ansible/reports"
+        state: directory
+      when: ansible_os_family in ["RedHat", "Debian", "Suse"]
+
+    - name: Check updates on RHEL
+      shell: dnf check-update || true
+      register: patch_output
+      changed_when: false
+      when: ansible_os_family == "RedHat"
+
+    - name: Check updates on Ubuntu
+      shell: apt list --upgradeable || true
+      register: patch_output
+      changed_when: false
+      when: ansible_os_family == "Debian"
+
+    - name: Check updates on SUSE
+      shell: zypper list-updates || true
+      register: patch_output
+      changed_when: false
+      when: ansible_os_family == "Suse"
+
+    - name: Save patch report
+      template:
+        src: "roles/patching/templates/patch_report.j2"
+        dest: "/home/ansible/reports/{{ inventory_hostname }}_patch_report.txt"
+
+    - name: Apply updates on RHEL
+      dnf:
+        name: '*'
+        state: latest
+      when: ansible_os_family == "RedHat"
+
+    - name: Apply updates on Ubuntu
+      apt:
+        upgrade: dist
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Apply updates on SUSE
+      zypper:
+        name: '*'
+        state: latest
+      when: ansible_os_family == "Suse"
+
+    - name: Fetch patch report
+      fetch:
+        src: "/home/ansible/reports/{{ inventory_hostname }}_patch_report.txt"
+        dest: "./reports/"
+        flat: yes
+
+  
