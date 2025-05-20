@@ -1,0 +1,60 @@
+Package Update Report for {{ ansible_hostname }}
+================================================
+
+🕒 Date: {{ ansible_date_time.iso8601 }}
+
+🖥️ System Information:
+- OS:               {{ ansible_distribution }} {{ ansible_distribution_version }}
+- Kernel:           {{ ansible_kernel }}
+- Hostname:         {{ ansible_hostname }}
+- Package Manager:  {{ package_manager }}
+
+📦 Repository Status:
+{% if repos_configured %}
+✅ Repositories are properly configured
+{% else %}
+❌ Repositories are NOT properly configured
+{% endif %}
+
+📋 Available Updates:
+{% if updates_available %}
+- Total updates available: {{ updates_list | length }}
+- Security updates available: {{ security_updates_count }}
+
+{% if updates_list %}
+🔧 List of available packages:
+{% for package in updates_list %}
+  - {{ package }}
+{% endfor %}
+{% endif %}
+{% else %}
+ℹ️ No updates available or repositories not configured
+{% endif %}
+
+🚀 Update Status:
+{% if not dry_run %}
+  {% if repos_configured and updates_available %}
+    {% if security_updates_only %}
+✅ Security updates applied successfully ({{ security_updates_count }} updates)
+    {% else %}
+✅ All updates applied successfully ({{ updates_list | length }} updates)
+    {% endif %}
+  {% elif not updates_available %}
+ℹ️ No updates were available to apply
+  {% else %}
+❌ Failed to apply updates due to repository configuration issues
+  {% endif %}
+{% else %}
+🛑 DRY RUN ENABLED: No changes were made
+{% endif %}
+
+🔁 Reboot Status:
+{% if reboot_required %}
+  {% if reboot_if_required %}
+🔄 REBOOT INITIATED: Reboot triggered due to kernel update or /var/run/reboot-required
+  {% else %}
+⚠️  REBOOT REQUIRED but not initiated (set `reboot_if_required: true` to enable)
+  {% endif %}
+{% else %}
+✅ No reboot required
+{% endif %}

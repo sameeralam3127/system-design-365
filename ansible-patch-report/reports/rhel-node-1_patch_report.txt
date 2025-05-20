@@ -1,9 +1,0 @@
-Patch Report for rhel-node-1
-========================================
-
-Generated On: 2025-04-10 at 23:38:13
-
-Pending Updates:
-----------------
-Updating Subscription Management repositories.
-Last metadata expiration check: 0:14:45 ago on Thu 10 Apr 2025 11:23:39 PM IST.

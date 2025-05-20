@@ -1,0 +1,199 @@
+---
+- name: Package Update Management for Linux Servers
+  hosts: all
+  gather_facts: true
+  vars:
+    slack_webhook_url: "https://hooks.slack.com/services/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"
+    slack_channel: "#server-updates"
+    slack_username: "Ansible Update Bot"
+    dry_run: false
+    security_updates_only: false
+    reboot_if_required: false
+    max_reboot_timeout: 600
+
+  tasks:
+
+    - name: Validate Supported OS
+      block:
+        - name: Fail if unsupported RHEL version
+          fail:
+            msg: "Unsupported RHEL version {{ ansible_distribution_major_version }}. Only RHEL 8/9 are supported."
+          when:
+            - ansible_distribution == "RedHat"
+            - ansible_distribution_major_version not in ['8', '9']
+
+        - name: Fail if unsupported Ubuntu version
+          fail:
+            msg: "Unsupported Ubuntu version {{ ansible_distribution_release }}. Only LTS (bionic, focal, jammy) supported."
+          when:
+            - ansible_distribution == "Ubuntu"
+            - ansible_distribution_release not in ['bionic', 'focal', 'jammy']
+      tags: always
+
+    - name: Initialize Facts
+      set_fact:
+        package_manager: "{{ 'apt' if ansible_distribution == 'Ubuntu' else 'dnf' }}"
+        updates_available: false
+        updates_list: []
+        reboot_required: false
+        security_updates_count: 0
+      tags: always
+
+    - name: Check Repositories
+      block:
+        - name: Get repository list
+          command: "{{ 'apt-cache policy' if ansible_distribution == 'Ubuntu' else 'dnf repolist' }}"
+          register: repo_list
+          changed_when: false
+          ignore_errors: true
+
+        - name: Determine if repos are configured
+          set_fact:
+            repos_configured: "{{ ('http' in repo_list.stdout or 'https' in repo_list.stdout) if ansible_distribution == 'Ubuntu' else (repo_list.stdout_lines | length > 2) }}"
+      rescue:
+        - name: Default to repos not configured on error
+          set_fact:
+            repos_configured: false
+      tags: repo-check
+
+    - name: Ensure report directory exists
+      file:
+        path: /var/log/ansible_updates
+        state: directory
+        mode: '0755'
+      when: not dry_run
+      tags: setup
+
+    - name: Detect Updates
+      block:
+        - name: Get updates list
+          command: "{{ 'apt list --upgradable' if ansible_distribution == 'Ubuntu' else 'dnf check-update --quiet' }}"
+          register: available_updates
+          changed_when: false
+          ignore_errors: true
+          when: repos_configured
+
+        - name: Parse update list
+          set_fact:
+            updates_available: "{{ (available_updates.stdout_lines | length > 1) if ansible_distribution == 'Ubuntu' else (available_updates.rc == 100) }}"
+            updates_list: >-
+              {{
+                (available_updates.stdout_lines[1:] | map('regex_replace', '\\/.*', '') | list)
+                if ansible_distribution == 'Ubuntu'
+                else (available_updates.stdout_lines | reject('match', '^$|^Last metadata') | list)
+              }}
+
+        - name: Get security updates
+          command: "{{ 'apt-get -s dist-upgrade | grep \"^Inst\" | grep -i security' if ansible_distribution == 'Ubuntu' else 'dnf updateinfo list sec' }}"
+          register: security_updates
+          changed_when: false
+          ignore_errors: true
+
+        - name: Count security updates
+          set_fact:
+            security_updates_count: "{{ security_updates.stdout_lines | length }}"
+      rescue:
+        - name: Default update values on error
+          set_fact:
+            updates_available: false
+            updates_list: []
+            security_updates_count: 0
+      tags: check-updates
+
+    - name: Apply Updates
+      block:
+        - name: Run update command
+          command: >-
+            {{
+              (
+                'unattended-upgrade' if security_updates_only
+                else 'apt-get upgrade -y'
+              ) if ansible_distribution == 'Ubuntu'
+              else (
+                'dnf update --security -y' if security_updates_only
+                else 'dnf update -y'
+              )
+            }}
+          register: update_result
+          when:
+            - repos_configured
+            - updates_available
+            - not dry_run
+
+        - name: Check for reboot file (Ubuntu)
+          stat:
+            path: /var/run/reboot-required
+          register: reboot_file
+          when: ansible_distribution == 'Ubuntu'
+
+        - name: Compare running and latest kernel (RHEL)
+          block:
+            - name: Get latest installed kernel
+              shell: "rpm -q --last kernel | head -1 | awk '{print $1}'"
+              register: latest_kernel
+
+            - name: Get running kernel version
+              command: uname -r
+              register: running_kernel
+
+            - name: Determine if reboot needed
+              set_fact:
+                reboot_required: "{{ latest_kernel.stdout not in running_kernel.stdout }}"
+          when: ansible_distribution == 'RedHat'
+
+        - name: Set reboot flag (Ubuntu)
+          set_fact:
+            reboot_required: "{{ reboot_file.stat.exists }}"
+          when: ansible_distribution == 'Ubuntu'
+      when: not dry_run
+      tags: apply-updates
+
+    - name: Reboot If Required
+      block:
+        - name: Reboot server
+          reboot:
+            msg: "Reboot initiated by Ansible after updates"
+            reboot_timeout: "{{ max_reboot_timeout }}"
+            pre_reboot_delay: 30
+            post_reboot_delay: 30
+
+        - name: Wait for server to be reachable
+          wait_for_connection:
+            delay: 10
+            timeout: "{{ max_reboot_timeout }}"
+      when:
+        - reboot_required
+        - reboot_if_required
+        - not dry_run
+      tags: reboot
+
+    - name: Generate Update Report
+      block:
+        - name: Create report file
+          template:
+            src: update_report.j2
+            dest: "/var/log/ansible_updates/update_report_{{ ansible_hostname }}.txt"
+          when: not dry_run
+
+        - name: Show report preview
+          debug:
+            msg: "{{ lookup('template', 'update_report.j2') }}"
+      tags: reporting
+
+    - name: Notify via Slack
+      block:
+        - name: Set Slack message from template
+          set_fact:
+            slack_message: "{{ lookup('template', 'slack_message.j2') }}"
+
+        - name: Send Slack message
+          community.general.slack:
+            url: "{{ slack_webhook_url }}"
+            msg: "{{ slack_message }}"
+            channel: "{{ slack_channel }}"
+            username: "{{ slack_username }}"
+            icon_url: "https://ansible.com/favicon.ico"
+          delegate_to: localhost
+          ignore_errors: true
+      when: slack_webhook_url != "https://hooks.slack.com/services/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"
+      tags: slack-notify

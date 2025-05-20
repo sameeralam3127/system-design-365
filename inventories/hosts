@@ -1,0 +1,2 @@
+172.16.175.128 ansible_user=root ansible_ssh_pass=Sameer@19
+172.16.175.129 ansible_user=root ansible_ssh_pass=Sameer@19

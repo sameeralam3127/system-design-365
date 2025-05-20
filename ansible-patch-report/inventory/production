@@ -1,5 +1,0 @@
-[rhel]
-rhel-node-1 ansible_host=172.16.175.129
-ubuntu-node-2 ansible_host=172.16.175.130
-
-
