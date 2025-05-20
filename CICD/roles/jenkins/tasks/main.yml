@@ -1,0 +1,21 @@
+---
+- name: Create Jenkins data directory
+  file:
+    path: /var/jenkins_home
+    state: directory
+    mode: '0755'
+
+- name: Create Jenkins Docker Compose file
+  template:
+    src: jenkins-compose.yml.j2
+    dest: /opt/jenkins-compose.yml
+    mode: '0644'
+
+- name: Start Jenkins container
+  community.docker.docker_compose_v2:
+    project_src: /opt
+    files:
+      - jenkins-compose.yml
+    state: present
+    build: yes
+    remove_orphans: yes 

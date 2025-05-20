@@ -1,0 +1,21 @@
+---
+- name: Create SonarQube data directory
+  file:
+    path: /opt/sonarqube
+    state: directory
+    mode: '0755'
+
+- name: Create SonarQube Docker Compose file
+  template:
+    src: sonarqube-compose.yml.j2
+    dest: /opt/sonarqube-compose.yml
+    mode: '0644'
+
+- name: Start SonarQube container
+  community.docker.docker_compose_v2:
+    project_src: /opt
+    files:
+      - sonarqube-compose.yml
+    state: present
+    build: yes
+    remove_orphans: yes 
