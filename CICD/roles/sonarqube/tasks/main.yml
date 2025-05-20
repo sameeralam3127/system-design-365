@@ -17,5 +17,5 @@
     files:
       - sonarqube-compose.yml
     state: present
-    build: yes
+    build: "always"
     remove_orphans: yes 
