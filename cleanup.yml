@@ -1,0 +1,34 @@
+---
+- name: Cleanup Apache installation
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Stop apache service
+      service:
+        name: "{{ apache_service | default('apache2') }}"
+        state: stopped
+      ignore_errors: yes
+
+    - name: Remove apache package
+      package:
+        name: "{{ apache_package | default('apache2') }}"
+        state: absent
+      ignore_errors: yes
+
+    - name: Remove apache configuration directory
+      file:
+        path: "/etc/{{ apache_service | default('apache2') }}"
+        state: absent
+      ignore_errors: yes
+
+    - name: Remove apache document root
+      file:
+        path: "{{ apache_root | default('/var/www/html') }}"
+        state: absent
+      ignore_errors: yes
+
+    - name: Remove apache log files (if any)
+      file:
+        path: /var/log/{{ apache_service | default('apache2') }}
+        state: absent
+      ignore_errors: yes
