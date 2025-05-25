@@ -1,0 +1,8 @@
+
+# Default variables for Apache Installation
+apache_package: "httpd"
+apache_service: "httpd"
+apache_port: 80
+apache_root: "/var/www/html"
+apache_user: "apache"
+apache_group: "apache"

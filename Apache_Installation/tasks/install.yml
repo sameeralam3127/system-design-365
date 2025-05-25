@@ -1,0 +1,33 @@
+---
+- name: Install Apache web server
+  block:
+    - name: Install apache package
+      package:
+        name: "{{ apache_package }}"
+        state: present
+      notify: restart apache service
+
+    - name: Ensure apache service is running and enabled
+      service:
+        name: "{{ apache_service }}"
+        state: started
+        enabled: yes
+
+  rescue:
+    - name: Handle installation failure
+      debug:
+        msg: "Apache installation failed. Attempting recovery..."
+
+    - name: Clean up partially installed packages
+      package:
+        name: "{{ apache_package }}"
+        state: absent
+      ignore_errors: true
+
+    - name: Notify admin about failure
+      debug:
+        msg: "Apache installation failed. Manual intervention required."
+      changed_when: false
+
+    - fail:
+        msg: "Apache installation failed after recovery attempts"

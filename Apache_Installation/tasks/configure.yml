@@ -1,0 +1,45 @@
+---
+- name: Configure Apache web server
+  block:
+    - name: Ensure document root exists
+      file:
+        path: "{{ apache_root }}"
+        state: directory
+        owner: "{{ apache_user }}"
+        group: "{{ apache_group }}"
+        mode: '0755'
+
+    - name: Deploy index.html
+      copy:
+        src: index.html
+        dest: "{{ apache_root }}/index.html"
+        owner: "{{ apache_user }}"
+        group: "{{ apache_group }}"
+        mode: '0644'
+      notify: reload apache service
+
+    - name: Open firewall port (RedHat only)
+      firewalld:
+        port: "{{ apache_port }}/tcp"
+        permanent: yes
+        state: enabled
+      notify: restart apache service
+      when: ansible_os_family == 'RedHat'
+
+  rescue:
+    - name: Handle configuration failure
+      debug:
+        msg: "Apache configuration failed. Attempting recovery..."
+
+    - name: Restore default configuration (if possible)
+      command: apachectl graceful
+      ignore_errors: true
+      when: "'apachectl' in ansible_facts.binaries"
+
+    - name: Notify admin about configuration failure
+      debug:
+        msg: "Apache configuration failed. Manual intervention required."
+      changed_when: false
+
+    - fail:
+        msg: "Apache configuration failed after recovery attempts"
