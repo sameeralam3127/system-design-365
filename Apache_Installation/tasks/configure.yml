@@ -1,6 +1,9 @@
 ---
+# tasks/configure.yml
+
 - name: Configure Apache web server
   block:
+
     - name: Ensure document root exists
       file:
         path: "{{ apache_root }}"
@@ -16,30 +19,35 @@
         owner: "{{ apache_user }}"
         group: "{{ apache_group }}"
         mode: '0644'
-      notify: reload apache service
+      notify: reload apache
 
-    - name: Open firewall port (RedHat only)
-      firewalld:
-        port: "{{ apache_port }}/tcp"
-        permanent: yes
-        state: enabled
-      notify: restart apache service
-      when: ansible_os_family == 'RedHat'
+    - name: Enable UFW and allow port 80
+      ufw:
+        rule: allow
+        port: "{{ apache_port | default(80) }}"
+        proto: tcp
+      when: ansible_facts.os_family == "Debian"
 
   rescue:
+
     - name: Handle configuration failure
       debug:
         msg: "Apache configuration failed. Attempting recovery..."
 
-    - name: Restore default configuration (if possible)
-      command: apachectl graceful
+    - name: Attempt to reload Apache
+      command: systemctl reload apache2
       ignore_errors: true
-      when: "'apachectl' in ansible_facts.binaries"
 
-    - name: Notify admin about configuration failure
+    - name: Notify admin of configuration failure
       debug:
-        msg: "Apache configuration failed. Manual intervention required."
-      changed_when: false
+        msg: "Manual intervention required: Apache config failed."
 
     - fail:
-        msg: "Apache configuration failed after recovery attempts"
+        msg: "Apache configuration failed after recovery attempts."
+
+  always:
+    - name: Ensure apache2 service is running
+      service:
+        name: apache2
+        state: started
+      ignore_errors: true

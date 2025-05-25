@@ -1,33 +1,44 @@
 ---
+# tasks/install.yml
+
 - name: Install Apache web server
   block:
-    - name: Install apache package
-      package:
-        name: "{{ apache_package }}"
-        state: present
-      notify: restart apache service
 
-    - name: Ensure apache service is running and enabled
+    - name: Install apache2 package
+      apt:
+        name: apache2
+        state: present
+        update_cache: yes
+      notify: restart apache
+
+    - name: Ensure apache2 service is running and enabled
       service:
-        name: "{{ apache_service }}"
+        name: apache2
         state: started
         enabled: yes
 
   rescue:
-    - name: Handle installation failure
-      debug:
-        msg: "Apache installation failed. Attempting recovery..."
 
-    - name: Clean up partially installed packages
-      package:
-        name: "{{ apache_package }}"
+    - name: Handle Apache installation failure
+      debug:
+        msg: "Apache installation failed. Attempting to recover..."
+
+    - name: Remove apache2 package if partially installed
+      apt:
+        name: apache2
         state: absent
       ignore_errors: true
 
-    - name: Notify admin about failure
+    - name: Notify admin of installation failure
       debug:
-        msg: "Apache installation failed. Manual intervention required."
-      changed_when: false
+        msg: "Manual intervention required: Apache installation failed."
 
     - fail:
-        msg: "Apache installation failed after recovery attempts"
+        msg: "Apache installation failed even after recovery attempts."
+
+  always:
+    - name: Cleanup temporary files (if any)
+      file:
+        path: /tmp/apache-install.log
+        state: absent
+      ignore_errors: true
