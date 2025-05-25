@@ -1,37 +1,43 @@
 ---
-# Apache installation tasks
-
-- name: Install Apache web server
+# Apache installation tasks for Ubuntu
+- name: Install and start Apache2
   block:
-
     - name: Install apache2 package
-      ansible.builtin.package:
+      ansible.builtin.apt:
         name: apache2
         state: present
-      notify: restart apache service
+        update_cache: yes
+      notify: restart apache
 
-    - name: Ensure apache service is running and enabled
+    - name: Ensure apache2 service is running and enabled
       ansible.builtin.service:
         name: apache2
         state: started
         enabled: yes
 
   rescue:
+    - name: Handle failed Apache installation
+      debug:
+        msg: "Apache installation failed. Attempting cleanup..."
 
-    - name: Handle installation failure
-      ansible.builtin.debug:
-        msg: "Apache installation failed. Attempting recovery..."
-
-    - name: Clean up failed apache installation
-      ansible.builtin.package:
+    - name: Purge broken apache2 install
+      ansible.builtin.apt:
         name: apache2
+        state: absent
+        purge: yes
+      ignore_errors: true
+
+    - name: Clean leftover apache2 config directory
+      ansible.builtin.file:
+        path: /etc/apache2
         state: absent
       ignore_errors: true
 
-    - name: Notify admin about installation failure
-      ansible.builtin.debug:
-        msg: "Manual intervention required for Apache installation."
+    - name: Notify failure
+      debug:
+        msg: "Apache installation failed. Manual intervention needed."
       changed_when: false
 
-    - ansible.builtin.fail:
-        msg: "Apache installation failed after recovery steps."
+    - name: Fail task
+      ansible.builtin.fail:
+        msg: "Apache installation failed after cleanup."

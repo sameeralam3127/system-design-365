@@ -1,53 +1,41 @@
 ---
 # Apache configuration tasks
-
-- name: Configure Apache web server
+- name: Configure Apache
   block:
-
     - name: Ensure document root exists
       ansible.builtin.file:
-        path: "{{ apache_root | default('/var/www/html') }}"
+        path: "{{ apache_root }}"
         state: directory
-        owner: www-data
-        group: www-data
+        owner: "{{ apache_user }}"
+        group: "{{ apache_group }}"
         mode: '0755'
 
     - name: Deploy index.html
       ansible.builtin.copy:
         src: index.html
-        dest: "{{ apache_root | default('/var/www/html') }}/index.html"
-        owner: www-data
-        group: www-data
+        dest: "{{ apache_root }}/index.html"
+        owner: "{{ apache_user }}"
+        group: "{{ apache_group }}"
         mode: '0644'
-      notify: reload apache service
+      notify: reload apache
 
-    - name: Allow port 80 with ufw
-      ansible.builtin.command: ufw allow 80/tcp
-      become: true
-      when: ansible_facts.os_family == "Debian"
-
-    - name: Enable UFW firewall
-      ansible.builtin.command: ufw enable
-      become: true
-      register: ufw_enable
-      changed_when: "'Firewall is active' in ufw_enable.stdout"
-      when: ansible_facts.os_family == "Debian"
+    - name: Open port 80 on UFW (Ubuntu)
+      ansible.builtin.ufw:
+        rule: allow
+        port: 80
+        proto: tcp
+      when: ansible_facts['os_family'] == "Debian"
+      notify: reload apache
 
   rescue:
-
-    - name: Handle configuration failure
+    - name: Log configuration failure
       ansible.builtin.debug:
-        msg: "Apache configuration failed. Attempting recovery..."
+        msg: "Apache configuration failed. Manual fix required."
 
-    - name: Restart apache gracefully if binary exists
+    - name: Attempt to reload apache2
       ansible.builtin.command: apachectl graceful
-      when: "'apachectl' in ansible_facts.binaries"
       ignore_errors: true
 
-    - name: Notify admin about configuration failure
-      ansible.builtin.debug:
-        msg: "Manual intervention required for Apache configuration."
-      changed_when: false
-
-    - ansible.builtin.fail:
-        msg: "Apache configuration failed after recovery steps."
+    - name: Fail config step
+      ansible.builtin.fail:
+        msg: "Apache config failed after rescue."
