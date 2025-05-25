@@ -1,44 +1,37 @@
 ---
-# tasks/install.yml
+# Apache installation tasks
 
 - name: Install Apache web server
   block:
 
     - name: Install apache2 package
-      apt:
+      ansible.builtin.package:
         name: apache2
         state: present
-        update_cache: yes
-      notify: restart apache
+      notify: restart apache service
 
-    - name: Ensure apache2 service is running and enabled
-      service:
+    - name: Ensure apache service is running and enabled
+      ansible.builtin.service:
         name: apache2
         state: started
         enabled: yes
 
   rescue:
 
-    - name: Handle Apache installation failure
-      debug:
-        msg: "Apache installation failed. Attempting to recover..."
+    - name: Handle installation failure
+      ansible.builtin.debug:
+        msg: "Apache installation failed. Attempting recovery..."
 
-    - name: Remove apache2 package if partially installed
-      apt:
+    - name: Clean up failed apache installation
+      ansible.builtin.package:
         name: apache2
         state: absent
       ignore_errors: true
 
-    - name: Notify admin of installation failure
-      debug:
-        msg: "Manual intervention required: Apache installation failed."
+    - name: Notify admin about installation failure
+      ansible.builtin.debug:
+        msg: "Manual intervention required for Apache installation."
+      changed_when: false
 
-    - fail:
-        msg: "Apache installation failed even after recovery attempts."
-
-  always:
-    - name: Cleanup temporary files (if any)
-      file:
-        path: /tmp/apache-install.log
-        state: absent
-      ignore_errors: true
+    - ansible.builtin.fail:
+        msg: "Apache installation failed after recovery steps."

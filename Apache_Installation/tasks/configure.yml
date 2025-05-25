@@ -1,53 +1,53 @@
 ---
-# tasks/configure.yml
+# Apache configuration tasks
 
 - name: Configure Apache web server
   block:
 
     - name: Ensure document root exists
-      file:
-        path: "{{ apache_root }}"
+      ansible.builtin.file:
+        path: "{{ apache_root | default('/var/www/html') }}"
         state: directory
-        owner: "{{ apache_user }}"
-        group: "{{ apache_group }}"
+        owner: www-data
+        group: www-data
         mode: '0755'
 
     - name: Deploy index.html
-      copy:
+      ansible.builtin.copy:
         src: index.html
-        dest: "{{ apache_root }}/index.html"
-        owner: "{{ apache_user }}"
-        group: "{{ apache_group }}"
+        dest: "{{ apache_root | default('/var/www/html') }}/index.html"
+        owner: www-data
+        group: www-data
         mode: '0644'
-      notify: reload apache
+      notify: reload apache service
 
-    - name: Enable UFW and allow port 80
-      ufw:
-        rule: allow
-        port: "{{ apache_port | default(80) }}"
-        proto: tcp
+    - name: Allow port 80 with ufw
+      ansible.builtin.command: ufw allow 80/tcp
+      become: yes
+      when: ansible_facts.os_family == "Debian"
+
+    - name: Enable UFW firewall
+      ansible.builtin.command: ufw enable
+      become: true
+      register: ufw_enable
+      changed_when: "'Firewall is active' in ufw_enable.stdout"
       when: ansible_facts.os_family == "Debian"
 
   rescue:
 
     - name: Handle configuration failure
-      debug:
+      ansible.builtin.debug:
         msg: "Apache configuration failed. Attempting recovery..."
 
-    - name: Attempt to reload Apache
-      command: systemctl reload apache2
+    - name: Restart apache gracefully if binary exists
+      ansible.builtin.command: apachectl graceful
+      when: "'apachectl' in ansible_facts.binaries"
       ignore_errors: true
 
-    - name: Notify admin of configuration failure
-      debug:
-        msg: "Manual intervention required: Apache config failed."
+    - name: Notify admin about configuration failure
+      ansible.builtin.debug:
+        msg: "Manual intervention required for Apache configuration."
+      changed_when: false
 
-    - fail:
-        msg: "Apache configuration failed after recovery attempts."
-
-  always:
-    - name: Ensure apache2 service is running
-      service:
-        name: apache2
-        state: started
-      ignore_errors: true
+    - ansible.builtin.fail:
+        msg: "Apache configuration failed after recovery steps."
