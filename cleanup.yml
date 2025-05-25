@@ -3,32 +3,43 @@
   hosts: all
   become: yes
   tasks:
-    - name: Stop apache service
+    - name: Stop apache service asynchronously (avoid hang)
       service:
-        name: "{{ apache_service | default('apache2') }}"
+        name: apache2
         state: stopped
       ignore_errors: yes
+      async: 45
+      poll: 0
+      register: async_stop_job  # <--- register the async task result
 
-    - name: Remove apache package
+    - name: Wait for apache service to stop
+      async_status:
+        jid: "{{ async_stop_job.ansible_job_id }}"  # <--- use registered job id here
+      register: job_result
+      until: job_result.finished
+      retries: 10
+      delay: 3
+
+    - name: Remove apache2 package
       package:
-        name: "{{ apache_package | default('apache2') }}"
+        name: apache2
         state: absent
       ignore_errors: yes
 
-    - name: Remove apache configuration directory
+    - name: Remove apache2 configuration directory
       file:
-        path: "/etc/{{ apache_service | default('apache2') }}"
+        path: /etc/apache2
         state: absent
       ignore_errors: yes
 
-    - name: Remove apache document root
+    - name: Remove apache2 document root directory
       file:
-        path: "{{ apache_root | default('/var/www/html') }}"
+        path: /var/www/html
         state: absent
       ignore_errors: yes
 
-    - name: Remove apache log files (if any)
+    - name: Remove apache2 log directory
       file:
-        path: /var/log/{{ apache_service | default('apache2') }}
+        path: /var/log/apache2
         state: absent
       ignore_errors: yes
