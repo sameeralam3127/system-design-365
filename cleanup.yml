@@ -1,6 +1,6 @@
 ---
 - name: Cleanup Apache installation
-  hosts: webservers
+  hosts: all
   become: yes
   tasks:
     - name: Stop apache service
