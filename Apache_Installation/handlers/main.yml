@@ -1,12 +1,10 @@
 ---
-# handlers/main.yml
-
-- name: restart apache
-  service:
+- name: restart apache service
+  ansible.builtin.service:
     name: apache2
     state: restarted
 
-- name: reload apache
-  service:
+- name: reload apache service
+  ansible.builtin.service:
     name: apache2
     state: reloaded

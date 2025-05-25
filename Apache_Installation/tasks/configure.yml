@@ -23,7 +23,7 @@
 
     - name: Allow port 80 with ufw
       ansible.builtin.command: ufw allow 80/tcp
-      become: yes
+      become: true
       when: ansible_facts.os_family == "Debian"
 
     - name: Enable UFW firewall
