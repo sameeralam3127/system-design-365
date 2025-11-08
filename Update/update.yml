@@ -4,15 +4,14 @@
   gather_facts: true
   vars:
     slack_webhook_url: "https://hooks.slack.com/services/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"
-    slack_channel: "#server-updates"
-    slack_username: "Ansible Update Bot"
+    slack_channel: "ansible-playbook"
+    slack_username: "Demo Aopp"
     dry_run: false
     security_updates_only: false
     reboot_if_required: false
     max_reboot_timeout: 600
 
   tasks:
-
     - name: Validate Supported OS
       block:
         - name: Fail if unsupported RHEL version
@@ -60,7 +59,7 @@
       file:
         path: /var/log/ansible_updates
         state: directory
-        mode: '0755'
+        mode: "0755"
       when: not dry_run
       tags: setup
 
@@ -84,7 +83,7 @@
               }}
 
         - name: Get security updates
-          command: "{{ 'apt-get -s dist-upgrade | grep \"^Inst\" | grep -i security' if ansible_distribution == 'Ubuntu' else 'dnf updateinfo list sec' }}"
+          command: '{{ ''apt-get -s dist-upgrade | grep "^Inst" | grep -i security'' if ansible_distribution == ''Ubuntu'' else ''dnf updateinfo list sec'' }}'
           register: security_updates
           changed_when: false
           ignore_errors: true
