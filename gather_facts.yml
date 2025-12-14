@@ -1,0 +1,13 @@
+---
+- name: Gather facts from all Linux systems
+  hosts: linux
+  become: false
+  gather_facts: true
+
+  tasks:
+    - name: Display OS and IP address
+      debug:
+        msg:
+          - "Hostname: {{ ansible_hostname }}"
+          - "OS: {{ ansible_distribution }} {{ ansible_distribution_version }}"
+          - "IP: {{ ansible_default_ipv4.address }}"
