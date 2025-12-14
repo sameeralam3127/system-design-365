@@ -1,7 +1,0 @@
----
-- name: Converge
-  hosts: all
-  become: true
-  tasks:
-    - name: Include main playbook
-      ansible.builtin.import_playbook: ../../playbook.yml

@@ -1,6 +1,0 @@
----
-- name: Install and configure Apache
-  hosts: all
-  become: yes
-  roles:
-    - Apache_Installation
