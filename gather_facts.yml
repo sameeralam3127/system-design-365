@@ -1,6 +1,6 @@
 ---
 - name: Gather facts from all Linux systems
-  hosts: linux
+  hosts: ubuntu
   become: false
   gather_facts: true
 

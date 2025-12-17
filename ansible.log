@@ -1,40 +1,11 @@
-2025-12-17 23:59:36,855 p=84165 u=sameeralam n=ansible WARNING| [WARNING]: Unable to parse /Users/sameeralam/Documents/GitHub/Ansible-Playbook/inventory
-as an inventory source
-
-2025-12-17 23:59:36,855 p=84165 u=sameeralam n=ansible WARNING| [WARNING]: No inventory was parsed, only implicit localhost is available
-
-2025-12-17 23:59:36,857 p=84165 u=sameeralam n=ansible WARNING| [WARNING]: provided hosts list is empty, only localhost is available. Note that the
-implicit localhost does not match 'all'
-
-2025-12-17 23:59:36,921 p=84165 u=sameeralam n=ansible INFO| PLAY [Ansible Ad-Hoc] *********************************************************************
-2025-12-17 23:59:36,924 p=84165 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
-2025-12-17 23:59:56,501 p=84364 u=sameeralam n=ansible INFO| PLAY [Ansible Ad-Hoc] *********************************************************************
-2025-12-17 23:59:56,504 p=84364 u=sameeralam n=ansible INFO| TASK [ping] *******************************************************************************
-2025-12-17 23:59:56,727 p=84364 u=sameeralam n=ansible INFO| fatal: [ubuntu1]: UNREACHABLE! => changed=false 
-  msg: 'Failed to connect to the host via ssh: sameeralam@192.168.2.3: Permission denied (publickey).'
-  unreachable: true
-2025-12-17 23:59:56,727 p=84364 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
-2025-12-17 23:59:56,727 p=84364 u=sameeralam n=ansible INFO| ubuntu1                    : ok=0    changed=0    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0   
-2025-12-18 00:07:21,339 p=87104 u=sameeralam n=ansible INFO| PLAY [Ansible Ad-Hoc] *********************************************************************
-2025-12-18 00:07:21,343 p=87104 u=sameeralam n=ansible INFO| TASK [ping] *******************************************************************************
-2025-12-18 00:07:21,556 p=87104 u=sameeralam n=ansible INFO| fatal: [ubuntu1]: UNREACHABLE! => changed=false 
-  msg: 'Failed to connect to the host via ssh: sameeralam@192.168.2.3: Permission denied (publickey).'
-  unreachable: true
-2025-12-18 00:07:21,556 p=87104 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
-2025-12-18 00:07:21,556 p=87104 u=sameeralam n=ansible INFO| ubuntu1                    : ok=0    changed=0    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0   
-2025-12-18 00:07:47,825 p=87337 u=sameeralam n=ansible INFO| PLAY [Ansible Ad-Hoc] *********************************************************************
-2025-12-18 00:07:47,828 p=87337 u=sameeralam n=ansible INFO| TASK [ping] *******************************************************************************
-2025-12-18 00:07:47,900 p=87337 u=sameeralam n=ansible INFO| fatal: [ansible_user=ubuntu]: UNREACHABLE! => changed=false 
-  msg: 'Failed to connect to the host via ssh: ssh: Could not resolve hostname ansible_user=ubuntu: nodename nor servname provided, or not known'
-  unreachable: true
-2025-12-18 00:07:47,945 p=87337 u=sameeralam n=ansible INFO| fatal: [ubuntu1]: UNREACHABLE! => changed=false 
-  msg: 'Failed to connect to the host via ssh: sameeralam@192.168.2.3: Permission denied (publickey).'
-  unreachable: true
-2025-12-18 00:07:47,946 p=87337 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
-2025-12-18 00:07:47,946 p=87337 u=sameeralam n=ansible INFO| ansible_user=ubuntu        : ok=0    changed=0    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0   
-2025-12-18 00:07:47,946 p=87337 u=sameeralam n=ansible INFO| ubuntu1                    : ok=0    changed=0    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0   
-2025-12-18 00:08:07,255 p=87536 u=sameeralam n=ansible INFO| PLAY [Ansible Ad-Hoc] *********************************************************************
-2025-12-18 00:08:07,258 p=87536 u=sameeralam n=ansible INFO| TASK [ping] *******************************************************************************
-2025-12-18 00:08:07,775 p=87536 u=sameeralam n=ansible INFO| ok: [ubuntu1]
-2025-12-18 00:08:07,776 p=87536 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
-2025-12-18 00:08:07,776 p=87536 u=sameeralam n=ansible INFO| ubuntu1                    : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2025-12-18 00:10:41,922 p=88748 u=sameeralam n=ansible INFO| PLAY [Gather facts from all Linux systems] ************************************************
+2025-12-18 00:10:41,927 p=88748 u=sameeralam n=ansible INFO| TASK [Gathering Facts] ********************************************************************
+2025-12-18 00:10:42,753 p=88748 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:10:42,755 p=88748 u=sameeralam n=ansible INFO| TASK [Display OS and IP address] **********************************************************
+2025-12-18 00:10:42,765 p=88748 u=sameeralam n=ansible INFO| ok: [ubuntu1] => 
+  msg:
+  - 'Hostname: workable-elver'
+  - 'OS: Ubuntu 24.04'
+  - 'IP: 192.168.2.3'
+2025-12-18 00:10:42,765 p=88748 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
+2025-12-18 00:10:42,765 p=88748 u=sameeralam n=ansible INFO| ubuntu1                    : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
