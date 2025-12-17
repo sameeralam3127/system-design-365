@@ -1898,3 +1898,27 @@ remote_tmp dir with the correct permissions manually
   msg: Missing sudo password
 2025-12-18 00:36:08,990 p=1207 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
 2025-12-18 00:36:08,990 p=1207 u=sameeralam n=ansible INFO| ubuntu1                    : ok=10   changed=1    unreachable=0    failed=1    skipped=3    rescued=0    ignored=0   
+2025-12-18 00:36:34,323 p=1618 u=sameeralam n=ansible INFO| PLAY [Apply baseline security hardening] **************************************************
+2025-12-18 00:36:34,328 p=1618 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Include OS-specific variables.] ******************************
+2025-12-18 00:36:34,335 p=1618 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:36:34,338 p=1618 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : include_tasks] ***********************************************
+2025-12-18 00:36:34,351 p=1618 u=sameeralam n=ansible INFO| included: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/fail2ban.yml for ubuntu1
+2025-12-18 00:36:34,354 p=1618 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install fail2ban (RedHat).] **********************************
+2025-12-18 00:36:34,359 p=1618 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:36:34,361 p=1618 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install fail2ban (Debian).] **********************************
+2025-12-18 00:36:34,428 p=1618 u=sameeralam n=ansible INFO| fatal: [ubuntu1]: FAILED! => 
+  msg: Missing sudo password
+2025-12-18 00:36:34,428 p=1618 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
+2025-12-18 00:36:34,428 p=1618 u=sameeralam n=ansible INFO| ubuntu1                    : ok=2    changed=0    unreachable=0    failed=1    skipped=1    rescued=0    ignored=0   
+2025-12-18 00:37:13,530 p=1974 u=sameeralam n=ansible INFO| PLAY [Apply baseline security hardening] **************************************************
+2025-12-18 00:37:13,535 p=1974 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Include OS-specific variables.] ******************************
+2025-12-18 00:37:13,544 p=1974 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:37:13,546 p=1974 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : include_tasks] ***********************************************
+2025-12-18 00:37:13,560 p=1974 u=sameeralam n=ansible INFO| included: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/fail2ban.yml for ubuntu1
+2025-12-18 00:37:13,563 p=1974 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install fail2ban (RedHat).] **********************************
+2025-12-18 00:37:13,568 p=1974 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:37:13,571 p=1974 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install fail2ban (Debian).] **********************************
+2025-12-18 00:37:13,642 p=1974 u=sameeralam n=ansible INFO| fatal: [ubuntu1]: FAILED! => 
+  msg: Missing sudo password
+2025-12-18 00:37:13,642 p=1974 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
+2025-12-18 00:37:13,642 p=1974 u=sameeralam n=ansible INFO| ubuntu1                    : ok=2    changed=0    unreachable=0    failed=1    skipped=1    rescued=0    ignored=0   
