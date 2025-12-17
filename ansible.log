@@ -1,0 +1,17 @@
+2025-12-17 23:59:36,855 p=84165 u=sameeralam n=ansible WARNING| [WARNING]: Unable to parse /Users/sameeralam/Documents/GitHub/Ansible-Playbook/inventory
+as an inventory source
+
+2025-12-17 23:59:36,855 p=84165 u=sameeralam n=ansible WARNING| [WARNING]: No inventory was parsed, only implicit localhost is available
+
+2025-12-17 23:59:36,857 p=84165 u=sameeralam n=ansible WARNING| [WARNING]: provided hosts list is empty, only localhost is available. Note that the
+implicit localhost does not match 'all'
+
+2025-12-17 23:59:36,921 p=84165 u=sameeralam n=ansible INFO| PLAY [Ansible Ad-Hoc] *********************************************************************
+2025-12-17 23:59:36,924 p=84165 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
+2025-12-17 23:59:56,501 p=84364 u=sameeralam n=ansible INFO| PLAY [Ansible Ad-Hoc] *********************************************************************
+2025-12-17 23:59:56,504 p=84364 u=sameeralam n=ansible INFO| TASK [ping] *******************************************************************************
+2025-12-17 23:59:56,727 p=84364 u=sameeralam n=ansible INFO| fatal: [ubuntu1]: UNREACHABLE! => changed=false 
+  msg: 'Failed to connect to the host via ssh: sameeralam@192.168.2.3: Permission denied (publickey).'
+  unreachable: true
+2025-12-17 23:59:56,727 p=84364 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
+2025-12-17 23:59:56,727 p=84364 u=sameeralam n=ansible INFO| ubuntu1                    : ok=0    changed=0    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0   
