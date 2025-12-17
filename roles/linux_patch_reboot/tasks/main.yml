@@ -1,0 +1,15 @@
+---
+# Entry point for the role
+
+- name: Ensure host is reachable
+  ansible.builtin.ping:
+  register: ping_result
+  ignore_unreachable: yes
+  ignore_errors: yes
+
+- name: Skip unreachable hosts
+  ansible.builtin.meta: end_host
+  when: ping_result is failed or ping_result is unreachable
+
+- name: Include OS-specific patching
+  ansible.builtin.include_tasks: patch.yml

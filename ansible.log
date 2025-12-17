@@ -17,3 +17,76 @@
 2025-12-18 00:15:44,234 p=91466 u=sameeralam n=ansible INFO| TASK [Wait for package manager lock to be released (Debian/Ubuntu)] ***********************
 2025-12-18 00:15:44,370 p=91466 u=sameeralam n=ansible INFO| changed: [ubuntu1]
 2025-12-18 00:15:44,373 p=91466 u=sameeralam n=ansible INFO| TASK [Update all packages on Debian/Ubuntu] ***********************************************
+2025-12-18 00:16:03,065 p=91466 u=sameeralam n=ansible INFO| changed: [ubuntu1]
+2025-12-18 00:16:03,069 p=91466 u=sameeralam n=ansible INFO| TASK [Update all packages on RHEL/CentOS/Alma/Rocky] **************************************
+2025-12-18 00:16:03,077 p=91466 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:16:03,080 p=91466 u=sameeralam n=ansible INFO| TASK [Determine if reboot is required (Debian/Ubuntu)] ************************************
+2025-12-18 00:16:03,222 p=91466 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:16:03,225 p=91466 u=sameeralam n=ansible INFO| TASK [Set reboot flag (Debian/Ubuntu)] ****************************************************
+2025-12-18 00:16:03,232 p=91466 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:16:03,235 p=91466 u=sameeralam n=ansible INFO| TASK [Set reboot flag (RHEL-based systems)] ***********************************************
+2025-12-18 00:16:03,241 p=91466 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:16:03,243 p=91466 u=sameeralam n=ansible INFO| TASK [Reboot if required] *****************************************************************
+2025-12-18 00:16:03,255 p=91466 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:16:03,259 p=91466 u=sameeralam n=ansible INFO| TASK [Verify system is back online after reboot] ******************************************
+2025-12-18 00:16:03,346 p=91466 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:16:03,349 p=91466 u=sameeralam n=ansible INFO| TASK [Report patching result] *************************************************************
+2025-12-18 00:16:03,357 p=91466 u=sameeralam n=ansible INFO| ok: [ubuntu1] => 
+  msg: Patching completed successfully on ubuntu1
+2025-12-18 00:16:03,357 p=91466 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
+2025-12-18 00:16:03,357 p=91466 u=sameeralam n=ansible INFO| ubuntu1                    : ok=6    changed=2    unreachable=0    failed=0    skipped=3    rescued=0    ignored=0   
+2025-12-18 00:16:31,893 p=91931 u=sameeralam n=ansible INFO| PLAY [Patch Linux systems and reboot if required] *****************************************
+2025-12-18 00:16:31,899 p=91931 u=sameeralam n=ansible INFO| TASK [Ensure host is reachable before starting] *******************************************
+2025-12-18 00:16:32,034 p=91931 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:16:32,037 p=91931 u=sameeralam n=ansible INFO| TASK [Skip host if unreachable] ***********************************************************
+2025-12-18 00:16:32,042 p=91931 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:16:32,044 p=91931 u=sameeralam n=ansible INFO| TASK [Wait for package manager lock to be released (Debian/Ubuntu)] ***********************
+2025-12-18 00:16:32,169 p=91931 u=sameeralam n=ansible INFO| changed: [ubuntu1]
+2025-12-18 00:16:32,171 p=91931 u=sameeralam n=ansible INFO| TASK [Update all packages on Debian/Ubuntu] ***********************************************
+2025-12-18 00:16:34,031 p=91931 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:16:34,039 p=91931 u=sameeralam n=ansible INFO| TASK [Update all packages on RHEL/CentOS/Alma/Rocky] **************************************
+2025-12-18 00:16:34,053 p=91931 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:16:34,057 p=91931 u=sameeralam n=ansible INFO| TASK [Determine if reboot is required (Debian/Ubuntu)] ************************************
+2025-12-18 00:16:34,188 p=91931 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:16:34,190 p=91931 u=sameeralam n=ansible INFO| TASK [Set reboot flag (Debian/Ubuntu)] ****************************************************
+2025-12-18 00:16:34,196 p=91931 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:16:34,199 p=91931 u=sameeralam n=ansible INFO| TASK [Set reboot flag (RHEL-based systems)] ***********************************************
+2025-12-18 00:16:34,206 p=91931 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:16:34,209 p=91931 u=sameeralam n=ansible INFO| TASK [Reboot if required] *****************************************************************
+2025-12-18 00:16:34,216 p=91931 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:16:34,219 p=91931 u=sameeralam n=ansible INFO| TASK [Verify system is back online after reboot] ******************************************
+2025-12-18 00:16:34,300 p=91931 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:16:34,302 p=91931 u=sameeralam n=ansible INFO| TASK [Report patching result] *************************************************************
+2025-12-18 00:16:34,309 p=91931 u=sameeralam n=ansible INFO| ok: [ubuntu1] => 
+  msg: Patching completed successfully on ubuntu1
+2025-12-18 00:16:34,310 p=91931 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
+2025-12-18 00:16:34,310 p=91931 u=sameeralam n=ansible INFO| ubuntu1                    : ok=6    changed=1    unreachable=0    failed=0    skipped=3    rescued=0    ignored=0   
+2025-12-18 00:17:15,539 p=92673 u=sameeralam n=ansible INFO| - Role roles/linux_patch_reboot was created successfully
+2025-12-18 00:20:27,150 p=93871 u=sameeralam n=ansible WARNING| [WARNING]: Could not match supplied host pattern, ignoring: linux
+
+2025-12-18 00:20:27,151 p=93871 u=sameeralam n=ansible INFO| PLAY [Patch Linux systems] ****************************************************************
+2025-12-18 00:20:27,151 p=93871 u=sameeralam n=ansible INFO| skipping: no hosts matched
+2025-12-18 00:20:27,151 p=93871 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
+2025-12-18 00:20:38,349 p=94055 u=sameeralam n=ansible INFO| PLAY [Patch Linux systems] ****************************************************************
+2025-12-18 00:20:38,356 p=94055 u=sameeralam n=ansible INFO| TASK [linux_patch_reboot : Ensure host is reachable] **************************************
+2025-12-18 00:20:38,752 p=94055 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:20:38,754 p=94055 u=sameeralam n=ansible INFO| TASK [linux_patch_reboot : Skip unreachable hosts] ****************************************
+2025-12-18 00:20:38,758 p=94055 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:20:38,762 p=94055 u=sameeralam n=ansible INFO| TASK [linux_patch_reboot : Include OS-specific patching] **********************************
+2025-12-18 00:20:38,774 p=94055 u=sameeralam n=ansible INFO| included: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/roles/linux_patch_reboot/tasks/patch.yml for ubuntu1
+2025-12-18 00:20:38,777 p=94055 u=sameeralam n=ansible INFO| TASK [linux_patch_reboot : Wait for package manager lock (Debian/Ubuntu)] *****************
+2025-12-18 00:20:38,903 p=94055 u=sameeralam n=ansible INFO| changed: [ubuntu1]
+2025-12-18 00:20:38,905 p=94055 u=sameeralam n=ansible INFO| TASK [linux_patch_reboot : Patch Debian/Ubuntu] *******************************************
+2025-12-18 00:20:40,822 p=94055 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:20:40,831 p=94055 u=sameeralam n=ansible INFO| TASK [linux_patch_reboot : Patch RHEL-based systems] **************************************
+2025-12-18 00:20:40,845 p=94055 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:20:40,848 p=94055 u=sameeralam n=ansible INFO| TASK [linux_patch_reboot : Check reboot-required file (Debian)] ***************************
+2025-12-18 00:20:40,974 p=94055 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:20:40,977 p=94055 u=sameeralam n=ansible INFO| TASK [linux_patch_reboot : Set reboot flag (Debian)] **************************************
+2025-12-18 00:20:40,984 p=94055 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:20:40,987 p=94055 u=sameeralam n=ansible INFO| TASK [linux_patch_reboot : Set reboot flag (RHEL)] ****************************************
+2025-12-18 00:20:40,992 p=94055 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:20:40,995 p=94055 u=sameeralam n=ansible INFO| TASK [linux_patch_reboot : Trigger reboot handler if required] ****************************
+2025-12-18 00:20:41,005 p=94055 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:20:41,008 p=94055 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
+2025-12-18 00:20:41,008 p=94055 u=sameeralam n=ansible INFO| ubuntu1                    : ok=5    changed=1    unreachable=0    failed=0    skipped=3    rescued=0    ignored=0   
