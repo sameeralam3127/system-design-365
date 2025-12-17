@@ -9,3 +9,11 @@
   - 'IP: 192.168.2.3'
 2025-12-18 00:10:42,765 p=88748 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
 2025-12-18 00:10:42,765 p=88748 u=sameeralam n=ansible INFO| ubuntu1                    : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2025-12-18 00:15:43,813 p=91466 u=sameeralam n=ansible INFO| PLAY [Patch Linux systems and reboot if required] *****************************************
+2025-12-18 00:15:43,819 p=91466 u=sameeralam n=ansible INFO| TASK [Ensure host is reachable before starting] *******************************************
+2025-12-18 00:15:44,211 p=91466 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:15:44,218 p=91466 u=sameeralam n=ansible INFO| TASK [Skip host if unreachable] ***********************************************************
+2025-12-18 00:15:44,230 p=91466 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:15:44,234 p=91466 u=sameeralam n=ansible INFO| TASK [Wait for package manager lock to be released (Debian/Ubuntu)] ***********************
+2025-12-18 00:15:44,370 p=91466 u=sameeralam n=ansible INFO| changed: [ubuntu1]
+2025-12-18 00:15:44,373 p=91466 u=sameeralam n=ansible INFO| TASK [Update all packages on Debian/Ubuntu] ***********************************************
