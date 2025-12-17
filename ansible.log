@@ -90,3 +90,1811 @@
 2025-12-18 00:20:41,005 p=94055 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
 2025-12-18 00:20:41,008 p=94055 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
 2025-12-18 00:20:41,008 p=94055 u=sameeralam n=ansible INFO| ubuntu1                    : ok=5    changed=1    unreachable=0    failed=0    skipped=3    rescued=0    ignored=0   
+2025-12-18 00:32:27,661 p=98014 u=sameeralam n=ansible ERROR| ERROR! the role 'geerlingguy.security' was not found in /Users/sameeralam/Documents/GitHub/Ansible-Playbook/roles:/Users/sameeralam/.ansible/roles:/usr/share/ansible/roles:/etc/ansible/roles:/Users/sameeralam/Documents/GitHub/Ansible-Playbook
+
+The error appears to be in '/Users/sameeralam/Documents/GitHub/Ansible-Playbook/security.yml': line 11, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+  roles:
+    - geerlingguy.security
+      ^ here
+
+2025-12-18 00:32:54,058 p=98647 u=sameeralam n=ansible INFO| Starting galaxy role install process
+2025-12-18 00:32:54,435 p=98647 u=sameeralam n=ansible INFO| - downloading role 'security', owned by geerlingguy
+2025-12-18 00:32:55,579 p=98647 u=sameeralam n=ansible INFO| - downloading role from https://github.com/geerlingguy/ansible-role-security/archive/3.0.0.tar.gz
+2025-12-18 00:32:56,417 p=98647 u=sameeralam n=ansible INFO| - extracting geerlingguy.security to /Users/sameeralam/.ansible/roles/geerlingguy.security
+2025-12-18 00:32:56,427 p=98647 u=sameeralam n=ansible INFO| - geerlingguy.security (3.0.0) was installed successfully
+2025-12-18 00:33:00,316 p=98787 u=sameeralam n=ansible INFO| PLAY [Apply baseline security hardening] **************************************************
+2025-12-18 00:33:00,323 p=98787 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Include OS-specific variables.] ******************************
+2025-12-18 00:33:00,331 p=98787 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:33:00,333 p=98787 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : include_tasks] ***********************************************
+2025-12-18 00:33:00,350 p=98787 u=sameeralam n=ansible INFO| included: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/fail2ban.yml for ubuntu1
+2025-12-18 00:33:00,352 p=98787 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install fail2ban (RedHat).] **********************************
+2025-12-18 00:33:00,358 p=98787 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:33:00,361 p=98787 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install fail2ban (Debian).] **********************************
+2025-12-18 00:33:06,180 p=98787 u=sameeralam n=ansible INFO| changed: [ubuntu1]
+2025-12-18 00:33:06,189 p=98787 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Copy jail custom configuration file into place.] *************
+2025-12-18 00:33:06,459 p=98787 u=sameeralam n=ansible INFO| changed: [ubuntu1]
+2025-12-18 00:33:06,462 p=98787 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Copy fail2ban custom configuration file into place.] *********
+2025-12-18 00:33:06,656 p=98787 u=sameeralam n=ansible INFO| changed: [ubuntu1]
+2025-12-18 00:33:06,658 p=98787 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Ensure fail2ban is running and enabled on boot.] *************
+2025-12-18 00:33:06,900 p=98787 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:33:06,902 p=98787 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : include_tasks] ***********************************************
+2025-12-18 00:33:06,914 p=98787 u=sameeralam n=ansible INFO| included: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/ssh.yml for ubuntu1
+2025-12-18 00:33:06,918 p=98787 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Ensure SSH daemon is running.] *******************************
+2025-12-18 00:33:07,070 p=98787 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:33:07,073 p=98787 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Update SSH configuration to be more secure.] *****************
+2025-12-18 00:33:07,205 p=98787 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item={'regexp': '^PasswordAuthentication', 'line': 'PasswordAuthentication no'})
+2025-12-18 00:33:07,283 p=98787 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item={'regexp': '^PermitRootLogin', 'line': 'PermitRootLogin no'})
+2025-12-18 00:33:07,361 p=98787 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item={'regexp': '^Port', 'line': 'Port 22'})
+2025-12-18 00:33:07,440 p=98787 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item={'regexp': '^UseDNS', 'line': 'UseDNS no'})
+2025-12-18 00:33:07,531 p=98787 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item={'regexp': '^PermitEmptyPasswords', 'line': 'PermitEmptyPasswords no'})
+2025-12-18 00:33:07,622 p=98787 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item={'regexp': '^ChallengeResponseAuthentication', 'line': 'ChallengeResponseAuthentication no'})
+2025-12-18 00:33:07,715 p=98787 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item={'regexp': '^GSSAPIAuthentication', 'line': 'GSSAPIAuthentication no'})
+2025-12-18 00:33:07,804 p=98787 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item={'regexp': '^X11Forwarding', 'line': 'X11Forwarding no'})
+2025-12-18 00:33:07,807 p=98787 u=sameeralam n=ansible WARNING| [WARNING]: Module remote_tmp /root/.ansible/tmp did not exist and was created with a mode
+of 0700, this may cause issues when running as another user. To avoid this, create the
+remote_tmp dir with the correct permissions manually
+
+2025-12-18 00:33:07,815 p=98787 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Add configured users allowed to connect over ssh] ************
+2025-12-18 00:33:07,835 p=98787 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:33:07,839 p=98787 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Add configured groups allowed to connect over ssh] ***********
+2025-12-18 00:33:07,853 p=98787 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:33:07,856 p=98787 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Add configured user accounts to passwordless sudoers.] *******
+2025-12-18 00:33:07,863 p=98787 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:33:07,866 p=98787 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Add configured user accounts to passworded sudoers.] *********
+2025-12-18 00:33:07,873 p=98787 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:33:07,876 p=98787 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : include_tasks] ***********************************************
+2025-12-18 00:33:07,881 p=98787 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:33:07,884 p=98787 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : include_tasks] ***********************************************
+2025-12-18 00:33:07,899 p=98787 u=sameeralam n=ansible INFO| included: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/autoupdate-Debian.yml for ubuntu1
+2025-12-18 00:33:07,902 p=98787 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install unattended upgrades package.] ************************
+2025-12-18 00:33:08,242 p=98787 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:33:08,250 p=98787 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Copy unattended-upgrades configuration files in place.] ******
+2025-12-18 00:33:08,462 p=98787 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item=10periodic)
+2025-12-18 00:33:08,652 p=98787 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item=50unattended-upgrades)
+2025-12-18 00:33:08,658 p=98787 u=sameeralam n=ansible INFO| RUNNING HANDLER [geerlingguy.security : reload systemd] ***********************************
+2025-12-18 00:33:08,995 p=98787 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:33:09,003 p=98787 u=sameeralam n=ansible INFO| RUNNING HANDLER [geerlingguy.security : restart ssh] **************************************
+2025-12-18 00:33:09,168 p=98787 u=sameeralam n=ansible INFO| changed: [ubuntu1]
+2025-12-18 00:33:09,179 p=98787 u=sameeralam n=ansible INFO| RUNNING HANDLER [geerlingguy.security : reload fail2ban] **********************************
+2025-12-18 00:33:09,362 p=98787 u=sameeralam n=ansible INFO| changed: [ubuntu1]
+2025-12-18 00:33:09,363 p=98787 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
+2025-12-18 00:33:09,363 p=98787 u=sameeralam n=ansible INFO| ubuntu1                    : ok=15   changed=7    unreachable=0    failed=0    skipped=6    rescued=0    ignored=0   
+2025-12-18 00:33:24,925 p=99097 u=sameeralam n=ansible INFO| # /Users/sameeralam/.ansible/roles
+2025-12-18 00:33:24,926 p=99097 u=sameeralam n=ansible INFO| - geerlingguy.security, 3.0.0
+2025-12-18 00:33:24,926 p=99097 u=sameeralam n=ansible WARNING| [WARNING]: - the configured path /usr/share/ansible/roles does not exist.
+
+2025-12-18 00:33:24,926 p=99097 u=sameeralam n=ansible WARNING| [WARNING]: - the configured path /etc/ansible/roles does not exist.
+
+2025-12-18 00:34:40,351 p=99611 u=sameeralam n=ansible INFO| @all:
+  |--@ungrouped:
+  |--@ubuntu:
+  |  |--ubuntu1
+2025-12-18 00:34:47,912 p=99739 u=sameeralam n=ansible ERROR| ERROR! No action selected, at least one of --host, --graph or --list needs to be specified.
+2025-12-18 00:35:00,303 p=99888 u=sameeralam n=ansible INFO| {
+    "_meta": {
+        "hostvars": {
+            "ubuntu1": {
+                "ansible_all_ipv4_addresses": [
+                    {
+                        "__ansible_unsafe": "192.168.2.3"
+                    }
+                ],
+                "ansible_all_ipv6_addresses": [
+                    {
+                        "__ansible_unsafe": "fdb3:4a87:ed83:483e:5054:ff:fe74:d2a6"
+                    },
+                    {
+                        "__ansible_unsafe": "fe80::5054:ff:fe74:d2a6"
+                    }
+                ],
+                "ansible_apparmor": {
+                    "status": {
+                        "__ansible_unsafe": "enabled"
+                    }
+                },
+                "ansible_architecture": {
+                    "__ansible_unsafe": "aarch64"
+                },
+                "ansible_bios_date": {
+                    "__ansible_unsafe": "03/01/2023"
+                },
+                "ansible_bios_vendor": {
+                    "__ansible_unsafe": "EDK II"
+                },
+                "ansible_bios_version": {
+                    "__ansible_unsafe": "edk2-stable202302-for-qemu"
+                },
+                "ansible_board_asset_tag": {
+                    "__ansible_unsafe": "NA"
+                },
+                "ansible_board_name": {
+                    "__ansible_unsafe": "NA"
+                },
+                "ansible_board_serial": {
+                    "__ansible_unsafe": "NA"
+                },
+                "ansible_board_vendor": {
+                    "__ansible_unsafe": "NA"
+                },
+                "ansible_board_version": {
+                    "__ansible_unsafe": "NA"
+                },
+                "ansible_chassis_asset_tag": {
+                    "__ansible_unsafe": "NA"
+                },
+                "ansible_chassis_serial": {
+                    "__ansible_unsafe": "NA"
+                },
+                "ansible_chassis_vendor": {
+                    "__ansible_unsafe": "QEMU"
+                },
+                "ansible_chassis_version": {
+                    "__ansible_unsafe": "virt-8.2"
+                },
+                "ansible_cmdline": {
+                    "BOOT_IMAGE": {
+                        "__ansible_unsafe": "/vmlinuz-6.8.0-90-generic"
+                    },
+                    "console": {
+                        "__ansible_unsafe": "ttyAMA0"
+                    },
+                    "ro": true,
+                    "root": {
+                        "__ansible_unsafe": "LABEL=cloudimg-rootfs"
+                    }
+                },
+                "ansible_date_time": {
+                    "date": {
+                        "__ansible_unsafe": "2025-12-17"
+                    },
+                    "day": {
+                        "__ansible_unsafe": "17"
+                    },
+                    "epoch": {
+                        "__ansible_unsafe": "1765996842"
+                    },
+                    "epoch_int": {
+                        "__ansible_unsafe": "1765996842"
+                    },
+                    "hour": {
+                        "__ansible_unsafe": "18"
+                    },
+                    "iso8601": {
+                        "__ansible_unsafe": "2025-12-17T18:40:42Z"
+                    },
+                    "iso8601_basic": {
+                        "__ansible_unsafe": "20251217T184042404941"
+                    },
+                    "iso8601_basic_short": {
+                        "__ansible_unsafe": "20251217T184042"
+                    },
+                    "iso8601_micro": {
+                        "__ansible_unsafe": "2025-12-17T18:40:42.404941Z"
+                    },
+                    "minute": {
+                        "__ansible_unsafe": "40"
+                    },
+                    "month": {
+                        "__ansible_unsafe": "12"
+                    },
+                    "second": {
+                        "__ansible_unsafe": "42"
+                    },
+                    "time": {
+                        "__ansible_unsafe": "18:40:42"
+                    },
+                    "tz": {
+                        "__ansible_unsafe": "UTC"
+                    },
+                    "tz_dst": {
+                        "__ansible_unsafe": "UTC"
+                    },
+                    "tz_offset": {
+                        "__ansible_unsafe": "+0000"
+                    },
+                    "weekday": {
+                        "__ansible_unsafe": "Wednesday"
+                    },
+                    "weekday_number": {
+                        "__ansible_unsafe": "3"
+                    },
+                    "weeknumber": {
+                        "__ansible_unsafe": "50"
+                    },
+                    "year": {
+                        "__ansible_unsafe": "2025"
+                    }
+                },
+                "ansible_default_ipv4": {
+                    "address": {
+                        "__ansible_unsafe": "192.168.2.3"
+                    },
+                    "alias": {
+                        "__ansible_unsafe": "enp0s1"
+                    },
+                    "broadcast": {
+                        "__ansible_unsafe": ""
+                    },
+                    "gateway": {
+                        "__ansible_unsafe": "192.168.2.1"
+                    },
+                    "interface": {
+                        "__ansible_unsafe": "enp0s1"
+                    },
+                    "macaddress": {
+                        "__ansible_unsafe": "52:54:00:74:d2:a6"
+                    },
+                    "mtu": 1500,
+                    "netmask": {
+                        "__ansible_unsafe": "255.255.255.0"
+                    },
+                    "network": {
+                        "__ansible_unsafe": "192.168.2.0"
+                    },
+                    "prefix": {
+                        "__ansible_unsafe": "24"
+                    },
+                    "type": {
+                        "__ansible_unsafe": "ether"
+                    }
+                },
+                "ansible_default_ipv6": {},
+                "ansible_device_links": {
+                    "ids": {
+                        "sda": [
+                            {
+                                "__ansible_unsafe": "scsi-0QEMU_QEMU_HARDDISK_hda"
+                            }
+                        ],
+                        "sda1": [
+                            {
+                                "__ansible_unsafe": "scsi-0QEMU_QEMU_HARDDISK_hda-part1"
+                            }
+                        ],
+                        "sda15": [
+                            {
+                                "__ansible_unsafe": "scsi-0QEMU_QEMU_HARDDISK_hda-part15"
+                            }
+                        ],
+                        "sda16": [
+                            {
+                                "__ansible_unsafe": "scsi-0QEMU_QEMU_HARDDISK_hda-part16"
+                            }
+                        ]
+                    },
+                    "labels": {
+                        "sda1": [
+                            {
+                                "__ansible_unsafe": "cloudimg-rootfs"
+                            }
+                        ],
+                        "sda15": [
+                            {
+                                "__ansible_unsafe": "UEFI"
+                            }
+                        ],
+                        "sda16": [
+                            {
+                                "__ansible_unsafe": "BOOT"
+                            }
+                        ],
+                        "vda": [
+                            {
+                                "__ansible_unsafe": "cidata"
+                            }
+                        ]
+                    },
+                    "masters": {},
+                    "uuids": {
+                        "sda1": [
+                            {
+                                "__ansible_unsafe": "86c281bd-c7c6-401d-8520-5138a4f91961"
+                            }
+                        ],
+                        "sda15": [
+                            {
+                                "__ansible_unsafe": "3588-605E"
+                            }
+                        ],
+                        "sda16": [
+                            {
+                                "__ansible_unsafe": "2b1c27f9-2cb8-4e46-8e1c-89bc5c7bdaeb"
+                            }
+                        ]
+                    }
+                },
+                "ansible_devices": {
+                    "loop0": {
+                        "holders": [],
+                        "host": {
+                            "__ansible_unsafe": ""
+                        },
+                        "links": {
+                            "ids": [],
+                            "labels": [],
+                            "masters": [],
+                            "uuids": []
+                        },
+                        "model": null,
+                        "partitions": {},
+                        "removable": {
+                            "__ansible_unsafe": "0"
+                        },
+                        "rotational": {
+                            "__ansible_unsafe": "1"
+                        },
+                        "sas_address": null,
+                        "sas_device_handle": null,
+                        "scheduler_mode": {
+                            "__ansible_unsafe": "none"
+                        },
+                        "sectors": 0,
+                        "sectorsize": {
+                            "__ansible_unsafe": "512"
+                        },
+                        "size": {
+                            "__ansible_unsafe": "0.00 Bytes"
+                        },
+                        "support_discard": {
+                            "__ansible_unsafe": "4096"
+                        },
+                        "vendor": null,
+                        "virtual": 1
+                    },
+                    "loop1": {
+                        "holders": [],
+                        "host": {
+                            "__ansible_unsafe": ""
+                        },
+                        "links": {
+                            "ids": [],
+                            "labels": [],
+                            "masters": [],
+                            "uuids": []
+                        },
+                        "model": null,
+                        "partitions": {},
+                        "removable": {
+                            "__ansible_unsafe": "0"
+                        },
+                        "rotational": {
+                            "__ansible_unsafe": "1"
+                        },
+                        "sas_address": null,
+                        "sas_device_handle": null,
+                        "scheduler_mode": {
+                            "__ansible_unsafe": "none"
+                        },
+                        "sectors": 0,
+                        "sectorsize": {
+                            "__ansible_unsafe": "512"
+                        },
+                        "size": {
+                            "__ansible_unsafe": "0.00 Bytes"
+                        },
+                        "support_discard": {
+                            "__ansible_unsafe": "0"
+                        },
+                        "vendor": null,
+                        "virtual": 1
+                    },
+                    "loop2": {
+                        "holders": [],
+                        "host": {
+                            "__ansible_unsafe": ""
+                        },
+                        "links": {
+                            "ids": [],
+                            "labels": [],
+                            "masters": [],
+                            "uuids": []
+                        },
+                        "model": null,
+                        "partitions": {},
+                        "removable": {
+                            "__ansible_unsafe": "0"
+                        },
+                        "rotational": {
+                            "__ansible_unsafe": "1"
+                        },
+                        "sas_address": null,
+                        "sas_device_handle": null,
+                        "scheduler_mode": {
+                            "__ansible_unsafe": "none"
+                        },
+                        "sectors": 0,
+                        "sectorsize": {
+                            "__ansible_unsafe": "512"
+                        },
+                        "size": {
+                            "__ansible_unsafe": "0.00 Bytes"
+                        },
+                        "support_discard": {
+                            "__ansible_unsafe": "0"
+                        },
+                        "vendor": null,
+                        "virtual": 1
+                    },
+                    "loop3": {
+                        "holders": [],
+                        "host": {
+                            "__ansible_unsafe": ""
+                        },
+                        "links": {
+                            "ids": [],
+                            "labels": [],
+                            "masters": [],
+                            "uuids": []
+                        },
+                        "model": null,
+                        "partitions": {},
+                        "removable": {
+                            "__ansible_unsafe": "0"
+                        },
+                        "rotational": {
+                            "__ansible_unsafe": "1"
+                        },
+                        "sas_address": null,
+                        "sas_device_handle": null,
+                        "scheduler_mode": {
+                            "__ansible_unsafe": "none"
+                        },
+                        "sectors": 0,
+                        "sectorsize": {
+                            "__ansible_unsafe": "512"
+                        },
+                        "size": {
+                            "__ansible_unsafe": "0.00 Bytes"
+                        },
+                        "support_discard": {
+                            "__ansible_unsafe": "0"
+                        },
+                        "vendor": null,
+                        "virtual": 1
+                    },
+                    "loop4": {
+                        "holders": [],
+                        "host": {
+                            "__ansible_unsafe": ""
+                        },
+                        "links": {
+                            "ids": [],
+                            "labels": [],
+                            "masters": [],
+                            "uuids": []
+                        },
+                        "model": null,
+                        "partitions": {},
+                        "removable": {
+                            "__ansible_unsafe": "0"
+                        },
+                        "rotational": {
+                            "__ansible_unsafe": "1"
+                        },
+                        "sas_address": null,
+                        "sas_device_handle": null,
+                        "scheduler_mode": {
+                            "__ansible_unsafe": "none"
+                        },
+                        "sectors": 0,
+                        "sectorsize": {
+                            "__ansible_unsafe": "512"
+                        },
+                        "size": {
+                            "__ansible_unsafe": "0.00 Bytes"
+                        },
+                        "support_discard": {
+                            "__ansible_unsafe": "0"
+                        },
+                        "vendor": null,
+                        "virtual": 1
+                    },
+                    "loop5": {
+                        "holders": [],
+                        "host": {
+                            "__ansible_unsafe": ""
+                        },
+                        "links": {
+                            "ids": [],
+                            "labels": [],
+                            "masters": [],
+                            "uuids": []
+                        },
+                        "model": null,
+                        "partitions": {},
+                        "removable": {
+                            "__ansible_unsafe": "0"
+                        },
+                        "rotational": {
+                            "__ansible_unsafe": "1"
+                        },
+                        "sas_address": null,
+                        "sas_device_handle": null,
+                        "scheduler_mode": {
+                            "__ansible_unsafe": "none"
+                        },
+                        "sectors": 0,
+                        "sectorsize": {
+                            "__ansible_unsafe": "512"
+                        },
+                        "size": {
+                            "__ansible_unsafe": "0.00 Bytes"
+                        },
+                        "support_discard": {
+                            "__ansible_unsafe": "0"
+                        },
+                        "vendor": null,
+                        "virtual": 1
+                    },
+                    "loop6": {
+                        "holders": [],
+                        "host": {
+                            "__ansible_unsafe": ""
+                        },
+                        "links": {
+                            "ids": [],
+                            "labels": [],
+                            "masters": [],
+                            "uuids": []
+                        },
+                        "model": null,
+                        "partitions": {},
+                        "removable": {
+                            "__ansible_unsafe": "0"
+                        },
+                        "rotational": {
+                            "__ansible_unsafe": "1"
+                        },
+                        "sas_address": null,
+                        "sas_device_handle": null,
+                        "scheduler_mode": {
+                            "__ansible_unsafe": "none"
+                        },
+                        "sectors": 0,
+                        "sectorsize": {
+                            "__ansible_unsafe": "512"
+                        },
+                        "size": {
+                            "__ansible_unsafe": "0.00 Bytes"
+                        },
+                        "support_discard": {
+                            "__ansible_unsafe": "0"
+                        },
+                        "vendor": null,
+                        "virtual": 1
+                    },
+                    "loop7": {
+                        "holders": [],
+                        "host": {
+                            "__ansible_unsafe": ""
+                        },
+                        "links": {
+                            "ids": [],
+                            "labels": [],
+                            "masters": [],
+                            "uuids": []
+                        },
+                        "model": null,
+                        "partitions": {},
+                        "removable": {
+                            "__ansible_unsafe": "0"
+                        },
+                        "rotational": {
+                            "__ansible_unsafe": "1"
+                        },
+                        "sas_address": null,
+                        "sas_device_handle": null,
+                        "scheduler_mode": {
+                            "__ansible_unsafe": "none"
+                        },
+                        "sectors": 0,
+                        "sectorsize": {
+                            "__ansible_unsafe": "512"
+                        },
+                        "size": {
+                            "__ansible_unsafe": "0.00 Bytes"
+                        },
+                        "support_discard": {
+                            "__ansible_unsafe": "0"
+                        },
+                        "vendor": null,
+                        "virtual": 1
+                    },
+                    "sda": {
+                        "holders": [],
+                        "host": {
+                            "__ansible_unsafe": "SCSI storage controller: Red Hat, Inc. Virtio SCSI"
+                        },
+                        "links": {
+                            "ids": [
+                                {
+                                    "__ansible_unsafe": "scsi-0QEMU_QEMU_HARDDISK_hda"
+                                }
+                            ],
+                            "labels": [],
+                            "masters": [],
+                            "uuids": []
+                        },
+                        "model": {
+                            "__ansible_unsafe": "QEMU HARDDISK"
+                        },
+                        "partitions": {
+                            "sda1": {
+                                "holders": [],
+                                "links": {
+                                    "ids": [
+                                        {
+                                            "__ansible_unsafe": "scsi-0QEMU_QEMU_HARDDISK_hda-part1"
+                                        }
+                                    ],
+                                    "labels": [
+                                        {
+                                            "__ansible_unsafe": "cloudimg-rootfs"
+                                        }
+                                    ],
+                                    "masters": [],
+                                    "uuids": [
+                                        {
+                                            "__ansible_unsafe": "86c281bd-c7c6-401d-8520-5138a4f91961"
+                                        }
+                                    ]
+                                },
+                                "sectors": 8386527,
+                                "sectorsize": 512,
+                                "size": {
+                                    "__ansible_unsafe": "4.00 GB"
+                                },
+                                "start": {
+                                    "__ansible_unsafe": "2099200"
+                                },
+                                "uuid": {
+                                    "__ansible_unsafe": "86c281bd-c7c6-401d-8520-5138a4f91961"
+                                }
+                            },
+                            "sda15": {
+                                "holders": [],
+                                "links": {
+                                    "ids": [
+                                        {
+                                            "__ansible_unsafe": "scsi-0QEMU_QEMU_HARDDISK_hda-part15"
+                                        }
+                                    ],
+                                    "labels": [
+                                        {
+                                            "__ansible_unsafe": "UEFI"
+                                        }
+                                    ],
+                                    "masters": [],
+                                    "uuids": [
+                                        {
+                                            "__ansible_unsafe": "3588-605E"
+                                        }
+                                    ]
+                                },
+                                "sectors": 202753,
+                                "sectorsize": 512,
+                                "size": {
+                                    "__ansible_unsafe": "99.00 MB"
+                                },
+                                "start": {
+                                    "__ansible_unsafe": "2048"
+                                },
+                                "uuid": {
+                                    "__ansible_unsafe": "3588-605E"
+                                }
+                            },
+                            "sda16": {
+                                "holders": [],
+                                "links": {
+                                    "ids": [
+                                        {
+                                            "__ansible_unsafe": "scsi-0QEMU_QEMU_HARDDISK_hda-part16"
+                                        }
+                                    ],
+                                    "labels": [
+                                        {
+                                            "__ansible_unsafe": "BOOT"
+                                        }
+                                    ],
+                                    "masters": [],
+                                    "uuids": [
+                                        {
+                                            "__ansible_unsafe": "2b1c27f9-2cb8-4e46-8e1c-89bc5c7bdaeb"
+                                        }
+                                    ]
+                                },
+                                "sectors": 1890305,
+                                "sectorsize": 512,
+                                "size": {
+                                    "__ansible_unsafe": "923.00 MB"
+                                },
+                                "start": {
+                                    "__ansible_unsafe": "206848"
+                                },
+                                "uuid": {
+                                    "__ansible_unsafe": "2b1c27f9-2cb8-4e46-8e1c-89bc5c7bdaeb"
+                                }
+                            }
+                        },
+                        "removable": {
+                            "__ansible_unsafe": "0"
+                        },
+                        "rotational": {
+                            "__ansible_unsafe": "1"
+                        },
+                        "sas_address": null,
+                        "sas_device_handle": null,
+                        "scheduler_mode": {
+                            "__ansible_unsafe": "mq-deadline"
+                        },
+                        "sectors": 10485760,
+                        "sectorsize": {
+                            "__ansible_unsafe": "512"
+                        },
+                        "size": {
+                            "__ansible_unsafe": "5.00 GB"
+                        },
+                        "support_discard": {
+                            "__ansible_unsafe": "4096"
+                        },
+                        "vendor": {
+                            "__ansible_unsafe": "QEMU"
+                        },
+                        "virtual": 1
+                    },
+                    "vda": {
+                        "holders": [],
+                        "host": {
+                            "__ansible_unsafe": "SCSI storage controller: Red Hat, Inc. Virtio block device"
+                        },
+                        "links": {
+                            "ids": [],
+                            "labels": [
+                                {
+                                    "__ansible_unsafe": "cidata"
+                                }
+                            ],
+                            "masters": [],
+                            "uuids": []
+                        },
+                        "model": null,
+                        "partitions": {},
+                        "removable": {
+                            "__ansible_unsafe": "0"
+                        },
+                        "rotational": {
+                            "__ansible_unsafe": "1"
+                        },
+                        "sas_address": null,
+                        "sas_device_handle": null,
+                        "scheduler_mode": {
+                            "__ansible_unsafe": "mq-deadline"
+                        },
+                        "sectors": 108,
+                        "sectorsize": {
+                            "__ansible_unsafe": "512"
+                        },
+                        "size": {
+                            "__ansible_unsafe": "54.00 KB"
+                        },
+                        "support_discard": {
+                            "__ansible_unsafe": "512"
+                        },
+                        "vendor": {
+                            "__ansible_unsafe": "0x1af4"
+                        },
+                        "virtual": 1
+                    }
+                },
+                "ansible_distribution": {
+                    "__ansible_unsafe": "Ubuntu"
+                },
+                "ansible_distribution_file_parsed": true,
+                "ansible_distribution_file_path": {
+                    "__ansible_unsafe": "/etc/os-release"
+                },
+                "ansible_distribution_file_variety": {
+                    "__ansible_unsafe": "Debian"
+                },
+                "ansible_distribution_major_version": {
+                    "__ansible_unsafe": "24"
+                },
+                "ansible_distribution_release": {
+                    "__ansible_unsafe": "noble"
+                },
+                "ansible_distribution_version": {
+                    "__ansible_unsafe": "24.04"
+                },
+                "ansible_dns": {
+                    "nameservers": [
+                        {
+                            "__ansible_unsafe": "127.0.0.53"
+                        }
+                    ],
+                    "options": {
+                        "edns0": true,
+                        "trust-ad": true
+                    },
+                    "search": [
+                        {
+                            "__ansible_unsafe": "."
+                        }
+                    ]
+                },
+                "ansible_domain": {
+                    "__ansible_unsafe": ""
+                },
+                "ansible_effective_group_id": 1000,
+                "ansible_effective_user_id": 1000,
+                "ansible_enp0s1": {
+                    "active": true,
+                    "device": {
+                        "__ansible_unsafe": "enp0s1"
+                    },
+                    "features": {
+                        "esp_hw_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "esp_tx_csum_hw_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "fcoe_mtu": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "generic_receive_offload": {
+                            "__ansible_unsafe": "on"
+                        },
+                        "generic_segmentation_offload": {
+                            "__ansible_unsafe": "off [requested on]"
+                        },
+                        "highdma": {
+                            "__ansible_unsafe": "on [fixed]"
+                        },
+                        "hsr_dup_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "hsr_fwd_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "hsr_tag_ins_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "hsr_tag_rm_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "hw_tc_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "l2_fwd_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "large_receive_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "loopback": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "macsec_hw_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "netns_local": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "ntuple_filters": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "receive_hashing": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "rx_all": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "rx_checksumming": {
+                            "__ansible_unsafe": "on [fixed]"
+                        },
+                        "rx_fcs": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "rx_gro_hw": {
+                            "__ansible_unsafe": "off"
+                        },
+                        "rx_gro_list": {
+                            "__ansible_unsafe": "off"
+                        },
+                        "rx_udp_gro_forwarding": {
+                            "__ansible_unsafe": "off"
+                        },
+                        "rx_udp_tunnel_port_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "rx_vlan_filter": {
+                            "__ansible_unsafe": "on [fixed]"
+                        },
+                        "rx_vlan_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "rx_vlan_stag_filter": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "rx_vlan_stag_hw_parse": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "scatter_gather": {
+                            "__ansible_unsafe": "off"
+                        },
+                        "tcp_segmentation_offload": {
+                            "__ansible_unsafe": "off"
+                        },
+                        "tls_hw_record": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tls_hw_rx_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tls_hw_tx_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_checksum_fcoe_crc": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_checksum_ip_generic": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_checksum_ipv4": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_checksum_ipv6": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_checksum_sctp": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_checksumming": {
+                            "__ansible_unsafe": "off"
+                        },
+                        "tx_esp_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_fcoe_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_gre_csum_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_gre_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_gso_list": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_gso_partial": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_gso_robust": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_ipxip4_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_ipxip6_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_lockless": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_nocache_copy": {
+                            "__ansible_unsafe": "off"
+                        },
+                        "tx_scatter_gather": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_scatter_gather_fraglist": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_sctp_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_tcp6_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_tcp_ecn_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_tcp_mangleid_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_tcp_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_tunnel_remcsum_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_udp_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_udp_tnl_csum_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_udp_tnl_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_vlan_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_vlan_stag_hw_insert": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "vlan_challenged": {
+                            "__ansible_unsafe": "off [fixed]"
+                        }
+                    },
+                    "hw_timestamp_filters": [],
+                    "ipv4": {
+                        "address": {
+                            "__ansible_unsafe": "192.168.2.3"
+                        },
+                        "broadcast": {
+                            "__ansible_unsafe": ""
+                        },
+                        "netmask": {
+                            "__ansible_unsafe": "255.255.255.0"
+                        },
+                        "network": {
+                            "__ansible_unsafe": "192.168.2.0"
+                        },
+                        "prefix": {
+                            "__ansible_unsafe": "24"
+                        }
+                    },
+                    "ipv6": [
+                        {
+                            "address": {
+                                "__ansible_unsafe": "fdb3:4a87:ed83:483e:5054:ff:fe74:d2a6"
+                            },
+                            "prefix": {
+                                "__ansible_unsafe": "64"
+                            },
+                            "scope": {
+                                "__ansible_unsafe": "global"
+                            }
+                        },
+                        {
+                            "address": {
+                                "__ansible_unsafe": "fe80::5054:ff:fe74:d2a6"
+                            },
+                            "prefix": {
+                                "__ansible_unsafe": "64"
+                            },
+                            "scope": {
+                                "__ansible_unsafe": "link"
+                            }
+                        }
+                    ],
+                    "macaddress": {
+                        "__ansible_unsafe": "52:54:00:74:d2:a6"
+                    },
+                    "mtu": 1500,
+                    "pciid": {
+                        "__ansible_unsafe": "virtio0"
+                    },
+                    "promisc": false,
+                    "speed": -1,
+                    "timestamping": [],
+                    "type": {
+                        "__ansible_unsafe": "ether"
+                    }
+                },
+                "ansible_env": {
+                    "DBUS_SESSION_BUS_ADDRESS": {
+                        "__ansible_unsafe": "unix:path=/run/user/1000/bus"
+                    },
+                    "HOME": {
+                        "__ansible_unsafe": "/home/ubuntu"
+                    },
+                    "LANG": {
+                        "__ansible_unsafe": "C.UTF-8"
+                    },
+                    "LOGNAME": {
+                        "__ansible_unsafe": "ubuntu"
+                    },
+                    "PATH": {
+                        "__ansible_unsafe": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
+                    },
+                    "PWD": {
+                        "__ansible_unsafe": "/home/ubuntu"
+                    },
+                    "SHELL": {
+                        "__ansible_unsafe": "/bin/bash"
+                    },
+                    "SHLVL": {
+                        "__ansible_unsafe": "0"
+                    },
+                    "SSH_CLIENT": {
+                        "__ansible_unsafe": "192.168.2.1 51620 22"
+                    },
+                    "SSH_CONNECTION": {
+                        "__ansible_unsafe": "192.168.2.1 51620 192.168.2.3 22"
+                    },
+                    "USER": {
+                        "__ansible_unsafe": "ubuntu"
+                    },
+                    "XDG_RUNTIME_DIR": {
+                        "__ansible_unsafe": "/run/user/1000"
+                    },
+                    "XDG_SESSION_CLASS": {
+                        "__ansible_unsafe": "user"
+                    },
+                    "XDG_SESSION_ID": {
+                        "__ansible_unsafe": "14"
+                    },
+                    "XDG_SESSION_TYPE": {
+                        "__ansible_unsafe": "tty"
+                    },
+                    "_": {
+                        "__ansible_unsafe": "/bin/sh"
+                    }
+                },
+                "ansible_fibre_channel_wwn": [],
+                "ansible_fips": false,
+                "ansible_form_factor": {
+                    "__ansible_unsafe": "Other"
+                },
+                "ansible_fqdn": {
+                    "__ansible_unsafe": "workable-elver"
+                },
+                "ansible_host": "192.168.2.3",
+                "ansible_hostname": {
+                    "__ansible_unsafe": "workable-elver"
+                },
+                "ansible_hostnqn": {
+                    "__ansible_unsafe": ""
+                },
+                "ansible_interfaces": [
+                    {
+                        "__ansible_unsafe": "enp0s1"
+                    },
+                    {
+                        "__ansible_unsafe": "lo"
+                    }
+                ],
+                "ansible_is_chroot": false,
+                "ansible_iscsi_iqn": {
+                    "__ansible_unsafe": ""
+                },
+                "ansible_kernel": {
+                    "__ansible_unsafe": "6.8.0-90-generic"
+                },
+                "ansible_kernel_version": {
+                    "__ansible_unsafe": "#91-Ubuntu SMP PREEMPT_DYNAMIC Tue Nov 18 13:53:54 UTC 2025"
+                },
+                "ansible_lo": {
+                    "active": true,
+                    "device": {
+                        "__ansible_unsafe": "lo"
+                    },
+                    "features": {
+                        "esp_hw_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "esp_tx_csum_hw_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "fcoe_mtu": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "generic_receive_offload": {
+                            "__ansible_unsafe": "on"
+                        },
+                        "generic_segmentation_offload": {
+                            "__ansible_unsafe": "on"
+                        },
+                        "highdma": {
+                            "__ansible_unsafe": "on [fixed]"
+                        },
+                        "hsr_dup_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "hsr_fwd_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "hsr_tag_ins_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "hsr_tag_rm_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "hw_tc_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "l2_fwd_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "large_receive_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "loopback": {
+                            "__ansible_unsafe": "on [fixed]"
+                        },
+                        "macsec_hw_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "netns_local": {
+                            "__ansible_unsafe": "on [fixed]"
+                        },
+                        "ntuple_filters": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "receive_hashing": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "rx_all": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "rx_checksumming": {
+                            "__ansible_unsafe": "on [fixed]"
+                        },
+                        "rx_fcs": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "rx_gro_hw": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "rx_gro_list": {
+                            "__ansible_unsafe": "off"
+                        },
+                        "rx_udp_gro_forwarding": {
+                            "__ansible_unsafe": "off"
+                        },
+                        "rx_udp_tunnel_port_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "rx_vlan_filter": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "rx_vlan_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "rx_vlan_stag_filter": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "rx_vlan_stag_hw_parse": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "scatter_gather": {
+                            "__ansible_unsafe": "on"
+                        },
+                        "tcp_segmentation_offload": {
+                            "__ansible_unsafe": "on"
+                        },
+                        "tls_hw_record": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tls_hw_rx_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tls_hw_tx_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_checksum_fcoe_crc": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_checksum_ip_generic": {
+                            "__ansible_unsafe": "on [fixed]"
+                        },
+                        "tx_checksum_ipv4": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_checksum_ipv6": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_checksum_sctp": {
+                            "__ansible_unsafe": "on [fixed]"
+                        },
+                        "tx_checksumming": {
+                            "__ansible_unsafe": "on"
+                        },
+                        "tx_esp_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_fcoe_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_gre_csum_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_gre_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_gso_list": {
+                            "__ansible_unsafe": "on"
+                        },
+                        "tx_gso_partial": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_gso_robust": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_ipxip4_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_ipxip6_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_lockless": {
+                            "__ansible_unsafe": "on [fixed]"
+                        },
+                        "tx_nocache_copy": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_scatter_gather": {
+                            "__ansible_unsafe": "on [fixed]"
+                        },
+                        "tx_scatter_gather_fraglist": {
+                            "__ansible_unsafe": "on [fixed]"
+                        },
+                        "tx_sctp_segmentation": {
+                            "__ansible_unsafe": "on"
+                        },
+                        "tx_tcp6_segmentation": {
+                            "__ansible_unsafe": "on"
+                        },
+                        "tx_tcp_ecn_segmentation": {
+                            "__ansible_unsafe": "on"
+                        },
+                        "tx_tcp_mangleid_segmentation": {
+                            "__ansible_unsafe": "on"
+                        },
+                        "tx_tcp_segmentation": {
+                            "__ansible_unsafe": "on"
+                        },
+                        "tx_tunnel_remcsum_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_udp_segmentation": {
+                            "__ansible_unsafe": "on"
+                        },
+                        "tx_udp_tnl_csum_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_udp_tnl_segmentation": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_vlan_offload": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "tx_vlan_stag_hw_insert": {
+                            "__ansible_unsafe": "off [fixed]"
+                        },
+                        "vlan_challenged": {
+                            "__ansible_unsafe": "on [fixed]"
+                        }
+                    },
+                    "hw_timestamp_filters": [],
+                    "ipv4": {
+                        "address": {
+                            "__ansible_unsafe": "127.0.0.1"
+                        },
+                        "broadcast": {
+                            "__ansible_unsafe": ""
+                        },
+                        "netmask": {
+                            "__ansible_unsafe": "255.0.0.0"
+                        },
+                        "network": {
+                            "__ansible_unsafe": "127.0.0.0"
+                        },
+                        "prefix": {
+                            "__ansible_unsafe": "8"
+                        }
+                    },
+                    "ipv6": [
+                        {
+                            "address": {
+                                "__ansible_unsafe": "::1"
+                            },
+                            "prefix": {
+                                "__ansible_unsafe": "128"
+                            },
+                            "scope": {
+                                "__ansible_unsafe": "host"
+                            }
+                        }
+                    ],
+                    "mtu": 65536,
+                    "promisc": false,
+                    "timestamping": [],
+                    "type": {
+                        "__ansible_unsafe": "loopback"
+                    }
+                },
+                "ansible_loadavg": {
+                    "15m": 0.0,
+                    "1m": 0.0224609375,
+                    "5m": 0.0263671875
+                },
+                "ansible_local": {},
+                "ansible_locally_reachable_ips": {
+                    "ipv4": [
+                        {
+                            "__ansible_unsafe": "127.0.0.0/8"
+                        },
+                        {
+                            "__ansible_unsafe": "127.0.0.1"
+                        },
+                        {
+                            "__ansible_unsafe": "192.168.2.3"
+                        }
+                    ],
+                    "ipv6": [
+                        {
+                            "__ansible_unsafe": "::1"
+                        },
+                        {
+                            "__ansible_unsafe": "fdb3:4a87:ed83:483e:5054:ff:fe74:d2a6"
+                        },
+                        {
+                            "__ansible_unsafe": "fe80::5054:ff:fe74:d2a6"
+                        }
+                    ]
+                },
+                "ansible_lsb": {
+                    "codename": {
+                        "__ansible_unsafe": "noble"
+                    },
+                    "description": {
+                        "__ansible_unsafe": "Ubuntu 24.04.3 LTS"
+                    },
+                    "id": {
+                        "__ansible_unsafe": "Ubuntu"
+                    },
+                    "major_release": {
+                        "__ansible_unsafe": "24"
+                    },
+                    "release": {
+                        "__ansible_unsafe": "24.04"
+                    }
+                },
+                "ansible_lvm": {
+                    "__ansible_unsafe": "N/A"
+                },
+                "ansible_machine": {
+                    "__ansible_unsafe": "aarch64"
+                },
+                "ansible_machine_id": {
+                    "__ansible_unsafe": "8f038b01416c41e0885f51ed96e99299"
+                },
+                "ansible_memfree_mb": 526,
+                "ansible_memory_mb": {
+                    "nocache": {
+                        "free": 780,
+                        "used": 172
+                    },
+                    "real": {
+                        "free": 526,
+                        "total": 952,
+                        "used": 426
+                    },
+                    "swap": {
+                        "cached": 0,
+                        "free": 0,
+                        "total": 0,
+                        "used": 0
+                    }
+                },
+                "ansible_memtotal_mb": 952,
+                "ansible_mounts": [
+                    {
+                        "block_available": 475024,
+                        "block_size": 4096,
+                        "block_total": 997043,
+                        "block_used": 522019,
+                        "device": {
+                            "__ansible_unsafe": "/dev/sda1"
+                        },
+                        "dump": 0,
+                        "fstype": {
+                            "__ansible_unsafe": "ext4"
+                        },
+                        "inode_available": 436391,
+                        "inode_total": 524288,
+                        "inode_used": 87897,
+                        "mount": {
+                            "__ansible_unsafe": "/"
+                        },
+                        "options": {
+                            "__ansible_unsafe": "rw,relatime,discard,errors=remount-ro,commit=30"
+                        },
+                        "passno": 0,
+                        "size_available": 1945698304,
+                        "size_total": 4083888128,
+                        "uuid": {
+                            "__ansible_unsafe": "86c281bd-c7c6-401d-8520-5138a4f91961"
+                        }
+                    },
+                    {
+                        "block_available": 196704,
+                        "block_size": 4096,
+                        "block_total": 227895,
+                        "block_used": 31191,
+                        "device": {
+                            "__ansible_unsafe": "/dev/sda16"
+                        },
+                        "dump": 0,
+                        "fstype": {
+                            "__ansible_unsafe": "ext4"
+                        },
+                        "inode_available": 58876,
+                        "inode_total": 59136,
+                        "inode_used": 260,
+                        "mount": {
+                            "__ansible_unsafe": "/boot"
+                        },
+                        "options": {
+                            "__ansible_unsafe": "rw,relatime"
+                        },
+                        "passno": 0,
+                        "size_available": 805699584,
+                        "size_total": 933457920,
+                        "uuid": {
+                            "__ansible_unsafe": "2b1c27f9-2cb8-4e46-8e1c-89bc5c7bdaeb"
+                        }
+                    },
+                    {
+                        "block_available": 186617,
+                        "block_size": 512,
+                        "block_total": 199582,
+                        "block_used": 12965,
+                        "device": {
+                            "__ansible_unsafe": "/dev/sda15"
+                        },
+                        "dump": 0,
+                        "fstype": {
+                            "__ansible_unsafe": "vfat"
+                        },
+                        "inode_available": 0,
+                        "inode_total": 0,
+                        "inode_used": 0,
+                        "mount": {
+                            "__ansible_unsafe": "/boot/efi"
+                        },
+                        "options": {
+                            "__ansible_unsafe": "rw,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro"
+                        },
+                        "passno": 0,
+                        "size_available": 95547904,
+                        "size_total": 102185984,
+                        "uuid": {
+                            "__ansible_unsafe": "3588-605E"
+                        }
+                    }
+                ],
+                "ansible_nodename": {
+                    "__ansible_unsafe": "workable-elver"
+                },
+                "ansible_os_family": {
+                    "__ansible_unsafe": "Debian"
+                },
+                "ansible_pkg_mgr": {
+                    "__ansible_unsafe": "apt"
+                },
+                "ansible_proc_cmdline": {
+                    "BOOT_IMAGE": {
+                        "__ansible_unsafe": "/vmlinuz-6.8.0-90-generic"
+                    },
+                    "console": [
+                        {
+                            "__ansible_unsafe": "tty1"
+                        },
+                        {
+                            "__ansible_unsafe": "ttyAMA0"
+                        }
+                    ],
+                    "ro": true,
+                    "root": {
+                        "__ansible_unsafe": "LABEL=cloudimg-rootfs"
+                    }
+                },
+                "ansible_processor": [
+                    {
+                        "__ansible_unsafe": "0"
+                    }
+                ],
+                "ansible_processor_cores": 1,
+                "ansible_processor_count": 1,
+                "ansible_processor_nproc": 1,
+                "ansible_processor_threads_per_core": 1,
+                "ansible_processor_vcpus": 1,
+                "ansible_product_name": {
+                    "__ansible_unsafe": "QEMU Virtual Machine"
+                },
+                "ansible_product_serial": {
+                    "__ansible_unsafe": "NA"
+                },
+                "ansible_product_uuid": {
+                    "__ansible_unsafe": "NA"
+                },
+                "ansible_product_version": {
+                    "__ansible_unsafe": "virt-8.2"
+                },
+                "ansible_python": {
+                    "executable": {
+                        "__ansible_unsafe": "/usr/bin/python3.12"
+                    },
+                    "has_sslcontext": true,
+                    "type": {
+                        "__ansible_unsafe": "cpython"
+                    },
+                    "version": {
+                        "major": 3,
+                        "micro": 3,
+                        "minor": 12,
+                        "releaselevel": {
+                            "__ansible_unsafe": "final"
+                        },
+                        "serial": 0
+                    },
+                    "version_info": [
+                        3,
+                        12,
+                        3,
+                        {
+                            "__ansible_unsafe": "final"
+                        },
+                        0
+                    ]
+                },
+                "ansible_python_version": {
+                    "__ansible_unsafe": "3.12.3"
+                },
+                "ansible_real_group_id": 1000,
+                "ansible_real_user_id": 1000,
+                "ansible_selinux": {
+                    "status": {
+                        "__ansible_unsafe": "disabled"
+                    }
+                },
+                "ansible_selinux_python_present": true,
+                "ansible_service_mgr": {
+                    "__ansible_unsafe": "systemd"
+                },
+                "ansible_ssh_host_key_ecdsa_public": {
+                    "__ansible_unsafe": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOyWKSi9XLHasuEBHXNY/U+IrVLtJkAM6sC6Z0/gB1hr61ZqLTXEnq1bFKDf1ViiiCZKDWiIEXZ2cqSq2GyTNak="
+                },
+                "ansible_ssh_host_key_ecdsa_public_keytype": {
+                    "__ansible_unsafe": "ecdsa-sha2-nistp256"
+                },
+                "ansible_ssh_host_key_ed25519_public": {
+                    "__ansible_unsafe": "AAAAC3NzaC1lZDI1NTE5AAAAIFXNfeph5i/gP8S1Jln05nTUiI4r2qUC8tdmLJ581i/9"
+                },
+                "ansible_ssh_host_key_ed25519_public_keytype": {
+                    "__ansible_unsafe": "ssh-ed25519"
+                },
+                "ansible_ssh_host_key_rsa_public": {
+                    "__ansible_unsafe": "AAAAB3NzaC1yc2EAAAADAQABAAABgQDauYilIsJlX36ukJy7wVtc5RQlv6txxtoghRcXYMNuxLWJ22s/4+5v4bRAeUNApMjZDbR7sKs/YWstcrSY0qkEhTXe7yXH51J89sh63TknskpgrXf11Um8pW731pMhy5WoHLk9qsktlEGuVdJBkRBE+ay0A0wOrwVA8iEgO11iZwb0o1UrCHrItS2rnoz7hB49hzte09KaXOnW/7QdreckJojdUtZB7ec3MGWaK5d2EAc2xnTvHzr/voNimKEzmSKkuQ5NrZOmrn5Hfj4AM1M7vbLD4x/17twbtDmyV4zvGEiL9R2DJbmVb7QegN/8CJEZbnozNjSoW3tlP6VcU5iHT2Xl0VQoNU1vUbxgKYdWOTi4/Ck4GlqD2vPsCAzNi2s31yJt7BktxLfa08R+kdyA87GNOSHhXbfnrWgONSEmhULWtjsSarwY2XnUZUUgTfAnd5v8wVz+MVfyH0GeisBNC2zHtGUFm3QpviLZx8fI9zWjCoypYxsxEytDItXG3FE="
+                },
+                "ansible_ssh_host_key_rsa_public_keytype": {
+                    "__ansible_unsafe": "ssh-rsa"
+                },
+                "ansible_swapfree_mb": 0,
+                "ansible_swaptotal_mb": 0,
+                "ansible_system": {
+                    "__ansible_unsafe": "Linux"
+                },
+                "ansible_system_capabilities": [
+                    {
+                        "__ansible_unsafe": ""
+                    }
+                ],
+                "ansible_system_capabilities_enforced": {
+                    "__ansible_unsafe": "True"
+                },
+                "ansible_system_vendor": {
+                    "__ansible_unsafe": "QEMU"
+                },
+                "ansible_systemd": {
+                    "features": {
+                        "__ansible_unsafe": "+PAM +AUDIT +SELINUX +APPARMOR +IMA +SMACK +SECCOMP +GCRYPT -GNUTLS +OPENSSL +ACL +BLKID +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +IPTC +KMOD +LIBCRYPTSETUP +LIBFDISK +PCRE2 -PWQUALITY +P11KIT +QRENCODE +TPM2 +BZIP2 +LZ4 +XZ +ZLIB +ZSTD -BPF_FRAMEWORK -XKBCOMMON +UTMP +SYSVINIT default-hierarchy=unified"
+                    },
+                    "version": 255
+                },
+                "ansible_uptime_seconds": 2083,
+                "ansible_user": "ubuntu",
+                "ansible_user_dir": {
+                    "__ansible_unsafe": "/home/ubuntu"
+                },
+                "ansible_user_gecos": {
+                    "__ansible_unsafe": "Ubuntu"
+                },
+                "ansible_user_gid": 1000,
+                "ansible_user_id": {
+                    "__ansible_unsafe": "ubuntu"
+                },
+                "ansible_user_shell": {
+                    "__ansible_unsafe": "/bin/bash"
+                },
+                "ansible_user_uid": 1000,
+                "ansible_userspace_bits": {
+                    "__ansible_unsafe": "64"
+                },
+                "ansible_virtualization_role": {
+                    "__ansible_unsafe": "guest"
+                },
+                "ansible_virtualization_tech_guest": [
+                    {
+                        "__ansible_unsafe": "kvm"
+                    }
+                ],
+                "ansible_virtualization_tech_host": [],
+                "ansible_virtualization_type": {
+                    "__ansible_unsafe": "kvm"
+                },
+                "discovered_interpreter_python": {
+                    "__ansible_unsafe": "/usr/bin/python3.12"
+                },
+                "gather_subset": [
+                    {
+                        "__ansible_unsafe": "all"
+                    }
+                ],
+                "module_setup": true
+            }
+        }
+    },
+    "all": {
+        "children": [
+            "ungrouped",
+            "ubuntu"
+        ]
+    },
+    "ubuntu": {
+        "hosts": [
+            "ubuntu1"
+        ]
+    }
+}
+2025-12-18 00:35:11,320 p=139 u=sameeralam n=ansible ERROR| ERROR! No action selected, at least one of --host, --graph or --list needs to be specified.
+2025-12-18 00:35:35,320 p=435 u=sameeralam n=ansible ERROR| ERROR! No action selected, at least one of --host, --graph or --list needs to be specified.
+2025-12-18 00:36:06,492 p=1207 u=sameeralam n=ansible INFO| PLAY [Apply baseline security hardening] **************************************************
+2025-12-18 00:36:06,500 p=1207 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Include OS-specific variables.] ******************************
+2025-12-18 00:36:06,510 p=1207 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:36:06,512 p=1207 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : include_tasks] ***********************************************
+2025-12-18 00:36:06,526 p=1207 u=sameeralam n=ansible INFO| included: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/fail2ban.yml for ubuntu1
+2025-12-18 00:36:06,529 p=1207 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install fail2ban (RedHat).] **********************************
+2025-12-18 00:36:06,536 p=1207 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:36:06,538 p=1207 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install fail2ban (Debian).] **********************************
+2025-12-18 00:36:07,207 p=1207 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:36:07,216 p=1207 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Copy jail custom configuration file into place.] *************
+2025-12-18 00:36:07,486 p=1207 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:36:07,488 p=1207 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Copy fail2ban custom configuration file into place.] *********
+2025-12-18 00:36:07,682 p=1207 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:36:07,685 p=1207 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Ensure fail2ban is running and enabled on boot.] *************
+2025-12-18 00:36:07,913 p=1207 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:36:07,915 p=1207 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : include_tasks] ***********************************************
+2025-12-18 00:36:07,926 p=1207 u=sameeralam n=ansible INFO| included: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/ssh.yml for ubuntu1
+2025-12-18 00:36:07,929 p=1207 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Ensure SSH daemon is running.] *******************************
+2025-12-18 00:36:08,068 p=1207 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 00:36:08,072 p=1207 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Update SSH configuration to be more secure.] *****************
+2025-12-18 00:36:08,197 p=1207 u=sameeralam n=ansible INFO| ok: [ubuntu1] => (item={'regexp': '^PasswordAuthentication', 'line': 'PasswordAuthentication no'})
+2025-12-18 00:36:08,269 p=1207 u=sameeralam n=ansible INFO| ok: [ubuntu1] => (item={'regexp': '^PermitRootLogin', 'line': 'PermitRootLogin no'})
+2025-12-18 00:36:08,342 p=1207 u=sameeralam n=ansible INFO| ok: [ubuntu1] => (item={'regexp': '^Port', 'line': 'Port 22'})
+2025-12-18 00:36:08,415 p=1207 u=sameeralam n=ansible INFO| ok: [ubuntu1] => (item={'regexp': '^UseDNS', 'line': 'UseDNS no'})
+2025-12-18 00:36:08,499 p=1207 u=sameeralam n=ansible INFO| ok: [ubuntu1] => (item={'regexp': '^PermitEmptyPasswords', 'line': 'PermitEmptyPasswords no'})
+2025-12-18 00:36:08,582 p=1207 u=sameeralam n=ansible INFO| ok: [ubuntu1] => (item={'regexp': '^ChallengeResponseAuthentication', 'line': 'ChallengeResponseAuthentication no'})
+2025-12-18 00:36:08,666 p=1207 u=sameeralam n=ansible INFO| ok: [ubuntu1] => (item={'regexp': '^GSSAPIAuthentication', 'line': 'GSSAPIAuthentication no'})
+2025-12-18 00:36:08,747 p=1207 u=sameeralam n=ansible INFO| ok: [ubuntu1] => (item={'regexp': '^X11Forwarding', 'line': 'X11Forwarding no'})
+2025-12-18 00:36:08,757 p=1207 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Add configured users allowed to connect over ssh] ************
+2025-12-18 00:36:08,856 p=1207 u=sameeralam n=ansible INFO| changed: [ubuntu1]
+2025-12-18 00:36:08,858 p=1207 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Add configured groups allowed to connect over ssh] ***********
+2025-12-18 00:36:08,871 p=1207 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:36:08,875 p=1207 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Add configured user accounts to passwordless sudoers.] *******
+2025-12-18 00:36:08,882 p=1207 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 00:36:08,886 p=1207 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Add configured user accounts to passworded sudoers.] *********
+2025-12-18 00:36:08,978 p=1207 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item=ubuntu)
+2025-12-18 00:36:08,990 p=1207 u=sameeralam n=ansible INFO| fatal: [ubuntu1]: FAILED! => 
+  msg: Missing sudo password
+2025-12-18 00:36:08,990 p=1207 u=sameeralam n=ansible INFO| PLAY RECAP ********************************************************************************
+2025-12-18 00:36:08,990 p=1207 u=sameeralam n=ansible INFO| ubuntu1                    : ok=10   changed=1    unreachable=0    failed=1    skipped=3    rescued=0    ignored=0   

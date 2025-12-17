@@ -1,0 +1,11 @@
+---
+- name: Apply baseline security hardening
+  hosts: all
+  become: true
+  gather_facts: true
+
+  vars_files:
+    - vars/security.yml
+
+  roles:
+    - geerlingguy.security
