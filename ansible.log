@@ -2064,3 +2064,133 @@ Origin: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/fail2ban.yml
 
 2025-12-18 23:41:17,296 p=61299 u=sameeralam n=ansible ERROR| [ERROR]: User interrupted execution
 
+2025-12-18 23:55:41,629 p=67264 u=sameeralam n=ansible INFO| PLAY [Apply baseline security hardening] ***************************************
+2025-12-18 23:55:41,636 p=67264 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Include OS-specific variables.] *******************
+2025-12-18 23:55:41,646 p=67264 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-18 23:55:41,648 p=67264 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : include_tasks] ************************************
+2025-12-18 23:55:41,669 p=67264 u=sameeralam n=ansible INFO| included: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/fail2ban.yml for ubuntu1
+2025-12-18 23:55:41,691 p=67264 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install fail2ban (RedHat).] ***********************
+2025-12-18 23:55:41,697 p=67264 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-18 23:55:41,700 p=67264 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install fail2ban (Debian).] ***********************
+2025-12-18 23:56:11,794 p=67264 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: Data could not be sent to remote host "172.16.175.130". Make sure this host can be reached over ssh: ssh: connect to host 172.16.175.130 port 22: Operation timed out
+Origin: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/fail2ban.yml:9:3
+
+7   when: ansible_os_family == 'RedHat'
+8
+9 - name: Install fail2ban (Debian).
+    ^ column 3
+
+
+2025-12-18 23:56:11,795 p=67264 u=sameeralam n=ansible INFO| fatal: [ubuntu1]: UNREACHABLE! => {"changed": false, "msg": "Task failed: Data could not be sent to remote host \"172.16.175.130\". Make sure this host can be reached over ssh: ssh: connect to host 172.16.175.130 port 22: Operation timed out", "unreachable": true}
+2025-12-18 23:56:11,796 p=67264 u=sameeralam n=ansible INFO| PLAY RECAP *********************************************************************
+2025-12-18 23:56:11,796 p=67264 u=sameeralam n=ansible INFO| ubuntu1                    : ok=2    changed=0    unreachable=1    failed=0    skipped=1    rescued=0    ignored=0   
+2025-12-19 00:13:07,711 p=74888 u=sameeralam n=ansible INFO| PLAY [Apply baseline security hardening] ***************************************
+2025-12-19 00:13:07,718 p=74888 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Include OS-specific variables.] *******************
+2025-12-19 00:13:07,729 p=74888 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-19 00:13:07,731 p=74888 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : include_tasks] ************************************
+2025-12-19 00:13:07,750 p=74888 u=sameeralam n=ansible INFO| included: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/fail2ban.yml for ubuntu1
+2025-12-19 00:13:07,777 p=74888 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install fail2ban (RedHat).] ***********************
+2025-12-19 00:13:07,791 p=74888 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-19 00:13:07,793 p=74888 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install fail2ban (Debian).] ***********************
+2025-12-19 00:13:14,538 p=74888 u=sameeralam n=ansible INFO| changed: [ubuntu1]
+2025-12-19 00:13:14,547 p=74888 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Copy jail custom configuration file into place.] ***
+2025-12-19 00:13:14,937 p=74888 u=sameeralam n=ansible INFO| changed: [ubuntu1]
+2025-12-19 00:13:14,940 p=74888 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Copy fail2ban custom configuration file into place.] ***
+2025-12-19 00:13:15,190 p=74888 u=sameeralam n=ansible INFO| changed: [ubuntu1]
+2025-12-19 00:13:15,193 p=74888 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Ensure fail2ban is running and enabled on boot.] ***
+2025-12-19 00:13:15,483 p=74888 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-19 00:13:15,485 p=74888 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : include_tasks] ************************************
+2025-12-19 00:13:15,500 p=74888 u=sameeralam n=ansible INFO| included: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/ssh.yml for ubuntu1
+2025-12-19 00:13:15,503 p=74888 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Ensure SSH daemon is running.] ********************
+2025-12-19 00:13:15,669 p=74888 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-19 00:13:15,674 p=74888 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Update SSH configuration to be more secure.] ******
+2025-12-19 00:13:15,856 p=74888 u=sameeralam n=ansible WARNING| [WARNING]: Module remote_tmp /root/.ansible/tmp did not exist and was created with a mode of 0700, this may cause issues when running as another user. To avoid this, create the remote_tmp dir with the correct permissions manually
+
+2025-12-19 00:13:15,856 p=74888 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item={'regexp': '^PasswordAuthentication', 'line': 'PasswordAuthentication no'})
+2025-12-19 00:13:15,960 p=74888 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item={'regexp': '^PermitRootLogin', 'line': 'PermitRootLogin no'})
+2025-12-19 00:13:16,068 p=74888 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item={'regexp': '^Port', 'line': 'Port 22'})
+2025-12-19 00:13:16,185 p=74888 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item={'regexp': '^UseDNS', 'line': 'UseDNS no'})
+2025-12-19 00:13:16,304 p=74888 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item={'regexp': '^PermitEmptyPasswords', 'line': 'PermitEmptyPasswords no'})
+2025-12-19 00:13:16,421 p=74888 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item={'regexp': '^ChallengeResponseAuthentication', 'line': 'ChallengeResponseAuthentication no'})
+2025-12-19 00:13:16,542 p=74888 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item={'regexp': '^GSSAPIAuthentication', 'line': 'GSSAPIAuthentication no'})
+2025-12-19 00:13:16,660 p=74888 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item={'regexp': '^X11Forwarding', 'line': 'X11Forwarding no'})
+2025-12-19 00:13:16,673 p=74888 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Add configured users allowed to connect over ssh] ***
+2025-12-19 00:13:16,803 p=74888 u=sameeralam n=ansible INFO| changed: [ubuntu1]
+2025-12-19 00:13:16,806 p=74888 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Add configured groups allowed to connect over ssh] ***
+2025-12-19 00:13:16,822 p=74888 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-19 00:13:16,825 p=74888 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Add configured user accounts to passwordless sudoers.] ***
+2025-12-19 00:13:16,835 p=74888 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-19 00:13:16,838 p=74888 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Add configured user accounts to passworded sudoers.] ***
+2025-12-19 00:13:16,961 p=74888 u=sameeralam n=ansible INFO| changed: [ubuntu1] => (item=ubuntu)
+2025-12-19 00:13:16,975 p=74888 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: Missing sudo password
+Origin: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/ssh.yml:71:3
+
+69   when: security_sudoers_passwordless | length > 0
+70
+71 - name: Add configured user accounts to passworded sudoers.
+     ^ column 3
+
+
+2025-12-19 00:13:16,976 p=74888 u=sameeralam n=ansible INFO| failed: [ubuntu1] (item=ansible) => {"ansible_loop_var": "item", "changed": false, "item": "ansible", "msg": "Task failed: Missing sudo password"}
+2025-12-19 00:13:16,977 p=74888 u=sameeralam n=ansible INFO| PLAY RECAP *********************************************************************
+2025-12-19 00:13:16,977 p=74888 u=sameeralam n=ansible INFO| ubuntu1                    : ok=10   changed=5    unreachable=0    failed=1    skipped=3    rescued=0    ignored=0   
+2025-12-19 00:14:16,548 p=75420 u=sameeralam n=ansible INFO| PLAY [Apply baseline security hardening] ***************************************
+2025-12-19 00:14:16,553 p=75420 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Include OS-specific variables.] *******************
+2025-12-19 00:14:16,562 p=75420 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-19 00:14:16,564 p=75420 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : include_tasks] ************************************
+2025-12-19 00:14:16,580 p=75420 u=sameeralam n=ansible INFO| included: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/fail2ban.yml for ubuntu1
+2025-12-19 00:14:16,591 p=75420 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install fail2ban (RedHat).] ***********************
+2025-12-19 00:14:16,598 p=75420 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-19 00:14:16,600 p=75420 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install fail2ban (Debian).] ***********************
+2025-12-19 00:14:17,021 p=75420 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: Missing sudo password
+Origin: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/fail2ban.yml:9:3
+
+7   when: ansible_os_family == 'RedHat'
+8
+9 - name: Install fail2ban (Debian).
+    ^ column 3
+
+
+2025-12-19 00:14:17,021 p=75420 u=sameeralam n=ansible INFO| fatal: [ubuntu1]: FAILED! => {"changed": false, "msg": "Task failed: Missing sudo password"}
+2025-12-19 00:14:17,022 p=75420 u=sameeralam n=ansible INFO| PLAY RECAP *********************************************************************
+2025-12-19 00:14:17,022 p=75420 u=sameeralam n=ansible INFO| ubuntu1                    : ok=2    changed=0    unreachable=0    failed=1    skipped=1    rescued=0    ignored=0   
+2025-12-19 00:15:24,122 p=75908 u=sameeralam n=ansible INFO| PLAY [Apply baseline security hardening] ***************************************
+2025-12-19 00:15:24,127 p=75908 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Include OS-specific variables.] *******************
+2025-12-19 00:15:24,138 p=75908 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-19 00:15:24,140 p=75908 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : include_tasks] ************************************
+2025-12-19 00:15:24,159 p=75908 u=sameeralam n=ansible INFO| included: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/fail2ban.yml for ubuntu1
+2025-12-19 00:15:24,171 p=75908 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install fail2ban (RedHat).] ***********************
+2025-12-19 00:15:24,178 p=75908 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-19 00:15:24,180 p=75908 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install fail2ban (Debian).] ***********************
+2025-12-19 00:15:24,564 p=75908 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: Missing sudo password
+Origin: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/fail2ban.yml:9:3
+
+7   when: ansible_os_family == 'RedHat'
+8
+9 - name: Install fail2ban (Debian).
+    ^ column 3
+
+
+2025-12-19 00:15:24,564 p=75908 u=sameeralam n=ansible INFO| fatal: [ubuntu1]: FAILED! => {"changed": false, "msg": "Task failed: Missing sudo password"}
+2025-12-19 00:15:24,565 p=75908 u=sameeralam n=ansible INFO| PLAY RECAP *********************************************************************
+2025-12-19 00:15:24,565 p=75908 u=sameeralam n=ansible INFO| ubuntu1                    : ok=2    changed=0    unreachable=0    failed=1    skipped=1    rescued=0    ignored=0   
+2025-12-19 00:24:17,275 p=83317 u=sameeralam n=ansible INFO| PLAY [Apply baseline security hardening] ***************************************
+2025-12-19 00:24:17,280 p=83317 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Include OS-specific variables.] *******************
+2025-12-19 00:24:17,290 p=83317 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-19 00:24:17,294 p=83317 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : include_tasks] ************************************
+2025-12-19 00:24:17,312 p=83317 u=sameeralam n=ansible INFO| included: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/fail2ban.yml for ubuntu1
+2025-12-19 00:24:17,322 p=83317 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install fail2ban (RedHat).] ***********************
+2025-12-19 00:24:17,330 p=83317 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-19 00:24:17,332 p=83317 u=sameeralam n=ansible INFO| TASK [geerlingguy.security : Install fail2ban (Debian).] ***********************
+2025-12-19 00:24:17,666 p=83317 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: Missing sudo password
+Origin: /Users/sameeralam/.ansible/roles/geerlingguy.security/tasks/fail2ban.yml:9:3
+
+7   when: ansible_os_family == 'RedHat'
+8
+9 - name: Install fail2ban (Debian).
+    ^ column 3
+
+
+2025-12-19 00:24:17,666 p=83317 u=sameeralam n=ansible INFO| fatal: [ubuntu1]: FAILED! => {"changed": false, "msg": "Task failed: Missing sudo password"}
+2025-12-19 00:24:17,666 p=83317 u=sameeralam n=ansible INFO| PLAY RECAP *********************************************************************
+2025-12-19 00:24:17,666 p=83317 u=sameeralam n=ansible INFO| ubuntu1                    : ok=2    changed=0    unreachable=0    failed=1    skipped=1    rescued=0    ignored=0   
