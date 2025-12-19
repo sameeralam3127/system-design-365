@@ -1,0 +1,10 @@
+---
+- name: Validate domain name
+  fail:
+    msg: "SSL domain must be specified"
+  when: ssl_domain == "example.com" or ssl_domain == ""
+
+- name: Validate certificate type
+  fail:
+    msg: "ssl_certificate_type must be either 'self_signed' or 'letsencrypt'"
+  when: ssl_certificate_type not in ['self_signed', 'letsencrypt']

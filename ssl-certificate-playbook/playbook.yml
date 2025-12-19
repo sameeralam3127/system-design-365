@@ -1,0 +1,43 @@
+---
+- name: Configure SSL Certificates for Nginx
+  hosts: webservers
+  become: yes
+  vars_files:
+    - vars/defaults.yml
+    - "vars/{{ ansible_distribution | lower }}.yml"
+
+  pre_tasks:
+    - name: Update package cache (Ubuntu)
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Update package cache (RHEL)
+      yum:
+        update_cache: yes
+      when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
+
+  roles:
+    - role: common
+      tags: common
+
+    - role: nginx
+      tags: nginx
+
+    - role: certificates
+      tags: certificates
+
+    - role: firewall
+      tags: firewall
+
+  post_tasks:
+    - name: Display SSL certificate information
+      debug:
+        msg:
+          - "SSL Certificate configured for {{ ssl_domain }}"
+          - "Certificate Type: {{ ssl_certificate_type }}"
+          - "Certificate Path: {{ ssl_certificate_path }}/{{ ssl_domain }}.crt"
+          - "Key Path: {{ ssl_certificate_path }}/{{ ssl_domain }}.key"
+          - "Nginx Config: {{ nginx_sites_available_dir }}/{{ ssl_domain }}"
+      when: ssl_certificate_debug_info

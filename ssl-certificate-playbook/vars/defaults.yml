@@ -1,0 +1,40 @@
+---
+# SSL Certificate Settings
+ssl_certificate_type: "self_signed" # Options: self_signed, letsencrypt
+ssl_domain: "example.com"
+ssl_subject_alt_names: []
+ssl_certificate_path: "/etc/ssl/certs"
+ssl_private_key_path: "/etc/ssl/private"
+ssl_certificate_days: 365
+ssl_key_size: 2048
+
+# Let's Encrypt Settings
+letsencrypt_email: "admin@{{ ssl_domain }}"
+letsencrypt_staging: false # Set to true for testing
+letsencrypt_auto_renew: true
+
+# Nginx Settings
+nginx_user: "nginx"
+nginx_worker_processes: "auto"
+nginx_worker_connections: 1024
+nginx_keepalive_timeout: 65
+nginx_sites_available_dir: "/etc/nginx/sites-available"
+nginx_sites_enabled_dir: "/etc/nginx/sites-enabled"
+nginx_default_site: "default"
+
+# Firewall Settings
+configure_firewall: true
+firewall_allowed_ports:
+  - 22
+  - 80
+  - 443
+
+# Security Settings
+ssl_protocols: "TLSv1.2 TLSv1.3"
+ssl_ciphers: "ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384"
+ssl_prefer_server_ciphers: "on"
+ssl_session_cache: "shared:SSL:10m"
+ssl_session_timeout: "10m"
+
+# Debug
+ssl_certificate_debug_info: true

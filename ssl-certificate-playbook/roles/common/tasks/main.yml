@@ -1,0 +1,18 @@
+---
+- name: Include distribution-specific setup
+  include_tasks: "{{ ansible_distribution | lower }}.yml"
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
+
+- name: Create SSL directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - "{{ ssl_certificate_path }}"
+    - "{{ ssl_private_key_path }}"
+
+- name: Validate SSL configuration
+  include_tasks: validation.yml

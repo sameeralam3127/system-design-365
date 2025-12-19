@@ -1,0 +1,16 @@
+---
+# RHEL/CentOS-specific variables
+nginx_packages:
+  - nginx
+  - openssl
+  - certbot
+  - python3-certbot-nginx
+
+nginx_service: nginx
+nginx_conf_dir: "/etc/nginx"
+firewall_service: firewalld
+certbot_path: "/usr/bin/certbot"
+
+# EPEL repository required for Certbot on RHEL/CentOS 7
+epel_packages:
+  - epel-release

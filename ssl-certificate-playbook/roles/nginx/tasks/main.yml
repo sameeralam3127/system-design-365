@@ -1,0 +1,35 @@
+---
+- name: Install Nginx
+  include_tasks: "{{ ansible_distribution | lower }}.yml"
+
+- name: Configure Nginx SSL
+  template:
+    src: nginx-ssl.conf.j2
+    dest: "{{ nginx_sites_available_dir }}/{{ ssl_domain }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reload Nginx
+
+- name: Enable Nginx site
+  file:
+    src: "{{ nginx_sites_available_dir }}/{{ ssl_domain }}"
+    dest: "{{ nginx_sites_enabled_dir }}/{{ ssl_domain }}"
+    state: link
+  notify:
+    - Reload Nginx
+
+- name: Disable default Nginx site
+  file:
+    path: "{{ nginx_sites_enabled_dir }}/{{ nginx_default_site }}"
+    state: absent
+  notify:
+    - Reload Nginx
+
+- name: Test Nginx configuration
+  command: nginx -t
+  register: nginx_test
+  changed_when: false
+  notify:
+    - Reload Nginx

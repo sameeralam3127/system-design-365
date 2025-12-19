@@ -1,0 +1,12 @@
+---
+# Ubuntu-specific variables
+nginx_packages:
+  - nginx
+  - openssl
+  - certbot
+  - python3-certbot-nginx
+
+nginx_service: nginx
+nginx_conf_dir: "/etc/nginx"
+firewall_service: ufw
+certbot_path: "/usr/bin/certbot"
