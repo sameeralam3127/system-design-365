@@ -1,0 +1,33 @@
+---
+- name: Install and enable UFW
+  apt:
+    name: ufw
+    state: present
+
+- name: Configure UFW default policies
+  ufw:
+    policy: "{{ item.policy }}"
+    direction: "{{ item.direction }}"
+  loop:
+    - { direction: "incoming", policy: "deny" }
+    - { direction: "outgoing", policy: "allow" }
+    - { direction: "routed", policy: "allow" }
+
+- name: Allow SSH
+  ufw:
+    rule: allow
+    port: "22"
+    proto: tcp
+
+- name: Allow HTTP and HTTPS
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop:
+    - 80
+    - 443
+
+- name: Enable UFW
+  ufw:
+    state: enabled

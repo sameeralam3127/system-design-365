@@ -1,0 +1,8 @@
+[webservers]
+web1.example.com ansible_host=192.168.1.10
+web2.example.com ansible_host=192.168.1.11
+
+[webservers:vars]
+ssl_certificate_type=letsencrypt
+ssl_domain=production.example.com
+ssl_subject_alt_names=['www.production.example.com', 'api.production.example.com']
