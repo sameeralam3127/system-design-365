@@ -6,7 +6,7 @@
 
   tasks:
     - name: Display OS and IP address
-      debug:
+      - ansible.builtin.debug:
         msg:
           - "Hostname: {{ ansible_hostname }}"
           - "OS: {{ ansible_distribution }} {{ ansible_distribution_version }}"
