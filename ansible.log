@@ -2420,3 +2420,156 @@ Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/roles/linux_patch_re
     "ansible.builtin.sudo": "Substitute User DO"
 }
 2025-12-19 23:01:17,314 p=84267 u=sameeralam n=ansiblelint WARNING| Listing 27 violation(s) that are fatal
+2025-12-21 23:30:17,585 p=17669 u=sameeralam n=ansible WARNING| [WARNING]: Collection at '/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages/ansible/_internal/ansible_collections/ansible/_protomatter' does not have a MANIFEST.json file, nor has it galaxy.yml: cannot detect version.
+
+2025-12-21 23:30:17,587 p=17669 u=sameeralam n=ansible INFO| {"/Users/sameeralam/.ansible/collections/ansible_collections": {"ansible.posix": {"version": "2.1.0"}, "community.docker": {"version": "5.0.0"}, "community.library_inventory_filtering_v1": {"version": "1.1.5"}}, "/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages/ansible/_internal/ansible_collections": {"ansible._protomatter": {"version": "*"}}}
+2025-12-21 23:30:22,908 p=17711 u=sameeralam n=ansible INFO| ansible-playbook [core 2.20.1]
+  config file = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg
+  configured module search path = ['/Users/sameeralam/Documents/GitHub/Ansible-Playbook/.ansible/modules', '/Users/sameeralam/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages/ansible
+  ansible collection location = /Users/sameeralam/.ansible/collections:/usr/share/ansible/collections:/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages
+  executable location = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/ansible-playbook
+  python version = 3.13.3 (v3.13.3:6280bb54784, Apr  8 2025, 10:47:54) [Clang 15.0.0 (clang-1500.3.9.4)] (/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/python3.13)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.3 (with libyaml v0.2.5)
+2025-12-21 23:30:22,908 p=17710 u=sameeralam n=ansible INFO| ansible-playbook [core 2.20.1]
+  config file = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg
+  configured module search path = ['/Users/sameeralam/Documents/GitHub/Ansible-Playbook/.ansible/modules', '/Users/sameeralam/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages/ansible
+  ansible collection location = /Users/sameeralam/.ansible/collections:/usr/share/ansible/collections:/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages
+  executable location = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/ansible-playbook
+  python version = 3.13.3 (v3.13.3:6280bb54784, Apr  8 2025, 10:47:54) [Clang 15.0.0 (clang-1500.3.9.4)] (/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/python3.13)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.3 (with libyaml v0.2.5)
+2025-12-21 23:30:22,909 p=17711 u=sameeralam n=ansible INFO| Using /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg as config file
+2025-12-21 23:30:22,909 p=17710 u=sameeralam n=ansible INFO| Using /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg as config file
+2025-12-21 23:30:22,916 p=17712 u=sameeralam n=ansible INFO| ansible-playbook [core 2.20.1]
+  config file = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg
+  configured module search path = ['/Users/sameeralam/Documents/GitHub/Ansible-Playbook/.ansible/modules', '/Users/sameeralam/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages/ansible
+  ansible collection location = /Users/sameeralam/.ansible/collections:/usr/share/ansible/collections:/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages
+  executable location = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/ansible-playbook
+  python version = 3.13.3 (v3.13.3:6280bb54784, Apr  8 2025, 10:47:54) [Clang 15.0.0 (clang-1500.3.9.4)] (/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/python3.13)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.3 (with libyaml v0.2.5)
+2025-12-21 23:30:22,916 p=17712 u=sameeralam n=ansible INFO| Using /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg as config file
+2025-12-21 23:30:22,917 p=17708 u=sameeralam n=ansible INFO| ansible-playbook [core 2.20.1]
+  config file = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg
+  configured module search path = ['/Users/sameeralam/Documents/GitHub/Ansible-Playbook/.ansible/modules', '/Users/sameeralam/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages/ansible
+  ansible collection location = /Users/sameeralam/.ansible/collections:/usr/share/ansible/collections:/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages
+  executable location = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/ansible-playbook
+  python version = 3.13.3 (v3.13.3:6280bb54784, Apr  8 2025, 10:47:54) [Clang 15.0.0 (clang-1500.3.9.4)] (/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/python3.13)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.3 (with libyaml v0.2.5)
+2025-12-21 23:30:22,917 p=17708 u=sameeralam n=ansible INFO| Using /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg as config file
+2025-12-21 23:30:22,920 p=17714 u=sameeralam n=ansible INFO| ansible-playbook [core 2.20.1]
+  config file = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg
+  configured module search path = ['/Users/sameeralam/Documents/GitHub/Ansible-Playbook/.ansible/modules', '/Users/sameeralam/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages/ansible
+  ansible collection location = /Users/sameeralam/.ansible/collections:/usr/share/ansible/collections:/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages
+  executable location = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/ansible-playbook
+  python version = 3.13.3 (v3.13.3:6280bb54784, Apr  8 2025, 10:47:54) [Clang 15.0.0 (clang-1500.3.9.4)] (/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/python3.13)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.3 (with libyaml v0.2.5)
+2025-12-21 23:30:22,920 p=17714 u=sameeralam n=ansible INFO| Using /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg as config file
+2025-12-21 23:30:22,922 p=17709 u=sameeralam n=ansible INFO| ansible-playbook [core 2.20.1]
+  config file = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg
+  configured module search path = ['/Users/sameeralam/Documents/GitHub/Ansible-Playbook/.ansible/modules', '/Users/sameeralam/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages/ansible
+  ansible collection location = /Users/sameeralam/.ansible/collections:/usr/share/ansible/collections:/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages
+  executable location = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/ansible-playbook
+  python version = 3.13.3 (v3.13.3:6280bb54784, Apr  8 2025, 10:47:54) [Clang 15.0.0 (clang-1500.3.9.4)] (/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/python3.13)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.3 (with libyaml v0.2.5)
+2025-12-21 23:30:22,923 p=17709 u=sameeralam n=ansible INFO| Using /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg as config file
+2025-12-21 23:30:22,935 p=17713 u=sameeralam n=ansible INFO| ansible-playbook [core 2.20.1]
+  config file = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg
+  configured module search path = ['/Users/sameeralam/Documents/GitHub/Ansible-Playbook/.ansible/modules', '/Users/sameeralam/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages/ansible
+  ansible collection location = /Users/sameeralam/.ansible/collections:/usr/share/ansible/collections:/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages
+  executable location = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/ansible-playbook
+  python version = 3.13.3 (v3.13.3:6280bb54784, Apr  8 2025, 10:47:54) [Clang 15.0.0 (clang-1500.3.9.4)] (/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/python3.13)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.3 (with libyaml v0.2.5)
+2025-12-21 23:30:22,935 p=17713 u=sameeralam n=ansible INFO| Using /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg as config file
+2025-12-21 23:30:22,944 p=17715 u=sameeralam n=ansible INFO| ansible-playbook [core 2.20.1]
+  config file = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg
+  configured module search path = ['/Users/sameeralam/Documents/GitHub/Ansible-Playbook/.ansible/modules', '/Users/sameeralam/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages/ansible
+  ansible collection location = /Users/sameeralam/.ansible/collections:/usr/share/ansible/collections:/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages
+  executable location = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/ansible-playbook
+  python version = 3.13.3 (v3.13.3:6280bb54784, Apr  8 2025, 10:47:54) [Clang 15.0.0 (clang-1500.3.9.4)] (/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/python3.13)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.3 (with libyaml v0.2.5)
+2025-12-21 23:30:22,944 p=17715 u=sameeralam n=ansible INFO| Using /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg as config file
+2025-12-21 23:30:22,970 p=17716 u=sameeralam n=ansible INFO| ansible-playbook [core 2.20.1]
+  config file = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg
+  configured module search path = ['/Users/sameeralam/Documents/GitHub/Ansible-Playbook/.ansible/modules', '/Users/sameeralam/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages/ansible
+  ansible collection location = /Users/sameeralam/.ansible/collections:/usr/share/ansible/collections:/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages
+  executable location = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/ansible-playbook
+  python version = 3.13.3 (v3.13.3:6280bb54784, Apr  8 2025, 10:47:54) [Clang 15.0.0 (clang-1500.3.9.4)] (/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/python3.13)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.3 (with libyaml v0.2.5)
+2025-12-21 23:30:22,970 p=17716 u=sameeralam n=ansible INFO| Using /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg as config file
+2025-12-21 23:30:23,037 p=17710 u=sameeralam n=ansible INFO| 1 plays in roles/linux_patch_reboot/tests/test.yml
+2025-12-21 23:30:23,038 p=17710 u=sameeralam n=ansible INFO| playbook: roles/linux_patch_reboot/tests/test.yml
+2025-12-21 23:30:23,043 p=17711 u=sameeralam n=ansible INFO| 1 plays in patch_update_and_reboot.yml
+2025-12-21 23:30:23,044 p=17711 u=sameeralam n=ansible INFO| playbook: patch_update_and_reboot.yml
+2025-12-21 23:30:23,045 p=17709 u=sameeralam n=ansible WARNING| [WARNING]: skipping vars_file item due to an undefined variable
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ssl-certificate-playbook/playbook.yml:7:7
+
+5   vars_files:
+6     - vars/defaults.yml
+7     - "vars/{{ ansible_distribution | lower }}.yml"
+        ^ column 7
+
+
+2025-12-21 23:30:23,046 p=17716 u=sameeralam n=ansible INFO| 1 plays in /var/folders/nt/gr3kd2194c52p31qxsmsdjz00000gn/T/play7ww_jkot.yml
+2025-12-21 23:30:23,047 p=17716 u=sameeralam n=ansible INFO| playbook: /var/folders/nt/gr3kd2194c52p31qxsmsdjz00000gn/T/play7ww_jkot.yml
+2025-12-21 23:30:23,049 p=17715 u=sameeralam n=ansible INFO| 1 plays in /var/folders/nt/gr3kd2194c52p31qxsmsdjz00000gn/T/playvlsnn10p.yml
+2025-12-21 23:30:23,050 p=17715 u=sameeralam n=ansible INFO| playbook: /var/folders/nt/gr3kd2194c52p31qxsmsdjz00000gn/T/playvlsnn10p.yml
+2025-12-21 23:30:23,055 p=17713 u=sameeralam n=ansible INFO| 1 plays in /var/folders/nt/gr3kd2194c52p31qxsmsdjz00000gn/T/playj2spbq91.yml
+2025-12-21 23:30:23,056 p=17708 u=sameeralam n=ansible INFO| 1 plays in security.yml
+2025-12-21 23:30:23,056 p=17713 u=sameeralam n=ansible INFO| playbook: /var/folders/nt/gr3kd2194c52p31qxsmsdjz00000gn/T/playj2spbq91.yml
+2025-12-21 23:30:23,057 p=17714 u=sameeralam n=ansible INFO| 1 plays in /var/folders/nt/gr3kd2194c52p31qxsmsdjz00000gn/T/playsjv2m8iq.yml
+2025-12-21 23:30:23,058 p=17714 u=sameeralam n=ansible INFO| playbook: /var/folders/nt/gr3kd2194c52p31qxsmsdjz00000gn/T/playsjv2m8iq.yml
+2025-12-21 23:30:23,059 p=17708 u=sameeralam n=ansible INFO| playbook: security.yml
+2025-12-21 23:30:23,061 p=17712 u=sameeralam n=ansible INFO| 1 plays in /var/folders/nt/gr3kd2194c52p31qxsmsdjz00000gn/T/play9739k3am.yml
+2025-12-21 23:30:23,062 p=17712 u=sameeralam n=ansible INFO| playbook: /var/folders/nt/gr3kd2194c52p31qxsmsdjz00000gn/T/play9739k3am.yml
+2025-12-21 23:30:23,087 p=17709 u=sameeralam n=ansible INFO| redirecting (type: action) ansible.builtin.yum to ansible.builtin.dnf
+2025-12-21 23:30:23,088 p=17709 u=sameeralam n=ansible INFO| 1 plays in ssl-certificate-playbook/playbook.yml
+2025-12-21 23:30:23,088 p=17709 u=sameeralam n=ansible WARNING| [WARNING]: Could not match supplied host pattern, ignoring: webservers
+
+2025-12-21 23:30:23,092 p=17709 u=sameeralam n=ansible INFO| playbook: ssl-certificate-playbook/playbook.yml
+2025-12-21 23:30:23,412 p=17717 u=sameeralam n=ansible WARNING| [WARNING]: Collection at '/Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/lib/python3.13/site-packages/ansible/_internal/ansible_collections/ansible/_protomatter' does not have a MANIFEST.json file, nor has it galaxy.yml: cannot detect version.
+
+2025-12-21 23:30:23,443 p=17717 u=sameeralam n=ansible INFO| {
+    "ansible.builtin.runas": "Run As user",
+    "ansible.builtin.su": "Substitute User",
+    "ansible.builtin.sudo": "Substitute User DO"
+}
+2025-12-21 23:30:23,488 p=17610 u=sameeralam n=ansible WARNING| [WARNING]: Error loading plugin 'community.crypto.openssl_privatekey': No module named 'ansible_collections.community.crypto'
+
+2025-12-21 23:30:23,488 p=17610 u=sameeralam n=args WARNING| Unable to load module openssl_privatekey at ssl-certificate-playbook/roles/certificates/tasks/self_signed.yml:8 for options validation
+2025-12-21 23:30:23,488 p=17610 u=sameeralam n=ansible WARNING| [WARNING]: Error loading plugin 'community.crypto.openssl_csr': No module named 'ansible_collections.community.crypto'
+
+2025-12-21 23:30:23,488 p=17610 u=sameeralam n=args WARNING| Unable to load module openssl_csr at ssl-certificate-playbook/roles/certificates/tasks/self_signed.yml:14 for options validation
+2025-12-21 23:30:23,489 p=17610 u=sameeralam n=ansible WARNING| [WARNING]: Error loading plugin 'community.crypto.x509_certificate': No module named 'ansible_collections.community.crypto'
+
+2025-12-21 23:30:23,489 p=17610 u=sameeralam n=args WARNING| Unable to load module openssl_certificate at ssl-certificate-playbook/roles/certificates/tasks/self_signed.yml:24 for options validation
+2025-12-21 23:30:23,494 p=17610 u=sameeralam n=ansiblelint.rules.fqcn WARNING| Invalid value (None)for resolved_fqcn attribute of openssl_privatekey module.
+2025-12-21 23:30:23,494 p=17610 u=sameeralam n=ansiblelint.rules.fqcn WARNING| Invalid value (None)for resolved_fqcn attribute of openssl_csr module.
+2025-12-21 23:30:23,495 p=17610 u=sameeralam n=ansiblelint.rules.fqcn WARNING| Invalid value (None)for resolved_fqcn attribute of openssl_certificate module.
+2025-12-21 23:30:23,743 p=17610 u=sameeralam n=ansible WARNING| [WARNING]: Error loading plugin 'community.general.ufw': No module named 'ansible_collections.community.general'
+
+2025-12-21 23:30:23,744 p=17610 u=sameeralam n=args WARNING| Unable to load module ufw at ssl-certificate-playbook/roles/firewall/tasks/ubuntu.yml:7 for options validation
+2025-12-21 23:30:23,744 p=17610 u=sameeralam n=args WARNING| Unable to load module ufw at ssl-certificate-playbook/roles/firewall/tasks/ubuntu.yml:16 for options validation
+2025-12-21 23:30:23,744 p=17610 u=sameeralam n=args WARNING| Unable to load module ufw at ssl-certificate-playbook/roles/firewall/tasks/ubuntu.yml:22 for options validation
+2025-12-21 23:30:23,744 p=17610 u=sameeralam n=args WARNING| Unable to load module ufw at ssl-certificate-playbook/roles/firewall/tasks/ubuntu.yml:31 for options validation
+2025-12-21 23:30:23,748 p=17610 u=sameeralam n=ansiblelint.rules.fqcn WARNING| Invalid value (None)for resolved_fqcn attribute of ufw module.
+2025-12-21 23:30:23,748 p=17610 u=sameeralam n=ansiblelint.rules.fqcn WARNING| Invalid value (None)for resolved_fqcn attribute of ufw module.
+2025-12-21 23:30:23,749 p=17610 u=sameeralam n=ansiblelint.rules.fqcn WARNING| Invalid value (None)for resolved_fqcn attribute of ufw module.
+2025-12-21 23:30:23,749 p=17610 u=sameeralam n=ansiblelint.rules.fqcn WARNING| Invalid value (None)for resolved_fqcn attribute of ufw module.
+2025-12-21 23:30:23,963 p=17610 u=sameeralam n=ansiblelint WARNING| Listing 72 violation(s) that are fatal
