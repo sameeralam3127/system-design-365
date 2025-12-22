@@ -1,5 +1,5 @@
 - name: Send patch report email via Gmail
-  mail:
+  ansible.builtin.mail:
     host: "{{ mail.smtp_host }}"
     port: "{{ mail.smtp_port }}"
     username: "{{ mail.smtp_user }}"

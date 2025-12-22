@@ -7,12 +7,10 @@
   template:
     src: host_report.html.j2
     dest: "{{ report_dir }}/{{ item }}.html"
-  loop: "{{ groups['linux'] }}"
-  vars:
-    host_data: "{{ hostvars[item] }}"
+  loop: "{{ groups['ubuntu'] }}"
   when: hostvars[item].pending_patches is defined
 
-- name: Generate consolidated report
+- name: Generate consolidated HTML report
   template:
     src: consolidated_report.html.j2
     dest: "{{ report_dir }}/patch_report_{{ report_date }}.html"

@@ -1,12 +1,11 @@
-# playbooks/patch_report.yml
 - name: Collect pending patches
-  hosts: all
+  hosts: ubuntu
   become: true
   gather_facts: true
   roles:
     - patch_scan
 
-- name: Generate reports (controller)
+- name: Generate reports and send email
   hosts: localhost
   gather_facts: false
   roles:

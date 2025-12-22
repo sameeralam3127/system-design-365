@@ -67,3 +67,461 @@ Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/playboo
 2025-12-22 23:20:25,021 p=45497 u=sameeralam n=ansible INFO| fatal: [ubuntu1]: FAILED! => {"changed": false, "msg": "Task failed: Missing sudo password"}
 2025-12-22 23:20:25,021 p=45497 u=sameeralam n=ansible INFO| PLAY RECAP *******************************************************************************************************************************************************************************
 2025-12-22 23:20:25,021 p=45497 u=sameeralam n=ansible INFO| ubuntu1                    : ok=0    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+2025-12-22 23:20:57,994 p=45879 u=sameeralam n=ansible INFO| PLAY [Collect pending patches] ***********************************************************************************************************************************************************
+2025-12-22 23:20:57,999 p=45879 u=sameeralam n=ansible INFO| TASK [Gathering Facts] *******************************************************************************************************************************************************************
+2025-12-22 23:20:58,740 p=45879 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:20:58,744 p=45879 u=sameeralam n=ansible INFO| TASK [patch_scan : Detect OS family] *****************************************************************************************************************************************************
+2025-12-22 23:20:58,758 p=45879 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:20:58,761 p=45879 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (RHEL)] *******************************************************************************************************************************************
+2025-12-22 23:20:58,770 p=45879 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-22 23:20:58,772 p=45879 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (Debian)] *****************************************************************************************************************************************
+2025-12-22 23:20:59,128 p=45879 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:20:59,132 p=45879 u=sameeralam n=ansible INFO| TASK [patch_scan : Normalize patch data] *************************************************************************************************************************************************
+2025-12-22 23:20:59,153 p=45879 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:20:59,155 p=45879 u=sameeralam n=ansible INFO| TASK [patch_scan : Handle unreachable or error hosts] ************************************************************************************************************************************
+2025-12-22 23:20:59,163 p=45879 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-22 23:20:59,167 p=45879 u=sameeralam n=ansible INFO| PLAY [Generate reports (controller)] *****************************************************************************************************************************************************
+2025-12-22 23:20:59,168 p=45879 u=sameeralam n=ansible INFO| TASK [report_generate : Ensure report directory exists] **********************************************************************************************************************************
+2025-12-22 23:20:59,345 p=45879 u=sameeralam n=ansible INFO| changed: [localhost]
+2025-12-22 23:20:59,346 p=45879 u=sameeralam n=ansible INFO| TASK [report_generate : Generate per-host HTML reports] **********************************************************************************************************************************
+2025-12-22 23:20:59,355 p=45879 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: object of type 'dict' has no attribute 'linux'
+
+Task failed.
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/report_generate/tasks/main.yml:6:3
+
+4     state: directory
+5
+6 - name: Generate per-host HTML reports
+    ^ column 3
+
+<<< caused by >>>
+
+object of type 'dict' has no attribute 'linux'
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/report_generate/tasks/main.yml:10:9
+
+ 8     src: host_report.html.j2
+ 9     dest: "{{ report_dir }}/{{ item }}.html"
+10   loop: "{{ groups['linux'] }}"
+           ^ column 9
+
+
+2025-12-22 23:20:59,355 p=45879 u=sameeralam n=ansible INFO| fatal: [localhost]: FAILED! => {"changed": false, "msg": "Task failed: object of type 'dict' has no attribute 'linux'"}
+2025-12-22 23:20:59,356 p=45879 u=sameeralam n=ansible INFO| PLAY RECAP *******************************************************************************************************************************************************************************
+2025-12-22 23:20:59,356 p=45879 u=sameeralam n=ansible INFO| localhost                  : ok=1    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+2025-12-22 23:20:59,356 p=45879 u=sameeralam n=ansible INFO| ubuntu1                    : ok=4    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+2025-12-22 23:22:13,582 p=46438 u=sameeralam n=ansible INFO| PLAY [Collect pending patches] ***********************************************************************************************************************************************************
+2025-12-22 23:22:13,587 p=46438 u=sameeralam n=ansible INFO| TASK [patch_scan : Detect OS family] *****************************************************************************************************************************************************
+2025-12-22 23:22:13,597 p=46438 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:22:13,598 p=46438 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (RHEL)] *******************************************************************************************************************************************
+2025-12-22 23:22:13,605 p=46438 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-22 23:22:13,607 p=46438 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (Debian)] *****************************************************************************************************************************************
+2025-12-22 23:22:14,231 p=46438 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:22:14,236 p=46438 u=sameeralam n=ansible INFO| TASK [patch_scan : Normalize patch data] *************************************************************************************************************************************************
+2025-12-22 23:22:14,263 p=46438 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:22:14,266 p=46438 u=sameeralam n=ansible INFO| TASK [patch_scan : Handle unreachable or error hosts] ************************************************************************************************************************************
+2025-12-22 23:22:14,276 p=46438 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-22 23:22:14,279 p=46438 u=sameeralam n=ansible INFO| PLAY [Generate reports (controller)] *****************************************************************************************************************************************************
+2025-12-22 23:22:14,280 p=46438 u=sameeralam n=ansible INFO| TASK [report_generate : Ensure report directory exists] **********************************************************************************************************************************
+2025-12-22 23:22:14,445 p=46438 u=sameeralam n=ansible INFO| ok: [localhost]
+2025-12-22 23:22:14,446 p=46438 u=sameeralam n=ansible INFO| TASK [report_generate : Generate per-host HTML reports] **********************************************************************************************************************************
+2025-12-22 23:22:14,455 p=46438 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: object of type 'dict' has no attribute 'linux'
+
+Task failed.
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/report_generate/tasks/main.yml:6:3
+
+4     state: directory
+5
+6 - name: Generate per-host HTML reports
+    ^ column 3
+
+<<< caused by >>>
+
+object of type 'dict' has no attribute 'linux'
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/report_generate/tasks/main.yml:10:9
+
+ 8     src: host_report.html.j2
+ 9     dest: "{{ report_dir }}/{{ item }}.html"
+10   loop: "{{ groups['linux'] }}"
+           ^ column 9
+
+
+2025-12-22 23:22:14,455 p=46438 u=sameeralam n=ansible INFO| fatal: [localhost]: FAILED! => {"changed": false, "msg": "Task failed: object of type 'dict' has no attribute 'linux'"}
+2025-12-22 23:22:14,455 p=46438 u=sameeralam n=ansible INFO| PLAY RECAP *******************************************************************************************************************************************************************************
+2025-12-22 23:22:14,455 p=46438 u=sameeralam n=ansible INFO| localhost                  : ok=1    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+2025-12-22 23:22:14,455 p=46438 u=sameeralam n=ansible INFO| ubuntu1                    : ok=3    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+2025-12-22 23:23:15,864 p=46984 u=sameeralam n=ansible INFO| PLAY [Collect pending patches] ***********************************************************************************************************************************************************
+2025-12-22 23:23:15,870 p=46984 u=sameeralam n=ansible INFO| TASK [patch_scan : Detect OS family] *****************************************************************************************************************************************************
+2025-12-22 23:23:15,880 p=46984 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:23:15,882 p=46984 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (RHEL)] *******************************************************************************************************************************************
+2025-12-22 23:23:15,888 p=46984 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-22 23:23:15,889 p=46984 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (Debian)] *****************************************************************************************************************************************
+2025-12-22 23:23:16,516 p=46984 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:23:16,520 p=46984 u=sameeralam n=ansible INFO| TASK [patch_scan : Normalize patch data] *************************************************************************************************************************************************
+2025-12-22 23:23:16,546 p=46984 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:23:16,548 p=46984 u=sameeralam n=ansible INFO| TASK [patch_scan : Handle unreachable or error hosts] ************************************************************************************************************************************
+2025-12-22 23:23:16,558 p=46984 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-22 23:23:16,562 p=46984 u=sameeralam n=ansible INFO| PLAY [Generate reports and send email] ***************************************************************************************************************************************************
+2025-12-22 23:23:16,563 p=46984 u=sameeralam n=ansible INFO| TASK [report_generate : Ensure report directory exists] **********************************************************************************************************************************
+2025-12-22 23:23:16,727 p=46984 u=sameeralam n=ansible INFO| ok: [localhost]
+2025-12-22 23:23:16,728 p=46984 u=sameeralam n=ansible INFO| TASK [report_generate : Generate per-host HTML reports] **********************************************************************************************************************************
+2025-12-22 23:23:16,737 p=46984 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: object of type 'dict' has no attribute 'linux'
+
+Task failed.
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/report_generate/tasks/main.yml:6:3
+
+4     state: directory
+5
+6 - name: Generate per-host HTML reports
+    ^ column 3
+
+<<< caused by >>>
+
+object of type 'dict' has no attribute 'linux'
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/report_generate/tasks/main.yml:10:9
+
+ 8     src: host_report.html.j2
+ 9     dest: "{{ report_dir }}/{{ item }}.html"
+10   loop: "{{ groups['linux'] }}"
+           ^ column 9
+
+
+2025-12-22 23:23:16,737 p=46984 u=sameeralam n=ansible INFO| fatal: [localhost]: FAILED! => {"changed": false, "msg": "Task failed: object of type 'dict' has no attribute 'linux'"}
+2025-12-22 23:23:16,738 p=46984 u=sameeralam n=ansible INFO| PLAY RECAP *******************************************************************************************************************************************************************************
+2025-12-22 23:23:16,738 p=46984 u=sameeralam n=ansible INFO| localhost                  : ok=1    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+2025-12-22 23:23:16,738 p=46984 u=sameeralam n=ansible INFO| ubuntu1                    : ok=3    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+2025-12-22 23:24:18,078 p=47497 u=sameeralam n=ansible INFO| PLAY [Collect pending patches] ***********************************************************************************************************************************************************
+2025-12-22 23:24:18,082 p=47497 u=sameeralam n=ansible INFO| TASK [patch_scan : Detect OS family] *****************************************************************************************************************************************************
+2025-12-22 23:24:18,091 p=47497 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:24:18,093 p=47497 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (RHEL)] *******************************************************************************************************************************************
+2025-12-22 23:24:18,099 p=47497 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-22 23:24:18,100 p=47497 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (Debian)] *****************************************************************************************************************************************
+2025-12-22 23:24:18,734 p=47497 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:24:18,739 p=47497 u=sameeralam n=ansible INFO| TASK [patch_scan : Normalize patch data] *************************************************************************************************************************************************
+2025-12-22 23:24:18,764 p=47497 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:24:18,767 p=47497 u=sameeralam n=ansible INFO| TASK [patch_scan : Handle unreachable or error hosts] ************************************************************************************************************************************
+2025-12-22 23:24:18,777 p=47497 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-22 23:24:18,781 p=47497 u=sameeralam n=ansible INFO| PLAY [Generate reports and send email] ***************************************************************************************************************************************************
+2025-12-22 23:24:18,783 p=47497 u=sameeralam n=ansible INFO| TASK [report_generate : Ensure report directory exists] **********************************************************************************************************************************
+2025-12-22 23:24:18,948 p=47497 u=sameeralam n=ansible INFO| ok: [localhost]
+2025-12-22 23:24:18,949 p=47497 u=sameeralam n=ansible INFO| TASK [report_generate : Generate per-host HTML reports] **********************************************************************************************************************************
+2025-12-22 23:24:19,292 p=47497 u=sameeralam n=ansible INFO| changed: [localhost] => (item=ubuntu1)
+2025-12-22 23:24:19,295 p=47497 u=sameeralam n=ansible INFO| TASK [report_generate : Generate consolidated report] ************************************************************************************************************************************
+2025-12-22 23:24:19,342 p=47497 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: object of type 'dict' has no attribute 'linux'
+
+Task failed.
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/report_generate/tasks/main.yml:15:3
+
+13   when: hostvars[item].pending_patches is defined
+14
+15 - name: Generate consolidated report
+     ^ column 3
+
+<<< caused by >>>
+
+object of type 'dict' has no attribute 'linux'
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/report_generate/templates/consolidated_report.html.j2
+
+
+2025-12-22 23:24:19,343 p=47497 u=sameeralam n=ansible INFO| fatal: [localhost]: FAILED! => {"changed": false, "msg": "Task failed: object of type 'dict' has no attribute 'linux'"}
+2025-12-22 23:24:19,343 p=47497 u=sameeralam n=ansible INFO| PLAY RECAP *******************************************************************************************************************************************************************************
+2025-12-22 23:24:19,343 p=47497 u=sameeralam n=ansible INFO| localhost                  : ok=2    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+2025-12-22 23:24:19,343 p=47497 u=sameeralam n=ansible INFO| ubuntu1                    : ok=3    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+2025-12-22 23:24:58,236 p=47928 u=sameeralam n=ansible INFO| PLAY [Collect pending patches] ***********************************************************************************************************************************************************
+2025-12-22 23:24:58,242 p=47928 u=sameeralam n=ansible INFO| TASK [patch_scan : Detect OS family] *****************************************************************************************************************************************************
+2025-12-22 23:24:58,251 p=47928 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:24:58,253 p=47928 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (RHEL)] *******************************************************************************************************************************************
+2025-12-22 23:24:58,259 p=47928 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-22 23:24:58,260 p=47928 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (Debian)] *****************************************************************************************************************************************
+2025-12-22 23:24:58,594 p=47928 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:24:58,600 p=47928 u=sameeralam n=ansible INFO| TASK [patch_scan : Normalize patch data] *************************************************************************************************************************************************
+2025-12-22 23:24:58,627 p=47928 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:24:58,629 p=47928 u=sameeralam n=ansible INFO| TASK [patch_scan : Handle unreachable or error hosts] ************************************************************************************************************************************
+2025-12-22 23:24:58,639 p=47928 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-22 23:24:58,642 p=47928 u=sameeralam n=ansible INFO| PLAY [Generate reports and send email] ***************************************************************************************************************************************************
+2025-12-22 23:24:58,644 p=47928 u=sameeralam n=ansible INFO| TASK [report_generate : Ensure report directory exists] **********************************************************************************************************************************
+2025-12-22 23:24:58,824 p=47928 u=sameeralam n=ansible INFO| ok: [localhost]
+2025-12-22 23:24:58,826 p=47928 u=sameeralam n=ansible INFO| TASK [report_generate : Generate per-host HTML reports] **********************************************************************************************************************************
+2025-12-22 23:24:58,867 p=47928 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: 'host_data' is undefined
+
+Task failed.
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/report_generate/tasks/main.yml:6:3
+
+4     state: directory
+5
+6 - name: Generate per-host HTML reports
+    ^ column 3
+
+<<< caused by >>>
+
+'host_data' is undefined
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/report_generate/templates/host_report.html.j2
+
+
+2025-12-22 23:24:58,867 p=47928 u=sameeralam n=ansible INFO| failed: [localhost] (item=ubuntu1) => {"ansible_loop_var": "item", "changed": false, "item": "ubuntu1", "msg": "Task failed: 'host_data' is undefined"}
+2025-12-22 23:24:58,868 p=47928 u=sameeralam n=ansible INFO| PLAY RECAP *******************************************************************************************************************************************************************************
+2025-12-22 23:24:58,868 p=47928 u=sameeralam n=ansible INFO| localhost                  : ok=1    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+2025-12-22 23:24:58,869 p=47928 u=sameeralam n=ansible INFO| ubuntu1                    : ok=3    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+2025-12-22 23:26:03,084 p=48447 u=sameeralam n=ansible INFO| PLAY [Collect pending patches] ***********************************************************************************************************************************************************
+2025-12-22 23:26:03,090 p=48447 u=sameeralam n=ansible INFO| TASK [patch_scan : Detect OS family] *****************************************************************************************************************************************************
+2025-12-22 23:26:03,100 p=48447 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:26:03,101 p=48447 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (RHEL)] *******************************************************************************************************************************************
+2025-12-22 23:26:03,107 p=48447 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-22 23:26:03,109 p=48447 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (Debian)] *****************************************************************************************************************************************
+2025-12-22 23:26:03,687 p=48447 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:26:03,693 p=48447 u=sameeralam n=ansible INFO| TASK [patch_scan : Normalize patch data] *************************************************************************************************************************************************
+2025-12-22 23:26:03,720 p=48447 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:26:03,722 p=48447 u=sameeralam n=ansible INFO| TASK [patch_scan : Handle unreachable or error hosts] ************************************************************************************************************************************
+2025-12-22 23:26:03,731 p=48447 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-22 23:26:03,734 p=48447 u=sameeralam n=ansible INFO| PLAY [Generate reports and send email] ***************************************************************************************************************************************************
+2025-12-22 23:26:03,736 p=48447 u=sameeralam n=ansible INFO| TASK [report_generate : Ensure report directory exists] **********************************************************************************************************************************
+2025-12-22 23:26:03,901 p=48447 u=sameeralam n=ansible INFO| ok: [localhost]
+2025-12-22 23:26:03,902 p=48447 u=sameeralam n=ansible INFO| TASK [report_generate : Generate per-host HTML reports] **********************************************************************************************************************************
+2025-12-22 23:26:04,253 p=48447 u=sameeralam n=ansible INFO| changed: [localhost] => (item=ubuntu1)
+2025-12-22 23:26:04,256 p=48447 u=sameeralam n=ansible INFO| TASK [report_generate : Generate consolidated HTML report] *******************************************************************************************************************************
+2025-12-22 23:26:04,304 p=48447 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: object of type 'dict' has no attribute 'linux'
+
+Task failed.
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/report_generate/tasks/main.yml:13:3
+
+11   when: hostvars[item].pending_patches is defined
+12
+13 - name: Generate consolidated HTML report
+     ^ column 3
+
+<<< caused by >>>
+
+object of type 'dict' has no attribute 'linux'
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/report_generate/templates/consolidated_report.html.j2
+
+
+2025-12-22 23:26:04,304 p=48447 u=sameeralam n=ansible INFO| fatal: [localhost]: FAILED! => {"changed": false, "msg": "Task failed: object of type 'dict' has no attribute 'linux'"}
+2025-12-22 23:26:04,304 p=48447 u=sameeralam n=ansible INFO| PLAY RECAP *******************************************************************************************************************************************************************************
+2025-12-22 23:26:04,304 p=48447 u=sameeralam n=ansible INFO| localhost                  : ok=2    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+2025-12-22 23:26:04,304 p=48447 u=sameeralam n=ansible INFO| ubuntu1                    : ok=3    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+2025-12-22 23:26:24,117 p=48770 u=sameeralam n=ansible INFO| PLAY [Collect pending patches] ***********************************************************************************************************************************************************
+2025-12-22 23:26:24,121 p=48770 u=sameeralam n=ansible INFO| TASK [patch_scan : Detect OS family] *****************************************************************************************************************************************************
+2025-12-22 23:26:24,130 p=48770 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:26:24,132 p=48770 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (RHEL)] *******************************************************************************************************************************************
+2025-12-22 23:26:24,138 p=48770 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-22 23:26:24,139 p=48770 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (Debian)] *****************************************************************************************************************************************
+2025-12-22 23:26:24,472 p=48770 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:26:24,477 p=48770 u=sameeralam n=ansible INFO| TASK [patch_scan : Normalize patch data] *************************************************************************************************************************************************
+2025-12-22 23:26:24,503 p=48770 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:26:24,506 p=48770 u=sameeralam n=ansible INFO| TASK [patch_scan : Handle unreachable or error hosts] ************************************************************************************************************************************
+2025-12-22 23:26:24,516 p=48770 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-22 23:26:24,519 p=48770 u=sameeralam n=ansible INFO| PLAY [Generate reports and send email] ***************************************************************************************************************************************************
+2025-12-22 23:26:24,521 p=48770 u=sameeralam n=ansible INFO| TASK [report_generate : Ensure report directory exists] **********************************************************************************************************************************
+2025-12-22 23:26:24,684 p=48770 u=sameeralam n=ansible INFO| ok: [localhost]
+2025-12-22 23:26:24,685 p=48770 u=sameeralam n=ansible INFO| TASK [report_generate : Generate per-host HTML reports] **********************************************************************************************************************************
+2025-12-22 23:26:24,980 p=48770 u=sameeralam n=ansible INFO| ok: [localhost] => (item=ubuntu1)
+2025-12-22 23:26:24,982 p=48770 u=sameeralam n=ansible INFO| TASK [report_generate : Generate consolidated HTML report] *******************************************************************************************************************************
+2025-12-22 23:26:25,287 p=48770 u=sameeralam n=ansible INFO| changed: [localhost]
+2025-12-22 23:26:25,288 p=48770 u=sameeralam n=ansible INFO| PLAY RECAP *******************************************************************************************************************************************************************************
+2025-12-22 23:26:25,288 p=48770 u=sameeralam n=ansible INFO| localhost                  : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2025-12-22 23:26:25,288 p=48770 u=sameeralam n=ansible INFO| ubuntu1                    : ok=3    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+2025-12-22 23:29:31,091 p=50894 u=sameeralam n=ansible WARNING| [WARNING]: Error loading plugin 'community.general.mail': No module named 'ansible_collections.community.general'
+
+2025-12-22 23:29:31,091 p=50894 u=sameeralam n=ansible ERROR| [ERROR]: couldn't resolve module/action 'mail'. This often indicates a misspelling, missing collection, or incorrect module path.
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/mail_send/tasks/main.yml:1:3
+
+1 - name: Send patch report email via Gmail
+    ^ column 3
+
+
+2025-12-22 23:30:25,397 p=51323 u=sameeralam n=ansible WARNING| [WARNING]: Error loading plugin 'community.general.mail': No module named 'ansible_collections.community.general'
+
+2025-12-22 23:30:25,397 p=51323 u=sameeralam n=ansible ERROR| [ERROR]: couldn't resolve module/action 'ansible.builtin.mail'. This often indicates a misspelling, missing collection, or incorrect module path.
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/mail_send/tasks/main.yml:1:3
+
+1 - name: Send patch report email via Gmail
+    ^ column 3
+
+
+2025-12-22 23:30:57,850 p=51633 u=sameeralam n=ansible WARNING| [WARNING]: Error loading plugin 'community.general.mail': No module named 'ansible_collections.community.general'
+
+2025-12-22 23:30:57,850 p=51633 u=sameeralam n=ansible WARNING| [WARNING]: ansible.builtin.mail was not found
+
+2025-12-22 23:31:21,514 p=51903 u=sameeralam n=ansible INFO| Starting galaxy role install process
+2025-12-22 23:31:24,385 p=51903 u=sameeralam n=ansible INFO| - downloading role 'general', owned by ansible_collections.community
+2025-12-22 23:31:24,738 p=51903 u=sameeralam n=ansible WARNING| [WARNING]: - ansible_collections.community.general was NOT installed successfully: - sorry, ansible_collections.community.general was not found on https://galaxy.ansible.com/api/.
+
+2025-12-22 23:31:24,738 p=51903 u=sameeralam n=ansible ERROR| [ERROR]: - you can use --ignore-errors to skip failed roles and finish processing the list.
+
+2025-12-22 23:32:16,078 p=52491 u=sameeralam n=ansible INFO| Starting galaxy collection install process
+2025-12-22 23:32:16,088 p=52491 u=sameeralam n=ansible INFO| Process install dependency map
+2025-12-22 23:32:16,088 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:16,192 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:16,296 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:16,400 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:16,505 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:16,606 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:16,711 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:16,816 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:16,921 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:17,025 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:17,128 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:17,233 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:17,338 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:17,443 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:17,547 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:17,653 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:17,758 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:17,862 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:17,967 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:18,068 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:18,171 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:18,277 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:18,380 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:18,482 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:18,587 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:18,692 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:18,798 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:18,903 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:19,008 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:19,113 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:19,218 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:19,324 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:19,429 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:19,529 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:19,631 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:19,737 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:19,837 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:19,943 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:20,045 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:20,149 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:20,250 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:20,354 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:20,457 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:20,558 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:20,664 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:20,766 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:20,867 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:20,972 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:21,077 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:21,182 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:21,284 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:21,390 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:21,495 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:21,604 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:21,710 p=52491 u=sameeralam n=ansible INFO| Starting collection install process
+2025-12-22 23:32:21,710 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:21,723 p=52491 u=sameeralam n=ansible INFO| Downloading https://galaxy.ansible.com/api/v3/plugin/ansible/content/published/collections/artifacts/community-general-12.1.0.tar.gz to /Users/sameeralam/.ansible/tmp/ansible-local-52491deil2317/tmp5vy2d4tr/community-general-12.1.0-rfthcyjc
+2025-12-22 23:32:21,812 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:21,917 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:22,020 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:22,121 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:22,226 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:22,331 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:22,436 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:22,536 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:22,641 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:22,746 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:22,848 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:22,952 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:23,057 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:23,162 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:23,267 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:23,372 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:23,473 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:23,579 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:23,680 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:23,785 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:23,890 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:23,996 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:24,099 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:24,205 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:24,310 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:24,412 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:24,513 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:24,618 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:24,723 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:24,829 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:24,933 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:25,037 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:25,142 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:25,246 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:25,351 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:25,453 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:25,558 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:25,659 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:25,765 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:25,870 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:25,972 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:26,073 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:26,176 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:26,279 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:26,385 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:26,490 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:26,596 p=52491 u=sameeralam n=ansible INFO| Installing 'community.general:12.1.0' to '/Users/sameeralam/.ansible/collections/ansible_collections/community/general'
+2025-12-22 23:32:26,596 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:26,700 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:26,801 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:26,907 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:27,008 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:27,111 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:27,217 p=52491 u=sameeralam n=ansible INFO| /
+2025-12-22 23:32:27,321 p=52491 u=sameeralam n=ansible INFO| -
+2025-12-22 23:32:27,426 p=52491 u=sameeralam n=ansible INFO| \
+2025-12-22 23:32:27,531 p=52491 u=sameeralam n=ansible INFO| |
+2025-12-22 23:32:27,633 p=52491 u=sameeralam n=ansible INFO| community.general:12.1.0 was installed successfully
+2025-12-22 23:32:39,817 p=52754 u=sameeralam n=ansible INFO| PLAY [Collect pending patches] ***********************************************************************************************************************************************************
+2025-12-22 23:32:39,823 p=52754 u=sameeralam n=ansible INFO| TASK [patch_scan : Detect OS family] *****************************************************************************************************************************************************
+2025-12-22 23:32:39,833 p=52754 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:32:39,835 p=52754 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (RHEL)] *******************************************************************************************************************************************
+2025-12-22 23:32:39,841 p=52754 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-22 23:32:39,843 p=52754 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (Debian)] *****************************************************************************************************************************************
+2025-12-22 23:32:40,465 p=52754 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:32:40,470 p=52754 u=sameeralam n=ansible INFO| TASK [patch_scan : Normalize patch data] *************************************************************************************************************************************************
+2025-12-22 23:32:40,496 p=52754 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-22 23:32:40,498 p=52754 u=sameeralam n=ansible INFO| TASK [patch_scan : Handle unreachable or error hosts] ************************************************************************************************************************************
+2025-12-22 23:32:40,507 p=52754 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-22 23:32:40,510 p=52754 u=sameeralam n=ansible INFO| PLAY [Generate reports and send email] ***************************************************************************************************************************************************
+2025-12-22 23:32:40,512 p=52754 u=sameeralam n=ansible INFO| TASK [report_generate : Ensure report directory exists] **********************************************************************************************************************************
+2025-12-22 23:32:40,677 p=52754 u=sameeralam n=ansible INFO| ok: [localhost]
+2025-12-22 23:32:40,679 p=52754 u=sameeralam n=ansible INFO| TASK [report_generate : Generate per-host HTML reports] **********************************************************************************************************************************
+2025-12-22 23:32:40,984 p=52754 u=sameeralam n=ansible INFO| ok: [localhost] => (item=ubuntu1)
+2025-12-22 23:32:40,986 p=52754 u=sameeralam n=ansible INFO| TASK [report_generate : Generate consolidated HTML report] *******************************************************************************************************************************
+2025-12-22 23:32:41,256 p=52754 u=sameeralam n=ansible INFO| ok: [localhost]
+2025-12-22 23:32:41,257 p=52754 u=sameeralam n=ansible INFO| TASK [mail_send : Send patch report email via Gmail] *************************************************************************************************************************************
+2025-12-22 23:32:41,273 p=52754 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: Finalization of task args for 'community.general.mail' failed: Error while resolving value for 'password': 'gmail_app_password' is undefined
+
+Task failed.
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/mail_send/tasks/main.yml:1:3
+
+1 - name: Send patch report email via Gmail
+    ^ column 3
+
+<<< caused by >>>
+
+Finalization of task args for 'community.general.mail' failed.
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/mail_send/tasks/main.yml:2:3
+
+1 - name: Send patch report email via Gmail
+2   ansible.builtin.mail:
+    ^ column 3
+
+<<< caused by >>>
+
+Error while resolving value for 'password'.
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/mail_send/tasks/main.yml:6:15
+
+4     port: "{{ mail.smtp_port }}"
+5     username: "{{ mail.smtp_user }}"
+6     password: "{{ mail.smtp_password }}"
+                ^ column 15
+
+<<< caused by >>>
+
+'gmail_app_password' is undefined
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/group_vars/all.yml:9:18
+
+7   smtp_port: 587
+8   smtp_user: "computecentral.in@gmail.com"
+9   smtp_password: "{{ gmail_app_password }}"
+                   ^ column 18
+
+
+2025-12-22 23:32:41,273 p=52754 u=sameeralam n=ansible INFO| fatal: [localhost]: FAILED! => {"changed": false, "msg": "Task failed: Finalization of task args for 'community.general.mail' failed: Error while resolving value for 'password': 'gmail_app_password' is undefined"}
+2025-12-22 23:32:41,273 p=52754 u=sameeralam n=ansible INFO| PLAY RECAP *******************************************************************************************************************************************************************************
+2025-12-22 23:32:41,273 p=52754 u=sameeralam n=ansible INFO| localhost                  : ok=3    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+2025-12-22 23:32:41,273 p=52754 u=sameeralam n=ansible INFO| ubuntu1                    : ok=3    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   

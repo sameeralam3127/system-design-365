@@ -1,6 +1,7 @@
-<h2>{{ host_data.inventory_hostname }}</h2>
+<h2>{{ item }}</h2>
+
 <ul>
-{% for patch in host_data.pending_patches %}
+{% for patch in hostvars[item].pending_patches | default([]) %}
   <li>{{ patch }}</li>
 {% else %}
   <li>No pending updates</li>
