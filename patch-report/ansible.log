@@ -645,3 +645,67 @@ Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/r
 2025-12-22 23:43:53,784 p=57567 u=sameeralam n=ansible INFO| PLAY RECAP ***************************************************************************************************************************************************************************
 2025-12-22 23:43:53,784 p=57567 u=sameeralam n=ansible INFO| localhost                  : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 2025-12-22 23:43:53,784 p=57567 u=sameeralam n=ansible INFO| ubuntu1                    : ok=3    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+2025-12-23 00:00:17,388 p=63147 u=sameeralam n=ansible INFO| PLAY [Collect pending patches] *******************************************************************************************************************************************************
+2025-12-23 00:00:17,395 p=63147 u=sameeralam n=ansible INFO| TASK [patch_scan : Detect OS family] *************************************************************************************************************************************************
+2025-12-23 00:00:17,404 p=63147 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-23 00:00:17,406 p=63147 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (RHEL)] ***************************************************************************************************************************************
+2025-12-23 00:00:17,413 p=63147 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-23 00:00:17,414 p=63147 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (Debian)] *************************************************************************************************************************************
+2025-12-23 00:00:19,710 p=63147 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: Incorrect sudo password
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/patch_scan/tasks/main.yml:14:7
+
+12
+13 - block:
+14     - name: Get pending updates (Debian)
+         ^ column 7
+
+
+2025-12-23 00:00:19,711 p=63147 u=sameeralam n=ansible INFO| fatal: [ubuntu1]: FAILED! => {"changed": false, "msg": "Task failed: Incorrect sudo password"}
+2025-12-23 00:00:19,712 p=63147 u=sameeralam n=ansible INFO| PLAY RECAP ***************************************************************************************************************************************************************************
+2025-12-23 00:00:19,712 p=63147 u=sameeralam n=ansible INFO| ubuntu1                    : ok=1    changed=0    unreachable=0    failed=1    skipped=1    rescued=0    ignored=0   
+2025-12-23 00:00:29,657 p=63364 u=sameeralam n=ansible INFO| PLAY [Collect pending patches] *******************************************************************************************************************************************************
+2025-12-23 00:00:29,661 p=63364 u=sameeralam n=ansible INFO| TASK [patch_scan : Detect OS family] *************************************************************************************************************************************************
+2025-12-23 00:00:29,670 p=63364 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-23 00:00:29,672 p=63364 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (RHEL)] ***************************************************************************************************************************************
+2025-12-23 00:00:29,678 p=63364 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-23 00:00:29,679 p=63364 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (Debian)] *************************************************************************************************************************************
+2025-12-23 00:00:30,019 p=63364 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-23 00:00:30,024 p=63364 u=sameeralam n=ansible INFO| TASK [patch_scan : Normalize patch data] *********************************************************************************************************************************************
+2025-12-23 00:00:30,050 p=63364 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-23 00:00:30,053 p=63364 u=sameeralam n=ansible INFO| TASK [patch_scan : Handle unreachable or error hosts] ********************************************************************************************************************************
+2025-12-23 00:00:30,062 p=63364 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-23 00:00:30,066 p=63364 u=sameeralam n=ansible INFO| PLAY [Generate reports and send email] ***********************************************************************************************************************************************
+2025-12-23 00:00:30,068 p=63364 u=sameeralam n=ansible INFO| TASK [report_generate : Ensure report directory exists] ******************************************************************************************************************************
+2025-12-23 00:00:30,227 p=63364 u=sameeralam n=ansible INFO| ok: [localhost]
+2025-12-23 00:00:30,229 p=63364 u=sameeralam n=ansible INFO| TASK [report_generate : Generate per-host HTML reports] ******************************************************************************************************************************
+2025-12-23 00:00:30,529 p=63364 u=sameeralam n=ansible INFO| ok: [localhost] => (item=ubuntu1)
+2025-12-23 00:00:30,530 p=63364 u=sameeralam n=ansible INFO| TASK [report_generate : Generate consolidated HTML report] ***************************************************************************************************************************
+2025-12-23 00:00:30,838 p=63364 u=sameeralam n=ansible INFO| changed: [localhost]
+2025-12-23 00:00:30,839 p=63364 u=sameeralam n=ansible INFO| TASK [mail_send : Send patch report email via Gmail] *********************************************************************************************************************************
+2025-12-23 00:00:34,945 p=63364 u=sameeralam n=ansible INFO| ok: [localhost]
+2025-12-23 00:00:34,947 p=63364 u=sameeralam n=ansible INFO| PLAY RECAP ***************************************************************************************************************************************************************************
+2025-12-23 00:00:34,947 p=63364 u=sameeralam n=ansible INFO| localhost                  : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2025-12-23 00:00:34,947 p=63364 u=sameeralam n=ansible INFO| ubuntu1                    : ok=3    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+2025-12-23 00:02:10,555 p=64117 u=sameeralam n=ansible INFO| PLAY [Collect pending patches] *******************************************************************************************************************************************************
+2025-12-23 00:02:10,562 p=64117 u=sameeralam n=ansible INFO| TASK [patch_scan : Detect OS family] *************************************************************************************************************************************************
+2025-12-23 00:02:10,575 p=64117 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-23 00:02:10,577 p=64117 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (RHEL)] ***************************************************************************************************************************************
+2025-12-23 00:02:10,587 p=64117 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-23 00:02:10,589 p=64117 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (Debian)] *************************************************************************************************************************************
+2025-12-23 00:02:11,259 p=64117 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-23 00:02:11,265 p=64117 u=sameeralam n=ansible INFO| TASK [patch_scan : Normalize patch data] *********************************************************************************************************************************************
+2025-12-23 00:02:11,291 p=64117 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-23 00:02:11,294 p=64117 u=sameeralam n=ansible INFO| TASK [patch_scan : Handle unreachable or error hosts] ********************************************************************************************************************************
+2025-12-23 00:02:11,304 p=64117 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-23 00:02:11,308 p=64117 u=sameeralam n=ansible INFO| PLAY [Generate reports and send email] ***********************************************************************************************************************************************
+2025-12-23 00:02:11,310 p=64117 u=sameeralam n=ansible INFO| TASK [report_generate : Ensure report directory exists] ******************************************************************************************************************************
+2025-12-23 00:02:11,479 p=64117 u=sameeralam n=ansible INFO| ok: [localhost]
+2025-12-23 00:02:11,481 p=64117 u=sameeralam n=ansible INFO| TASK [report_generate : Generate per-host HTML reports] ******************************************************************************************************************************
+2025-12-23 00:02:11,863 p=64117 u=sameeralam n=ansible INFO| changed: [localhost] => (item=ubuntu1)
+2025-12-23 00:02:11,865 p=64117 u=sameeralam n=ansible INFO| TASK [report_generate : Generate consolidated HTML report] ***************************************************************************************************************************
+2025-12-23 00:02:12,152 p=64117 u=sameeralam n=ansible INFO| changed: [localhost]
+2025-12-23 00:02:12,153 p=64117 u=sameeralam n=ansible INFO| TASK [mail_send : Send patch report email via Gmail] *********************************************************************************************************************************
+2025-12-23 00:02:16,003 p=64117 u=sameeralam n=ansible INFO| ok: [localhost]
+2025-12-23 00:02:16,005 p=64117 u=sameeralam n=ansible INFO| PLAY RECAP ***************************************************************************************************************************************************************************
+2025-12-23 00:02:16,005 p=64117 u=sameeralam n=ansible INFO| localhost                  : ok=4    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2025-12-23 00:02:16,005 p=64117 u=sameeralam n=ansible INFO| ubuntu1                    : ok=3    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
