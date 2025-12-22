@@ -1,0 +1,16 @@
+<html>
+<body>
+<h1>Consolidated Patch Report – {{ report_date }}</h1>
+
+{% for host in groups['linux'] %}
+  <hr>
+  <h2>{{ host }}</h2>
+  <ul>
+  {% for patch in hostvars[host].pending_patches | default(['NO DATA']) %}
+    <li>{{ patch }}</li>
+  {% endfor %}
+  </ul>
+{% endfor %}
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+- name: Send patch report email via Gmail
+  mail:
+    host: "{{ mail.smtp_host }}"
+    port: "{{ mail.smtp_port }}"
+    username: "{{ mail.smtp_user }}"
+    password: "{{ mail.smtp_password }}"
+    from: "{{ mail.sender }}"
+    to: "{{ mail.recipients | join(',') }}"
+    subject: "{{ mail_subject }}"
+    subtype: html
+    body: "Please find attached the patch report."
+    attach:
+      - "{{ report_dir }}/patch_report_{{ report_date }}.html"
+    secure: starttls
+  delegate_to: localhost
+  run_once: true
