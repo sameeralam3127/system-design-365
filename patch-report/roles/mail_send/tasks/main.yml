@@ -6,9 +6,9 @@
     password: "{{ mail.smtp_password }}"
     from: "{{ mail.sender }}"
     to: "{{ mail.recipients | join(',') }}"
-    subject: "{{ mail_subject }}"
+    subject: "📦 Patch Report – {{ report_date }}"
     subtype: html
-    body: "Please find attached the patch report."
+    body: "{{ lookup('file', report_dir ~ '/patch_report_' ~ report_date ~ '.html') }}"
     attach:
       - "{{ report_dir }}/patch_report_{{ report_date }}.html"
     secure: starttls
