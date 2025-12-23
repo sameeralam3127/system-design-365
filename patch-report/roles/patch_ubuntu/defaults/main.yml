@@ -1,0 +1,4 @@
+---
+ubuntu_upgrade_type: dist
+ubuntu_autoremove: true
+ubuntu_autoclean: true

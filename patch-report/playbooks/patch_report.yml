@@ -1,9 +1,12 @@
-- name: Collect pending patches
+---
+- name: Collect and apply patches on Ubuntu
   hosts: ubuntu
   become: true
   gather_facts: true
   roles:
     - patch_scan
+    - patch_ubuntu
+    - reboot_if_required
 
 - name: Generate reports and send email
   hosts: localhost

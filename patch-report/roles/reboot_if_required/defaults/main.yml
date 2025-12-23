@@ -1,0 +1,3 @@
+---
+reboot_timeout: 600
+reboot_test_command: uptime
