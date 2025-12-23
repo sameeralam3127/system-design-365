@@ -1,9 +1,0 @@
----
-- name: Patch Linux systems
-  hosts: all
-  become: true
-  gather_facts: yes
-  serial: "{{ patch_serial }}"
-
-  roles:
-    - linux_patch_reboot

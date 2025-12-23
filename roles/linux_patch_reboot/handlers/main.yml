@@ -1,9 +1,0 @@
-#SPDX-License-Identifier: MIT-0
----
-# handlers file for roles/linux_patch_reboot
-- name: reboot system
-  ansible.builtin.reboot:
-    reboot_timeout: "{{ reboot_timeout }}"
-    pre_reboot_delay: "{{ pre_reboot_delay }}"
-    post_reboot_delay: "{{ post_reboot_delay }}"
-    test_command: whoami
