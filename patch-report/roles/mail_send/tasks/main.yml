@@ -6,7 +6,7 @@
     password: "{{ mail.smtp_password }}"
     from: "{{ mail.sender }}"
     to: "{{ mail.recipients | join(',') }}"
-    subject: "📦 Patch Report – {{ report_date }}"
+    subject: "Patch Report – {{ report_date }}"
     subtype: html
     body: "{{ lookup('file', report_dir ~ '/patch_report_' ~ report_date ~ '.html') }}"
     attach:

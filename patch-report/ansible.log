@@ -709,3 +709,98 @@ Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/p
 2025-12-23 00:02:16,005 p=64117 u=sameeralam n=ansible INFO| PLAY RECAP ***************************************************************************************************************************************************************************
 2025-12-23 00:02:16,005 p=64117 u=sameeralam n=ansible INFO| localhost                  : ok=4    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 2025-12-23 00:02:16,005 p=64117 u=sameeralam n=ansible INFO| ubuntu1                    : ok=3    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+2025-12-23 23:09:43,260 p=39654 u=sameeralam n=ansible INFO| PLAY [Collect pending patches] ****************************************************************************************************************************************************
+2025-12-23 23:09:43,270 p=39654 u=sameeralam n=ansible INFO| TASK [patch_scan : Detect OS family] **********************************************************************************************************************************************
+2025-12-23 23:09:43,281 p=39654 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-23 23:09:43,283 p=39654 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (RHEL)] ************************************************************************************************************************************
+2025-12-23 23:09:43,291 p=39654 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-23 23:09:43,293 p=39654 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (Debian)] **********************************************************************************************************************************
+2025-12-23 23:10:13,378 p=39654 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: Data could not be sent to remote host "192.168.2.6". Make sure this host can be reached over ssh: ssh: connect to host 192.168.2.6 port 22: Operation timed out
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/patch_scan/tasks/main.yml:14:7
+
+12
+13 - block:
+14     - name: Get pending updates (Debian)
+         ^ column 7
+
+
+2025-12-23 23:10:13,379 p=39654 u=sameeralam n=ansible INFO| fatal: [ubuntu1]: UNREACHABLE! => {"changed": false, "msg": "Task failed: Data could not be sent to remote host \"192.168.2.6\". Make sure this host can be reached over ssh: ssh: connect to host 192.168.2.6 port 22: Operation timed out", "unreachable": true}
+2025-12-23 23:10:13,380 p=39654 u=sameeralam n=ansible INFO| PLAY RECAP ************************************************************************************************************************************************************************
+2025-12-23 23:10:13,380 p=39654 u=sameeralam n=ansible INFO| ubuntu1                    : ok=1    changed=0    unreachable=1    failed=0    skipped=1    rescued=0    ignored=0   
+2025-12-23 23:10:23,771 p=40022 u=sameeralam n=ansible INFO| PLAY [Collect pending patches] ****************************************************************************************************************************************************
+2025-12-23 23:10:23,779 p=40022 u=sameeralam n=ansible INFO| TASK [patch_scan : Detect OS family] **********************************************************************************************************************************************
+2025-12-23 23:10:23,789 p=40022 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-23 23:10:23,791 p=40022 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (RHEL)] ************************************************************************************************************************************
+2025-12-23 23:10:23,798 p=40022 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-23 23:10:23,800 p=40022 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (Debian)] **********************************************************************************************************************************
+2025-12-23 23:10:24,107 p=40022 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: Missing sudo password
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/patch_scan/tasks/main.yml:14:7
+
+12
+13 - block:
+14     - name: Get pending updates (Debian)
+         ^ column 7
+
+
+2025-12-23 23:10:24,107 p=40022 u=sameeralam n=ansible INFO| fatal: [ubuntu1]: FAILED! => {"changed": false, "msg": "Task failed: Missing sudo password"}
+2025-12-23 23:10:24,108 p=40022 u=sameeralam n=ansible INFO| PLAY RECAP ************************************************************************************************************************************************************************
+2025-12-23 23:10:24,108 p=40022 u=sameeralam n=ansible INFO| ubuntu1                    : ok=1    changed=0    unreachable=0    failed=1    skipped=1    rescued=0    ignored=0   
+2025-12-23 23:10:29,534 p=40180 u=sameeralam n=ansible INFO| PLAY [Collect pending patches] ****************************************************************************************************************************************************
+2025-12-23 23:10:29,541 p=40180 u=sameeralam n=ansible INFO| TASK [patch_scan : Detect OS family] **********************************************************************************************************************************************
+2025-12-23 23:10:29,552 p=40180 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-23 23:10:29,554 p=40180 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (RHEL)] ************************************************************************************************************************************
+2025-12-23 23:10:29,561 p=40180 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-23 23:10:29,563 p=40180 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (Debian)] **********************************************************************************************************************************
+2025-12-23 23:10:29,636 p=40180 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: Missing sudo password
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/patch_scan/tasks/main.yml:14:7
+
+12
+13 - block:
+14     - name: Get pending updates (Debian)
+         ^ column 7
+
+
+2025-12-23 23:10:29,636 p=40180 u=sameeralam n=ansible INFO| fatal: [ubuntu1]: FAILED! => {"changed": false, "msg": "Task failed: Missing sudo password"}
+2025-12-23 23:10:29,636 p=40180 u=sameeralam n=ansible INFO| PLAY RECAP ************************************************************************************************************************************************************************
+2025-12-23 23:10:29,636 p=40180 u=sameeralam n=ansible INFO| ubuntu1                    : ok=1    changed=0    unreachable=0    failed=1    skipped=1    rescued=0    ignored=0   
+2025-12-23 23:10:45,650 p=40384 u=sameeralam n=ansible INFO| PLAY [Collect pending patches] ****************************************************************************************************************************************************
+2025-12-23 23:10:45,655 p=40384 u=sameeralam n=ansible INFO| TASK [patch_scan : Detect OS family] **********************************************************************************************************************************************
+2025-12-23 23:10:45,664 p=40384 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-23 23:10:45,666 p=40384 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (RHEL)] ************************************************************************************************************************************
+2025-12-23 23:10:45,673 p=40384 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-23 23:10:45,675 p=40384 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (Debian)] **********************************************************************************************************************************
+2025-12-23 23:10:45,743 p=40384 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: Missing sudo password
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/patch_scan/tasks/main.yml:14:7
+
+12
+13 - block:
+14     - name: Get pending updates (Debian)
+         ^ column 7
+
+
+2025-12-23 23:10:45,743 p=40384 u=sameeralam n=ansible INFO| fatal: [ubuntu1]: FAILED! => {"changed": false, "msg": "Task failed: Missing sudo password"}
+2025-12-23 23:10:45,743 p=40384 u=sameeralam n=ansible INFO| PLAY RECAP ************************************************************************************************************************************************************************
+2025-12-23 23:10:45,743 p=40384 u=sameeralam n=ansible INFO| ubuntu1                    : ok=1    changed=0    unreachable=0    failed=1    skipped=1    rescued=0    ignored=0   
+2025-12-23 23:11:16,418 p=40657 u=sameeralam n=ansible INFO| PLAY [Collect pending patches] ****************************************************************************************************************************************************
+2025-12-23 23:11:16,422 p=40657 u=sameeralam n=ansible INFO| TASK [patch_scan : Detect OS family] **********************************************************************************************************************************************
+2025-12-23 23:11:16,431 p=40657 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-23 23:11:16,433 p=40657 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (RHEL)] ************************************************************************************************************************************
+2025-12-23 23:11:16,440 p=40657 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-23 23:11:16,441 p=40657 u=sameeralam n=ansible INFO| TASK [patch_scan : Get pending updates (Debian)] **********************************************************************************************************************************
+2025-12-23 23:11:16,897 p=40657 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-23 23:11:16,902 p=40657 u=sameeralam n=ansible INFO| TASK [patch_scan : Normalize patch data] ******************************************************************************************************************************************
+2025-12-23 23:11:16,937 p=40657 u=sameeralam n=ansible INFO| ok: [ubuntu1]
+2025-12-23 23:11:16,939 p=40657 u=sameeralam n=ansible INFO| TASK [patch_scan : Handle unreachable or error hosts] *****************************************************************************************************************************
+2025-12-23 23:11:16,950 p=40657 u=sameeralam n=ansible INFO| skipping: [ubuntu1]
+2025-12-23 23:11:16,953 p=40657 u=sameeralam n=ansible INFO| PLAY [Generate reports and send email] ********************************************************************************************************************************************
+2025-12-23 23:11:16,955 p=40657 u=sameeralam n=ansible INFO| TASK [report_generate : Ensure report directory exists] ***************************************************************************************************************************
+2025-12-23 23:11:17,117 p=40657 u=sameeralam n=ansible INFO| ok: [localhost]
+2025-12-23 23:11:17,119 p=40657 u=sameeralam n=ansible INFO| TASK [report_generate : Generate per-host HTML reports] ***************************************************************************************************************************
+2025-12-23 23:11:17,427 p=40657 u=sameeralam n=ansible INFO| ok: [localhost] => (item=ubuntu1)
+2025-12-23 23:11:17,429 p=40657 u=sameeralam n=ansible INFO| TASK [report_generate : Generate consolidated HTML report] ************************************************************************************************************************
+2025-12-23 23:11:17,700 p=40657 u=sameeralam n=ansible INFO| ok: [localhost]
+2025-12-23 23:11:17,701 p=40657 u=sameeralam n=ansible INFO| TASK [mail_send : Send patch report email via Gmail] ******************************************************************************************************************************
+2025-12-23 23:11:24,149 p=40657 u=sameeralam n=ansible INFO| ok: [localhost]
+2025-12-23 23:11:24,151 p=40657 u=sameeralam n=ansible INFO| PLAY RECAP ************************************************************************************************************************************************************************
+2025-12-23 23:11:24,151 p=40657 u=sameeralam n=ansible INFO| localhost                  : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2025-12-23 23:11:24,151 p=40657 u=sameeralam n=ansible INFO| ubuntu1                    : ok=3    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
