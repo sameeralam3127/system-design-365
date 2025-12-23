@@ -2573,3 +2573,298 @@ Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ssl-certificate-play
 2025-12-21 23:30:23,749 p=17610 u=sameeralam n=ansiblelint.rules.fqcn WARNING| Invalid value (None)for resolved_fqcn attribute of ufw module.
 2025-12-21 23:30:23,749 p=17610 u=sameeralam n=ansiblelint.rules.fqcn WARNING| Invalid value (None)for resolved_fqcn attribute of ufw module.
 2025-12-21 23:30:23,963 p=17610 u=sameeralam n=ansiblelint WARNING| Listing 72 violation(s) that are fatal
+2025-12-23 23:15:43,592 p=42917 u=sameeralam n=ansible WARNING| [WARNING]: Failed to parse inventory with 'ini' plugin: Failed to parse inventory: Expected key=value host variable assignment, got: json
+
+Failed to parse inventory with 'ini' plugin.
+
+<<< caused by >>>
+
+Failed to parse inventory: Expected key=value host variable assignment, got: json
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/inventory.py
+
+
+2025-12-23 23:15:43,592 p=42917 u=sameeralam n=ansible WARNING| [WARNING]: Unable to parse /Users/sameeralam/Documents/GitHub/Ansible-Playbook/inventory.py as an inventory source
+
+2025-12-23 23:15:43,592 p=42917 u=sameeralam n=ansible WARNING| [WARNING]: No inventory was parsed, only implicit localhost is available
+
+2025-12-23 23:15:43,595 p=42917 u=sameeralam n=ansible WARNING| [WARNING]: provided hosts list is empty, only localhost is available. Note that the implicit localhost does not match 'all'
+
+2025-12-23 23:17:37,651 p=43521 u=sameeralam n=ansible WARNING| [WARNING]: Unable to parse /Users/sameeralam/Documents/GitHub/Ansible-Playbook/docker.yml as an inventory source
+
+2025-12-23 23:17:37,652 p=43521 u=sameeralam n=ansible WARNING| [WARNING]: No inventory was parsed, only implicit localhost is available
+
+2025-12-23 23:17:37,655 p=43521 u=sameeralam n=ansible INFO| {
+    "_meta": {
+        "hostvars": {},
+        "profile": "inventory_legacy"
+    },
+    "all": {
+        "children": [
+            "ungrouped"
+        ]
+    }
+}
+2025-12-23 23:18:32,310 p=43944 u=sameeralam n=ansible INFO| {
+    "_meta": {
+        "hostvars": {
+            "10.0.0.10": {
+                "ansible_user": "ubuntu"
+            }
+        },
+        "profile": "inventory_legacy"
+    },
+    "all": {
+        "children": [
+            "ungrouped",
+            "web",
+            "db"
+        ]
+    },
+    "db": {
+        "hosts": [
+            "10.0.0.20"
+        ]
+    },
+    "web": {
+        "hosts": [
+            "10.0.0.10",
+            "10.0.0.11"
+        ]
+    }
+}
+2025-12-23 23:19:01,434 p=44141 u=sameeralam n=ansible ERROR| [ERROR]: User interrupted execution
+
+2025-12-23 23:19:33,905 p=44297 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: Failed to connect to the host via ssh: ssh: connect to host 10.0.0.11 port 22: Operation timed out
+
+Task failed.
+Origin: <adhoc 'ping' task>
+
+{'action': 'ping', 'args': {}, 'timeout': 0, 'async_val': 0, 'poll': 15}
+
+<<< caused by >>>
+
+Failed to connect to the host via ssh: ssh: connect to host 10.0.0.11 port 22: Operation timed out
+
+
+2025-12-23 23:19:33,905 p=44297 u=sameeralam n=ansible INFO| 10.0.0.11 | UNREACHABLE! => {
+    "changed": false,
+    "msg": "Task failed: Failed to connect to the host via ssh: ssh: connect to host 10.0.0.11 port 22: Operation timed out",
+    "unreachable": true
+}
+2025-12-23 23:19:33,906 p=44297 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: Failed to connect to the host via ssh: ssh: connect to host 10.0.0.10 port 22: Operation timed out
+
+Task failed.
+Origin: <adhoc 'ping' task>
+
+{'action': 'ping', 'args': {}, 'timeout': 0, 'async_val': 0, 'poll': 15}
+
+<<< caused by >>>
+
+Failed to connect to the host via ssh: ssh: connect to host 10.0.0.10 port 22: Operation timed out
+
+
+2025-12-23 23:19:33,906 p=44297 u=sameeralam n=ansible INFO| 10.0.0.10 | UNREACHABLE! => {
+    "changed": false,
+    "msg": "Task failed: Failed to connect to the host via ssh: ssh: connect to host 10.0.0.10 port 22: Operation timed out",
+    "unreachable": true
+}
+2025-12-23 23:19:33,906 p=44297 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: Failed to connect to the host via ssh: ssh: connect to host 10.0.0.20 port 22: Operation timed out
+
+Task failed.
+Origin: <adhoc 'ping' task>
+
+{'action': 'ping', 'args': {}, 'timeout': 0, 'async_val': 0, 'poll': 15}
+
+<<< caused by >>>
+
+Failed to connect to the host via ssh: ssh: connect to host 10.0.0.20 port 22: Operation timed out
+
+
+2025-12-23 23:19:33,906 p=44297 u=sameeralam n=ansible INFO| 10.0.0.20 | UNREACHABLE! => {
+    "changed": false,
+    "msg": "Task failed: Failed to connect to the host via ssh: ssh: connect to host 10.0.0.20 port 22: Operation timed out",
+    "unreachable": true
+}
+2025-12-23 23:19:47,916 p=44630 u=sameeralam n=ansible WARNING| [WARNING]: Failed to parse inventory with 'auto' plugin: Failed to import the required Python library (requests) on Sameer-MacBook-Pro.local's Python /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/python3.13. Please read the module documentation and install it in the appropriate location. If the required library is installed, but Ansible is using the wrong Python interpreter, please consult the documentation on ansible_python_interpreter
+Context:
+  exception = 'Traceback (most recent call last):\n  File "/Users/sameeralam/.ansible/collections/ansible_collections/community/docker/plugins/module_utils/_api/_import_helper.py", line 20, in <module>\n    from requests import Session  # noqa: F401, pylint: disable=unused-import\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nModuleNotFoundError: No module named \'requests\'\n'
+
+Failed to parse inventory with 'auto' plugin.
+
+<<< caused by >>>
+
+Failed to import the required Python library (requests) on Sameer-MacBook-Pro.local's Python /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/python3.13. Please read the module documentation and install it in the appropriate location. If the required library is installed, but Ansible is using the wrong Python interpreter, please consult the documentation on ansible_python_interpreter
+Context:
+  exception = 'Traceback (most recent call last):\n  File "/Users/sameeralam/.ansible/collections/ansible_collections/community/docker/plugins/module_utils/_api/_import_helper.py", line 20, in <module>\n    from requests import Session  # noqa: F401, pylint: disable=unused-import\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nModuleNotFoundError: No module named \'requests\'\n'
+Origin: <inventory plugin 'auto' with source '/Users/sameeralam/Documents/GitHub/Ansible-Playbook/docker.yml'>
+
+
+2025-12-23 23:19:47,916 p=44630 u=sameeralam n=ansible WARNING| [WARNING]: Failed to parse inventory with 'yaml' plugin: Plugin configuration YAML file, not YAML inventory
+
+Failed to parse inventory with 'yaml' plugin.
+
+<<< caused by >>>
+
+Plugin configuration YAML file, not YAML inventory
+Origin: <inventory plugin 'yaml' with source '/Users/sameeralam/Documents/GitHub/Ansible-Playbook/docker.yml'>
+
+
+2025-12-23 23:19:47,916 p=44630 u=sameeralam n=ansible WARNING| [WARNING]: Failed to parse inventory with 'ini' plugin: Failed to parse inventory: Invalid host pattern 'plugin:' supplied, ending in ':' is not allowed, this character is reserved to provide a port.
+
+Failed to parse inventory with 'ini' plugin.
+
+<<< caused by >>>
+
+Failed to parse inventory: Invalid host pattern 'plugin:' supplied, ending in ':' is not allowed, this character is reserved to provide a port.
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/docker.yml
+
+
+2025-12-23 23:19:47,916 p=44630 u=sameeralam n=ansible WARNING| [WARNING]: Unable to parse /Users/sameeralam/Documents/GitHub/Ansible-Playbook/docker.yml as an inventory source
+
+2025-12-23 23:19:47,916 p=44630 u=sameeralam n=ansible WARNING| [WARNING]: No inventory was parsed, only implicit localhost is available
+
+2025-12-23 23:19:47,918 p=44630 u=sameeralam n=ansible INFO| {
+    "_meta": {
+        "hostvars": {},
+        "profile": "inventory_legacy"
+    },
+    "all": {
+        "children": [
+            "ungrouped"
+        ]
+    }
+}
+2025-12-23 23:20:00,825 p=44801 u=sameeralam n=ansible INFO| Starting galaxy collection install process
+2025-12-23 23:20:00,835 p=44801 u=sameeralam n=ansible INFO| Nothing to do. All requested collections are already installed. If you want to reinstall them, consider using `--force`.
+2025-12-23 23:20:49,641 p=45119 u=sameeralam n=ansible WARNING| [WARNING]: Failed to parse inventory with 'auto' plugin: Failed to import the required Python library (requests) on Sameer-MacBook-Pro.local's Python /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/python3.13. Please read the module documentation and install it in the appropriate location. If the required library is installed, but Ansible is using the wrong Python interpreter, please consult the documentation on ansible_python_interpreter
+Context:
+  exception = 'Traceback (most recent call last):\n  File "/Users/sameeralam/.ansible/collections/ansible_collections/community/docker/plugins/module_utils/_api/_import_helper.py", line 20, in <module>\n    from requests import Session  # noqa: F401, pylint: disable=unused-import\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nModuleNotFoundError: No module named \'requests\'\n'
+
+Failed to parse inventory with 'auto' plugin.
+
+<<< caused by >>>
+
+Failed to import the required Python library (requests) on Sameer-MacBook-Pro.local's Python /Users/sameeralam/Documents/GitHub/Ansible-Playbook/venv/bin/python3.13. Please read the module documentation and install it in the appropriate location. If the required library is installed, but Ansible is using the wrong Python interpreter, please consult the documentation on ansible_python_interpreter
+Context:
+  exception = 'Traceback (most recent call last):\n  File "/Users/sameeralam/.ansible/collections/ansible_collections/community/docker/plugins/module_utils/_api/_import_helper.py", line 20, in <module>\n    from requests import Session  # noqa: F401, pylint: disable=unused-import\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nModuleNotFoundError: No module named \'requests\'\n'
+Origin: <inventory plugin 'auto' with source '/Users/sameeralam/Documents/GitHub/Ansible-Playbook/docker.yml'>
+
+
+2025-12-23 23:20:49,641 p=45119 u=sameeralam n=ansible WARNING| [WARNING]: Failed to parse inventory with 'yaml' plugin: Plugin configuration YAML file, not YAML inventory
+
+Failed to parse inventory with 'yaml' plugin.
+
+<<< caused by >>>
+
+Plugin configuration YAML file, not YAML inventory
+Origin: <inventory plugin 'yaml' with source '/Users/sameeralam/Documents/GitHub/Ansible-Playbook/docker.yml'>
+
+
+2025-12-23 23:20:49,641 p=45119 u=sameeralam n=ansible WARNING| [WARNING]: Failed to parse inventory with 'ini' plugin: Failed to parse inventory: Invalid host pattern 'plugin:' supplied, ending in ':' is not allowed, this character is reserved to provide a port.
+
+Failed to parse inventory with 'ini' plugin.
+
+<<< caused by >>>
+
+Failed to parse inventory: Invalid host pattern 'plugin:' supplied, ending in ':' is not allowed, this character is reserved to provide a port.
+Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/docker.yml
+
+
+2025-12-23 23:20:49,641 p=45119 u=sameeralam n=ansible WARNING| [WARNING]: Unable to parse /Users/sameeralam/Documents/GitHub/Ansible-Playbook/docker.yml as an inventory source
+
+2025-12-23 23:20:49,642 p=45119 u=sameeralam n=ansible WARNING| [WARNING]: No inventory was parsed, only implicit localhost is available
+
+2025-12-23 23:20:49,644 p=45119 u=sameeralam n=ansible INFO| {
+    "_meta": {
+        "hostvars": {},
+        "profile": "inventory_legacy"
+    },
+    "all": {
+        "children": [
+            "ungrouped"
+        ]
+    }
+}
+2025-12-23 23:21:39,681 p=47409 u=sameeralam n=ansible INFO| {
+    "_meta": {
+        "hostvars": {
+            "fastapi_project-db-1": {
+                "ansible_connection": {
+                    "__ansible_unsafe": "community.docker.docker_api"
+                },
+                "ansible_docker_api_version": "auto",
+                "ansible_docker_docker_host": "unix:///var/run/docker.sock",
+                "ansible_docker_timeout": 60,
+                "ansible_docker_tls": false,
+                "ansible_docker_use_ssh_client": false,
+                "ansible_docker_validate_certs": false,
+                "ansible_host": {
+                    "__ansible_unsafe": "fastapi_project-db-1"
+                },
+                "docker_name": {
+                    "__ansible_unsafe": "fastapi_project-db-1"
+                },
+                "docker_short_id": {
+                    "__ansible_unsafe": "1031b3262591e"
+                }
+            },
+            "httpbin": {
+                "ansible_connection": {
+                    "__ansible_unsafe": "community.docker.docker_api"
+                },
+                "ansible_docker_api_version": "auto",
+                "ansible_docker_docker_host": "unix:///var/run/docker.sock",
+                "ansible_docker_timeout": 60,
+                "ansible_docker_tls": false,
+                "ansible_docker_use_ssh_client": false,
+                "ansible_docker_validate_certs": false,
+                "ansible_host": {
+                    "__ansible_unsafe": "httpbin"
+                },
+                "docker_name": {
+                    "__ansible_unsafe": "httpbin"
+                },
+                "docker_short_id": {
+                    "__ansible_unsafe": "92275d90ea848"
+                }
+            },
+            "liberty": {
+                "ansible_connection": {
+                    "__ansible_unsafe": "community.docker.docker_api"
+                },
+                "ansible_docker_api_version": "auto",
+                "ansible_docker_docker_host": "unix:///var/run/docker.sock",
+                "ansible_docker_timeout": 60,
+                "ansible_docker_tls": false,
+                "ansible_docker_use_ssh_client": false,
+                "ansible_docker_validate_certs": false,
+                "ansible_host": {
+                    "__ansible_unsafe": "liberty"
+                },
+                "docker_name": {
+                    "__ansible_unsafe": "liberty"
+                },
+                "docker_short_id": {
+                    "__ansible_unsafe": "13385e6d0d3dd"
+                }
+            }
+        },
+        "profile": "inventory_legacy"
+    },
+    "all": {
+        "children": [
+            "ungrouped"
+        ]
+    },
+    "ungrouped": {
+        "hosts": [
+            "httpbin",
+            "liberty",
+            "fastapi_project-db-1"
+        ]
+    }
+}
+2025-12-23 23:22:42,949 p=47824 u=sameeralam n=ansible ERROR| [ERROR]: A worker was found in a dead state
+
+2025-12-23 23:22:52,359 p=47975 u=sameeralam n=ansible ERROR| [ERROR]: A worker was found in a dead state
+
