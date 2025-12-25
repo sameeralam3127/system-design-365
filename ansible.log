@@ -2868,3 +2868,265 @@ Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/docker.yml
 
 2025-12-23 23:22:52,359 p=47975 u=sameeralam n=ansible ERROR| [ERROR]: A worker was found in a dead state
 
+2025-12-25 14:08:58,103 p=13310 u=sameeralam n=ansible INFO| ansible [core 2.20.1]
+  config file = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg
+  configured module search path = ['/Users/sameeralam/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/ansible
+  ansible collection location = /Users/sameeralam/.ansible/collections:/usr/share/ansible/collections
+  executable location = /Library/Frameworks/Python.framework/Versions/3.13/bin/ansible
+  python version = 3.13.3 (v3.13.3:6280bb54784, Apr  8 2025, 10:47:54) [Clang 15.0.0 (clang-1500.3.9.4)] (/Library/Frameworks/Python.framework/Versions/3.13/bin/python3.13)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.2 (with libyaml v0.2.5)
+2025-12-25 14:08:58,103 p=13310 u=sameeralam n=ansible INFO| Using /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg as config file
+2025-12-25 14:08:58,150 p=13310 u=sameeralam n=ansible INFO| Parsed 192.168.0.102, inventory source with host_list plugin
+2025-12-25 14:08:58,175 p=13310 u=sameeralam n=ansible INFO| Skipping callback 'default', as we already have a stdout callback.
+2025-12-25 14:08:58,175 p=13310 u=sameeralam n=ansible INFO| Skipping callback 'oneline', as we already have a stdout callback.
+2025-12-25 14:08:58,194 p=13310 u=sameeralam n=ansible INFO| redirecting (type: modules) ansible.builtin.win_ping to ansible.windows.win_ping
+2025-12-25 14:08:58,200 p=13310 u=sameeralam n=ansible INFO| redirecting (type: modules) ansible.builtin.win_ping to ansible.windows.win_ping
+2025-12-25 14:08:58,201 p=13310 u=sameeralam n=ansible INFO| redirecting (type: modules) ansible.builtin.win_ping to ansible.windows.win_ping
+2025-12-25 14:08:58,208 p=13310 u=sameeralam n=ansible INFO| Using module file /Users/sameeralam/.ansible/collections/ansible_collections/ansible/windows/plugins/modules/win_ping.ps1
+2025-12-25 14:08:58,208 p=13310 u=sameeralam n=ansible INFO| Pipelining is enabled.
+2025-12-25 14:08:58,211 p=13310 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: winrm or requests is not installed: No module named 'winrm'
+Origin: <adhoc 'win_ping' task>
+
+{'action': 'win_ping', 'args': {}, 'timeout': 0, 'async_val': 0, 'poll': 15}
+
+
+2025-12-25 14:08:58,211 p=13310 u=sameeralam n=ansible INFO| 192.168.0.102 | FAILED! => {
+    "changed": false,
+    "msg": "Task failed: winrm or requests is not installed: No module named 'winrm'"
+}
+2025-12-25 14:10:02,046 p=14257 u=sameeralam n=ansible INFO| ansible [core 2.20.1]
+  config file = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg
+  configured module search path = ['/Users/sameeralam/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/ansible
+  ansible collection location = /Users/sameeralam/.ansible/collections:/usr/share/ansible/collections
+  executable location = /Library/Frameworks/Python.framework/Versions/3.13/bin/ansible
+  python version = 3.13.3 (v3.13.3:6280bb54784, Apr  8 2025, 10:47:54) [Clang 15.0.0 (clang-1500.3.9.4)] (/Library/Frameworks/Python.framework/Versions/3.13/bin/python3.13)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.2 (with libyaml v0.2.5)
+2025-12-25 14:10:02,047 p=14257 u=sameeralam n=ansible INFO| Using /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg as config file
+2025-12-25 14:10:02,092 p=14257 u=sameeralam n=ansible INFO| Parsed 192.168.0.102, inventory source with host_list plugin
+2025-12-25 14:10:02,112 p=14257 u=sameeralam n=ansible INFO| Skipping callback 'default', as we already have a stdout callback.
+2025-12-25 14:10:02,112 p=14257 u=sameeralam n=ansible INFO| Skipping callback 'oneline', as we already have a stdout callback.
+2025-12-25 14:10:02,126 p=14257 u=sameeralam n=ansible INFO| redirecting (type: modules) ansible.builtin.win_ping to ansible.windows.win_ping
+2025-12-25 14:10:02,131 p=14257 u=sameeralam n=ansible INFO| redirecting (type: modules) ansible.builtin.win_ping to ansible.windows.win_ping
+2025-12-25 14:10:02,132 p=14257 u=sameeralam n=ansible INFO| redirecting (type: modules) ansible.builtin.win_ping to ansible.windows.win_ping
+2025-12-25 14:10:02,137 p=14257 u=sameeralam n=ansible INFO| Using module file /Users/sameeralam/.ansible/collections/ansible_collections/ansible/windows/plugins/modules/win_ping.ps1
+2025-12-25 14:10:02,137 p=14257 u=sameeralam n=ansible INFO| Pipelining is enabled.
+2025-12-25 14:10:02,139 p=14257 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: winrm or requests is not installed: No module named 'winrm'
+Origin: <adhoc 'win_ping' task>
+
+{'action': 'win_ping', 'args': {}, 'timeout': 0, 'async_val': 0, 'poll': 15}
+
+
+2025-12-25 14:10:02,139 p=14257 u=sameeralam n=ansible INFO| 192.168.0.102 | FAILED! => {
+    "changed": false,
+    "msg": "Task failed: winrm or requests is not installed: No module named 'winrm'"
+}
+2025-12-25 14:12:33,124 p=16217 u=sameeralam n=ansible | ansible [core 2.15.13]
+  config file = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg
+  configured module search path = ['/Users/sameeralam/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /Users/sameeralam/venvs/ansible/lib/python3.9/site-packages/ansible
+  ansible collection location = /Users/sameeralam/.ansible/collections:/usr/share/ansible/collections
+  executable location = /Users/sameeralam/venvs/ansible/bin/ansible
+  python version = 3.9.6 (default, Oct 17 2025, 17:15:53) [Clang 17.0.0 (clang-1700.4.4.1)] (/Users/sameeralam/venvs/ansible/bin/python3)
+  jinja version = 3.1.6
+  libyaml = True
+2025-12-25 14:12:33,124 p=16217 u=sameeralam n=ansible | Using /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg as config file
+2025-12-25 14:12:33,212 p=16217 u=sameeralam n=ansible | Skipping callback 'default', as we already have a stdout callback.
+2025-12-25 14:12:33,212 p=16217 u=sameeralam n=ansible | Skipping callback 'minimal', as we already have a stdout callback.
+2025-12-25 14:12:33,212 p=16217 u=sameeralam n=ansible | Skipping callback 'oneline', as we already have a stdout callback.
+2025-12-25 14:12:33,261 p=16217 u=sameeralam n=ansible | [WARNING]: Collection ansible.windows does not support Ansible version 2.15.13
+
+2025-12-25 14:12:33,724 p=16217 u=sameeralam n=ansible | ERROR! A worker was found in a dead state
+2025-12-25 14:13:55,372 p=17204 u=sameeralam n=ansible | ansible [core 2.15.13]
+  config file = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg
+  configured module search path = ['/Users/sameeralam/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /Users/sameeralam/venvs/ansible/lib/python3.9/site-packages/ansible
+  ansible collection location = /Users/sameeralam/.ansible/collections:/usr/share/ansible/collections
+  executable location = /Users/sameeralam/venvs/ansible/bin/ansible
+  python version = 3.9.6 (default, Oct 17 2025, 17:15:53) [Clang 17.0.0 (clang-1700.4.4.1)] (/Users/sameeralam/venvs/ansible/bin/python3)
+  jinja version = 3.1.6
+  libyaml = True
+2025-12-25 14:13:55,372 p=17204 u=sameeralam n=ansible | Using /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg as config file
+2025-12-25 14:13:55,441 p=17204 u=sameeralam n=ansible | Skipping callback 'default', as we already have a stdout callback.
+2025-12-25 14:13:55,441 p=17204 u=sameeralam n=ansible | Skipping callback 'minimal', as we already have a stdout callback.
+2025-12-25 14:13:55,441 p=17204 u=sameeralam n=ansible | Skipping callback 'oneline', as we already have a stdout callback.
+2025-12-25 14:13:55,480 p=17204 u=sameeralam n=ansible | [WARNING]: Collection ansible.windows does not support Ansible version 2.15.13
+
+2025-12-25 14:14:25,584 p=17204 u=sameeralam n=ansible | 192.168.0.102 | UNREACHABLE! => {
+    "changed": false,
+    "msg": "ntlm: HTTPSConnectionPool(host='192.168.0.102', port=5986): Max retries exceeded with url: /wsman (Caused by ConnectTimeoutError(<HTTPSConnection(host='192.168.0.102', port=5986) at 0x102fdcb80>, 'Connection to 192.168.0.102 timed out. (connect timeout=30)'))",
+    "unreachable": true
+}
+2025-12-25 14:15:05,522 p=17923 u=sameeralam n=ansible | ansible [core 2.15.13]
+  config file = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg
+  configured module search path = ['/Users/sameeralam/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /Users/sameeralam/venvs/ansible/lib/python3.9/site-packages/ansible
+  ansible collection location = /Users/sameeralam/.ansible/collections:/usr/share/ansible/collections
+  executable location = /Users/sameeralam/venvs/ansible/bin/ansible
+  python version = 3.9.6 (default, Oct 17 2025, 17:15:53) [Clang 17.0.0 (clang-1700.4.4.1)] (/Users/sameeralam/venvs/ansible/bin/python3)
+  jinja version = 3.1.6
+  libyaml = True
+2025-12-25 14:15:05,522 p=17923 u=sameeralam n=ansible | Using /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg as config file
+2025-12-25 14:15:05,589 p=17923 u=sameeralam n=ansible | Skipping callback 'default', as we already have a stdout callback.
+2025-12-25 14:15:05,589 p=17923 u=sameeralam n=ansible | Skipping callback 'minimal', as we already have a stdout callback.
+2025-12-25 14:15:05,589 p=17923 u=sameeralam n=ansible | Skipping callback 'oneline', as we already have a stdout callback.
+2025-12-25 14:15:05,629 p=17923 u=sameeralam n=ansible | [WARNING]: Collection ansible.windows does not support Ansible version 2.15.13
+
+2025-12-25 14:15:35,757 p=17923 u=sameeralam n=ansible | 192.168.0.102 | UNREACHABLE! => {
+    "changed": false,
+    "msg": "ntlm: HTTPConnectionPool(host='192.168.0.102', port=5985): Max retries exceeded with url: /wsman (Caused by ConnectTimeoutError(<HTTPConnection(host='192.168.0.102', port=5985) at 0x106a55b80>, 'Connection to 192.168.0.102 timed out. (connect timeout=30)'))",
+    "unreachable": true
+}
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | # /Users/sameeralam/.ansible/collections/ansible_collections
+Collection                               Version
+---------------------------------------- -------
+
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | ansible.posix                            2.1.0  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | ansible.windows                          3.3.0  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | community.docker                         5.0.0  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | community.general                        12.1.0 
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | community.library_inventory_filtering_v1 1.1.5  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | # /Users/sameeralam/venvs/ansible/lib/python3.9/site-packages/ansible_collections
+Collection                               Version
+---------------------------------------- -------
+
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | amazon.aws                               6.5.0  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | ansible.netcommon                        5.3.0  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | ansible.posix                            1.5.4  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | ansible.utils                            2.12.0 
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | ansible.windows                          1.14.0 
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | arista.eos                               6.2.2  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | awx.awx                                  22.7.0 
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | azure.azcollection                       1.19.0 
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | check_point.mgmt                         5.1.1  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | chocolatey.chocolatey                    1.5.1  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | cisco.aci                                2.8.0  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | cisco.asa                                4.0.3  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | cisco.dnac                               6.9.0  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | cisco.intersight                         1.0.27 
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | cisco.ios                                4.6.1  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | cisco.iosxr                              5.0.3  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | cisco.ise                                2.6.2  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | cisco.meraki                             2.17.0 
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | cisco.mso                                2.5.0  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | cisco.nso                                1.0.3  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | cisco.nxos                               4.4.0  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | cisco.ucs                                1.10.0 
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | cloud.common                             2.1.4  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | cloudscale_ch.cloud                      2.3.1  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | community.aws                            6.4.0  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | community.azure                          2.0.0  
+2025-12-25 15:02:59,968 p=27662 u=sameeralam n=ansible | community.ciscosmb                       1.0.7  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.crypto                         2.16.1 
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.digitalocean                   1.24.0 
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.dns                            2.6.4  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.docker                         3.4.11 
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.fortios                        1.0.0  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.general                        7.5.2  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.google                         1.0.0  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.grafana                        1.6.1  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.hashi_vault                    5.0.1  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.hrobot                         1.8.2  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.libvirt                        1.3.0  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.mongodb                        1.6.3  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.mysql                          3.8.0  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.network                        5.0.2  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.okd                            2.3.0  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.postgresql                     2.4.3  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.proxysql                       1.5.1  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.rabbitmq                       1.2.3  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.routeros                       2.11.0 
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.sap                            1.0.0  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.sap_libs                       1.4.1  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.skydive                        1.0.0  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.sops                           1.6.7  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.vmware                         3.11.1 
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.windows                        1.13.0 
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | community.zabbix                         2.2.0  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | containers.podman                        1.11.0 
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | cyberark.conjur                          1.2.2  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | cyberark.pas                             1.0.23 
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | dellemc.enterprise_sonic                 2.2.0  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | dellemc.openmanage                       7.6.1  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | dellemc.powerflex                        1.9.0  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | dellemc.unity                            1.7.1  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | f5networks.f5_modules                    1.27.1 
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | fortinet.fortimanager                    2.3.0  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | fortinet.fortios                         2.3.4  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | frr.frr                                  2.0.2  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | gluster.gluster                          1.0.2  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | google.cloud                             1.3.0  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | grafana.grafana                          2.2.3  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | hetzner.hcloud                           1.16.0 
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | hpe.nimble                               1.1.4  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | ibm.qradar                               2.1.0  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | ibm.spectrum_virtualize                  1.12.0 
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | ibm.storage_virtualize                   2.1.0  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | infinidat.infinibox                      1.3.12 
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | infoblox.nios_modules                    1.5.0  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | inspur.ispim                             1.3.0  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | inspur.sm                                2.3.0  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | junipernetworks.junos                    5.3.1  
+2025-12-25 15:02:59,969 p=27662 u=sameeralam n=ansible | kubernetes.core                          2.4.0  
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | lowlydba.sqlserver                       2.2.2  
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | microsoft.ad                             1.4.1  
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | netapp.aws                               21.7.1 
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | netapp.azure                             21.10.1
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | netapp.cloudmanager                      21.22.1
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | netapp.elementsw                         21.7.0 
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | netapp.ontap                             22.8.3 
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | netapp.storagegrid                       21.11.1
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | netapp.um_info                           21.8.1 
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | netapp_eseries.santricity                1.4.0  
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | netbox.netbox                            3.15.0 
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | ngine_io.cloudstack                      2.3.0  
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | ngine_io.exoscale                        1.1.0  
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | ngine_io.vultr                           1.1.3  
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | openstack.cloud                          2.2.0  
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | openvswitch.openvswitch                  2.1.1  
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | ovirt.ovirt                              3.2.0  
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | purestorage.flasharray                   1.24.0 
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | purestorage.flashblade                   1.14.0 
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | purestorage.fusion                       1.6.0  
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | sensu.sensu_go                           1.14.0 
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | servicenow.servicenow                    1.0.6  
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | splunk.es                                2.1.2  
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | t_systems_mms.icinga_director            1.33.1 
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | telekom_mms.icinga_director              1.35.0 
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | theforeman.foreman                       3.15.0 
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | vmware.vmware_rest                       2.3.1  
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | vultr.cloud                              1.11.0 
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | vyos.vyos                                4.1.0  
+2025-12-25 15:02:59,970 p=27662 u=sameeralam n=ansible | wti.remote                               1.0.5  
+2025-12-25 15:04:51,960 p=28429 u=sameeralam n=ansible | ansible-playbook [core 2.15.13]
+  config file = /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg
+  configured module search path = ['/Users/sameeralam/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /Users/sameeralam/venvs/ansible/lib/python3.9/site-packages/ansible
+  ansible collection location = /Users/sameeralam/.ansible/collections:/usr/share/ansible/collections
+  executable location = /Users/sameeralam/venvs/ansible/bin/ansible-playbook
+  python version = 3.9.6 (default, Oct 17 2025, 17:15:53) [Clang 17.0.0 (clang-1700.4.4.1)] (/Users/sameeralam/venvs/ansible/bin/python3)
+  jinja version = 3.1.6
+  libyaml = True
+2025-12-25 15:04:51,960 p=28429 u=sameeralam n=ansible | Using /Users/sameeralam/Documents/GitHub/Ansible-Playbook/ansible.cfg as config file
+2025-12-25 15:04:52,105 p=28429 u=sameeralam n=ansible | [WARNING]: Collection ansible.windows does not support Ansible version 2.15.13
+
+2025-12-25 15:04:52,113 p=28429 u=sameeralam n=ansible | Skipping callback 'default', as we already have a stdout callback.
+2025-12-25 15:04:52,113 p=28429 u=sameeralam n=ansible | Skipping callback 'minimal', as we already have a stdout callback.
+2025-12-25 15:04:52,113 p=28429 u=sameeralam n=ansible | Skipping callback 'oneline', as we already have a stdout callback.
+2025-12-25 15:04:52,113 p=28429 u=sameeralam n=ansible | PLAYBOOK: ping.yml *****************************************************************************************************************************************************
+2025-12-25 15:04:52,113 p=28429 u=sameeralam n=ansible | 1 plays in ping.yml
+2025-12-25 15:04:52,113 p=28429 u=sameeralam n=ansible | PLAY [Test WinRM connectivity to Windows host] *************************************************************************************************************************
+2025-12-25 15:04:52,139 p=28429 u=sameeralam n=ansible | TASK [Ping Windows host via WinRM] *************************************************************************************************************************************
+2025-12-25 15:06:07,163 p=28429 u=sameeralam n=ansible | fatal: [192.168.0.102]: FAILED! => {"msg": "the connection attempt timed out"}
+2025-12-25 15:06:07,163 p=28429 u=sameeralam n=ansible | PLAY RECAP *************************************************************************************************************************************************************
+2025-12-25 15:06:07,164 p=28429 u=sameeralam n=ansible | 192.168.0.102              : ok=0    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+2025-12-25 15:15:27,169 p=32390 u=sameeralam n=ansible | [WARNING]: Collection ansible.windows does not support Ansible version 2.15.13
+
+2025-12-25 15:15:27,176 p=32390 u=sameeralam n=ansible | PLAY [Test WinRM connectivity to Windows host] *************************************************************************************************************************
+2025-12-25 15:15:27,197 p=32390 u=sameeralam n=ansible | TASK [Ping Windows host via WinRM] *************************************************************************************************************************************
+2025-12-25 15:15:44,758 p=32390 u=sameeralam n=ansible | ok: [192.168.0.104]
+2025-12-25 15:15:44,769 p=32390 u=sameeralam n=ansible | PLAY RECAP *************************************************************************************************************************************************************
+2025-12-25 15:15:44,769 p=32390 u=sameeralam n=ansible | 192.168.0.104              : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
