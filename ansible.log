@@ -3130,3 +3130,69 @@ Collection                               Version
 2025-12-25 15:15:44,758 p=32390 u=sameeralam n=ansible | ok: [192.168.0.104]
 2025-12-25 15:15:44,769 p=32390 u=sameeralam n=ansible | PLAY RECAP *************************************************************************************************************************************************************
 2025-12-25 15:15:44,769 p=32390 u=sameeralam n=ansible | 192.168.0.104              : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2025-12-25 15:20:02,257 p=34227 u=sameeralam n=ansible | ERROR! We were unable to read either as JSON nor YAML, these are the errors we got from each:
+JSON: Expecting value: line 1 column 1 (char 0)
+
+Syntax Error while loading YAML.
+  did not find expected key
+
+The error appears to be in '/Users/sameeralam/Documents/GitHub/Ansible-Playbook/gather_facts.yml': line 9, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+    - name: Display OS and IP address
+      - ansible.builtin.debug:
+      ^ here
+
+2025-12-25 15:20:11,206 p=34398 u=sameeralam n=ansible | PLAY [Gather facts from Windows hosts] ********************************************************************************************************************************************
+2025-12-25 15:20:11,210 p=34398 u=sameeralam n=ansible | TASK [Gathering Facts] ************************************************************************************************************************************************************
+2025-12-25 15:20:11,219 p=34398 u=sameeralam n=ansible | [WARNING]: Collection ansible.windows does not support Ansible version 2.15.13
+
+2025-12-25 15:20:25,773 p=34398 u=sameeralam n=ansible | ok: [192.168.0.104]
+2025-12-25 15:20:25,785 p=34398 u=sameeralam n=ansible | TASK [Display basic Windows facts] ************************************************************************************************************************************************
+2025-12-25 15:20:25,802 p=34398 u=sameeralam n=ansible | fatal: [192.168.0.104]: FAILED! => {"msg": "The task includes an option with an undefined variable. The error was: 'ansible_os_version' is undefined. 'ansible_os_version' is undefined\n\nThe error appears to be in '/Users/sameeralam/Documents/GitHub/Ansible-Playbook/gather_facts.yml': line 7, column 7, but may\nbe elsewhere in the file depending on the exact syntax problem.\n\nThe offending line appears to be:\n\n  tasks:\n    - name: Display basic Windows facts\n      ^ here\n"}
+2025-12-25 15:20:25,803 p=34398 u=sameeralam n=ansible | PLAY RECAP ************************************************************************************************************************************************************************
+2025-12-25 15:20:25,803 p=34398 u=sameeralam n=ansible | 192.168.0.104              : ok=1    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+2025-12-25 15:21:10,120 p=34850 u=sameeralam n=ansible | PLAY [Gather facts from Windows hosts] ********************************************************************************************************************************************
+2025-12-25 15:21:10,129 p=34850 u=sameeralam n=ansible | TASK [Display basic Windows facts] ************************************************************************************************************************************************
+2025-12-25 15:21:10,140 p=34850 u=sameeralam n=ansible | ok: [192.168.0.104] => {
+    "msg": [
+        "Hostname: WIN-L4JJJO5S0CF",
+        "OS: Microsoft Windows Server 2022 Standard Evaluation",
+        "OS Version: 10.0.20348.0",
+        "Architecture: 64-bit",
+        "Memory (MB): 2048",
+        "CPU Count: 0"
+    ]
+}
+2025-12-25 15:21:10,146 p=34850 u=sameeralam n=ansible | PLAY RECAP ************************************************************************************************************************************************************************
+2025-12-25 15:21:10,146 p=34850 u=sameeralam n=ansible | 192.168.0.104              : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2025-12-25 15:22:19,502 p=35459 u=sameeralam n=ansible | PLAY [Gather facts from Windows hosts] ********************************************************************************************************************************************
+2025-12-25 15:22:19,509 p=35459 u=sameeralam n=ansible | TASK [Display basic Windows facts] ************************************************************************************************************************************************
+2025-12-25 15:22:19,520 p=35459 u=sameeralam n=ansible | ok: [192.168.0.104] => {
+    "msg": [
+        "Hostname: WIN-L4JJJO5S0CF",
+        "OS: Microsoft Windows Server 2022 Standard Evaluation",
+        "OS Version: 10.0.20348.0",
+        "Architecture: 64-bit",
+        "Memory (MB): 2048",
+        "CPU Count: 0"
+    ]
+}
+2025-12-25 15:22:19,526 p=35459 u=sameeralam n=ansible | PLAY RECAP ************************************************************************************************************************************************************************
+2025-12-25 15:22:19,526 p=35459 u=sameeralam n=ansible | 192.168.0.104              : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2025-12-25 15:23:09,762 p=35861 u=sameeralam n=ansible | PLAY [Gather facts from Windows hosts] ********************************************************************************************************************************************
+2025-12-25 15:23:09,768 p=35861 u=sameeralam n=ansible | TASK [Display basic Windows facts] ************************************************************************************************************************************************
+2025-12-25 15:23:09,778 p=35861 u=sameeralam n=ansible | ok: [192.168.0.104] => {
+    "msg": [
+        "Hostname: WIN-L4JJJO5S0CF",
+        "OS: Microsoft Windows Server 2022 Standard Evaluation",
+        "OS Version: 10.0.20348.0",
+        "Architecture: 64-bit",
+        "Memory (MB): 2048",
+        "CPU Count: 0"
+    ]
+}
+2025-12-25 15:23:09,783 p=35861 u=sameeralam n=ansible | PLAY RECAP ************************************************************************************************************************************************************************
+2025-12-25 15:23:09,783 p=35861 u=sameeralam n=ansible | 192.168.0.104              : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   

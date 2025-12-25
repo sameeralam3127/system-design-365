@@ -1,13 +1,15 @@
 ---
-- name: Gather facts from all Linux systems
-  hosts: ubuntu
-  become: false
+- name: Gather facts from Windows hosts
+  hosts: windows
   gather_facts: true
 
   tasks:
-    - name: Display OS and IP address
-      - ansible.builtin.debug:
+    - name: Display basic Windows facts
+      debug:
         msg:
           - "Hostname: {{ ansible_hostname }}"
-          - "OS: {{ ansible_distribution }} {{ ansible_distribution_version }}"
-          - "IP: {{ ansible_default_ipv4.address }}"
+          - "OS: {{ ansible_distribution }}"
+          - "OS Version: {{ ansible_distribution_version }}"
+          - "Architecture: {{ ansible_architecture }}"
+          - "Memory (MB): {{ ansible_memtotal_mb }}"
+          - "CPU Count: {{ ansible_processor_count }}"
