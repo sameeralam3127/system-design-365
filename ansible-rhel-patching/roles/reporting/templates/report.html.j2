@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background-color: #f4f4f4; }
+  </style>
+</head>
+<body>
+
+<h2>RHEL Patching Report</h2>
+
+<p><strong>Host:</strong> {{ inventory_hostname }}</p>
+<p><strong>Date:</strong> {{ ansible_date_time.date }}</p>
+
+<table>
+  <tr>
+    <th>Package</th>
+    <th>Status</th>
+  </tr>
+  {% for pkg in patched_packages | default([]) %}
+  <tr>
+    <td>{{ pkg.name }}</td>
+    <td>{{ pkg.state }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+</body>
+</html>

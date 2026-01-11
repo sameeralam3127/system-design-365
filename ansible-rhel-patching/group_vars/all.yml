@@ -1,0 +1,14 @@
+# group_vars/all.yml
+report_dir: "./reports"
+report_date: "{{ lookup('pipe','date +%Y-%m-%d') }}"
+
+mail:
+  smtp_host: "smtp.gmail.com"
+  smtp_port: 587
+  smtp_user: "computecentral.in@gmail.com"
+  smtp_password: "{{ gmail_app_password }}"
+  sender: "computecentral.in@gmail.com"
+  recipients:
+    - "sameeralam358@gmail.com"
+
+mail_subject: "Pending Patch Report - {{ report_date }}"
