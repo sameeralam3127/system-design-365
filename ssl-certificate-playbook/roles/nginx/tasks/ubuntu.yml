@@ -1,6 +1,0 @@
----
-- name: Install Nginx and dependencies (Ubuntu)
-  apt:
-    name: "{{ nginx_packages }}"
-    state: present
-    update_cache: yes

@@ -1,7 +1,0 @@
-[webservers]
-dev-web.example.com ansible_host=192.168.1.30
-
-[webservers:vars]
-ssl_certificate_type=self_signed
-ssl_domain=dev.example.com
-ssl_subject_alt_names=['www.dev.example.com', 'test.dev.example.com']
