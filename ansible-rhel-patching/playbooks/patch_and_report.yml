@@ -1,0 +1,9 @@
+---
+- name: RHEL Patch, Reboot, and Report
+  hosts: rhel
+  gather_facts: yes
+
+  roles:
+    - patching
+    - reboot
+    - reporting

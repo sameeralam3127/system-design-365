@@ -1,0 +1,14 @@
+# SMTP / Gmail
+smtp_host: "smtp.gmail.com"
+smtp_port: 587
+smtp_username: "computecentral.in@gmail.com"
+smtp_secure: starttls
+
+# Email
+mail_from: "{{ smtp_username }}"
+mail_to:
+  - "sameeralam358@gmail.com"
+mail_subject: "RHEL Patch & Reboot Report"
+
+# Reboot
+reboot_timeout_seconds: 3600

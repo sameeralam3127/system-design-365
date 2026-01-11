@@ -1,0 +1,35 @@
+---
+### RHEL-specific controls ###
+
+# Enable / disable patching for this group
+patching_enabled: true
+
+# Allow reboots for this group
+allow_reboot: true
+
+# DNF behavior
+dnf_update_cache: true
+dnf_lock_retries: 3
+dnf_lock_delay: 30
+
+# Reboot behavior
+reboot_timeout_seconds: 3600
+reboot_message: "Reboot initiated by Ansible after RHEL patching"
+
+# Kernel handling
+reboot_on_kernel_update: true
+
+# Email reporting controls
+send_email_report: true
+
+# Maintenance window (optional safety net)
+maintenance_window:
+  enabled: false
+  start: "22:00"
+  end: "04:00"
+
+# Compliance / tagging
+patching_tags:
+  - rhel
+  - patching
+  - reboot

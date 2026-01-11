@@ -1,0 +1,40 @@
+---
+- name: Build HTML report
+  ansible.builtin.set_fact:
+    email_body: |
+      <html>
+      <body style="font-family: Arial;">
+        <h2>RHEL Patch & Reboot Report</h2>
+
+        <table border="1" cellpadding="6">
+          <tr><th>Host</th><td>{{ inventory_hostname }}</td></tr>
+          <tr><th>OS</th><td>{{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }}</td></tr>
+          <tr><th>Kernel Updated</th><td>{{ kernel_updated }}</td></tr>
+          <tr><th>Updates Applied</th><td>{{ updates_applied }}</td></tr>
+          <tr><th>Reboot Needed</th><td>{{ reboot_needed }}</td></tr>
+          <tr><th>Reboot Count</th><td>{{ reboot_count.stdout }}</td></tr>
+        </table>
+
+        <h3>DNF Summary</h3>
+        {% if updates_applied %}
+        <pre>{{ dnf_update_result | to_nice_json }}</pre>
+        {% else %}
+        <p>No updates applied.</p>
+        {% endif %}
+      </body>
+      </html>
+
+- name: Send report via Gmail
+  ansible.builtin.mail:
+    host: "{{ smtp_host }}"
+    port: "{{ smtp_port }}"
+    username: "{{ smtp_username }}"
+    password: "{{ gmail_app_password }}"
+    secure: "{{ smtp_secure }}"
+    from: "{{ mail_from }}"
+    to: "{{ mail_to }}"
+    subject: "{{ mail_subject }} - {{ inventory_hostname }}"
+    subtype: html
+    body: "{{ email_body }}"
+  delegate_to: localhost
+  failed_when: false
