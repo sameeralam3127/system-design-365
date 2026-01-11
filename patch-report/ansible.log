@@ -895,3 +895,21 @@ Origin: /Users/sameeralam/Documents/GitHub/Ansible-Playbook/patch-report/roles/p
 2025-12-23 23:36:21,378 p=52912 u=sameeralam n=ansible INFO| PLAY RECAP ***********************************************************************************************************************************************************
 2025-12-23 23:36:21,379 p=52912 u=sameeralam n=ansible INFO| localhost                  : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 2025-12-23 23:36:21,379 p=52912 u=sameeralam n=ansible INFO| ubuntu1                    : ok=8    changed=1    unreachable=0    failed=0    skipped=3    rescued=0    ignored=0   
+2026-01-11 23:49:04,855 p=80510 u=sameeralam n=ansible INFO| PLAY [Collect and apply patches on Ubuntu] ***************************************************************************************************************************
+2026-01-11 23:49:04,863 p=80510 u=sameeralam n=ansible INFO| TASK [Gathering Facts] ***********************************************************************************************************************************************
+2026-01-11 23:49:35,006 p=80510 u=sameeralam n=ansible ERROR| [ERROR]: Task failed: Failed to connect to the host via ssh: ssh: connect to host 192.168.2.6 port 22: Operation timed out
+
+Task failed.
+
+<<< caused by >>>
+
+Failed to connect to the host via ssh: ssh: connect to host 192.168.2.6 port 22: Operation timed out
+
+
+2026-01-11 23:49:35,008 p=80510 u=sameeralam n=ansible INFO| fatal: [ubuntu1]: UNREACHABLE! => {"changed": false, "msg": "Task failed: Failed to connect to the host via ssh: ssh: connect to host 192.168.2.6 port 22: Operation timed out", "unreachable": true}
+2026-01-11 23:49:35,009 p=80510 u=sameeralam n=ansible INFO| PLAY RECAP ***********************************************************************************************************************************************************
+2026-01-11 23:49:35,009 p=80510 u=sameeralam n=ansible INFO| ubuntu1                    : ok=0    changed=0    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0   
+2026-01-11 23:49:50,258 p=80807 u=sameeralam n=ansible INFO| PLAY [Collect and apply patches on Ubuntu] ***************************************************************************************************************************
+2026-01-11 23:49:50,264 p=80807 u=sameeralam n=ansible INFO| TASK [Gathering Facts] ***********************************************************************************************************************************************
+2026-01-11 23:50:18,095 p=80807 u=sameeralam n=ansible ERROR| [ERROR]: User interrupted execution
+
