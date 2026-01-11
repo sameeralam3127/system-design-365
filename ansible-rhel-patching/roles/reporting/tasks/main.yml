@@ -2,8 +2,6 @@
   ansible.builtin.template:
     src: report.html.j2
     dest: /tmp/patching-report.html
-  delegate_to: localhost
-  become: false
   run_once: true
 
 - name: Send report via Gmail
@@ -15,9 +13,7 @@
     secure: "{{ smtp_secure }}"
     from: "{{ mail_from }}"
     to: "{{ mail_to }}"
-    subject: "RHEL Patching Report - {{ inventory_hostname }}"
+    subject: "RHEL Patching Report"
     subtype: html
     body: "{{ lookup('ansible.builtin.file', '/tmp/patching-report.html') }}"
-  delegate_to: localhost
-  become: false
   run_once: true
