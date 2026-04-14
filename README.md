@@ -16,22 +16,6 @@ Use this repo as a long-term preparation workspace for:
 - Senior engineer / staff engineer design rounds
 - Revision before FAANG-style interviews
 
-## Recommended Folder Structure
-
-```text
-.
-├── README.md
-├── HLD/
-├── LLD/
-├── case-studies/
-├── patterns/
-├── trade-offs/
-├── templates/
-├── notes/
-├── diagrams/
-└── mock-interviews/
-```
-
 ## What Goes Where
 
 ### `HLD/`
