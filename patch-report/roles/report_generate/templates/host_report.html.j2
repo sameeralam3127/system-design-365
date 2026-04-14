@@ -1,9 +1,0 @@
-<h2>{{ item }}</h2>
-
-<ul>
-{% for patch in hostvars[item].pending_patches | default([]) %}
-  <li>{{ patch }}</li>
-{% else %}
-  <li>No pending updates</li>
-{% endfor %}
-</ul>

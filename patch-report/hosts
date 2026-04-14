@@ -1,4 +1,0 @@
-[ubuntu]
-
-ubuntu1 ansible_host=192.168.2.6 ansible_user=ubuntu ansible_ask_pass=Sameer@19
-rhel ubuntu1 ansible_host=172.16.175.131 ansible_user=root 
