@@ -124,7 +124,16 @@ Use for architecture sketches, exported diagrams, and image assets.
 
 ### `mock-interviews/`
 
-Use for practice prompts and post-mock feedback.
+Use for realistic interview practice, reusable prompts, and post-mock feedback.
+
+Suggested files:
+
+- `mock-interviews/session-template.md`
+- `mock-interviews/interviewer-checklist.md`
+- `mock-interviews/prompt-001-url-shortener.md`
+- `mock-interviews/prompt-002-notification-service.md`
+- `mock-interviews/prompt-003-chat-system.md`
+- `mock-interviews/prompt-004-news-feed.md`
 
 ## 12-Week Roadmap
 
