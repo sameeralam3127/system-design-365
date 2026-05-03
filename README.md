@@ -6,6 +6,7 @@ A structured repository for system design interview prep with a FAANG-style focu
 - Low-Level Design (LLD) for object modeling, APIs, and implementation detail
 - Case studies for classic interview systems
 - Reusable patterns, trade-offs, and templates for faster revision
+- Security notes for runtime, supply-chain, and operational risk
 
 ## Goal
 
@@ -134,6 +135,19 @@ Suggested files:
 - `mock-interviews/prompt-002-notification-service.md`
 - `mock-interviews/prompt-003-chat-system.md`
 - `mock-interviews/prompt-004-news-feed.md`
+
+### `security/`
+
+Use for security-focused system design notes:
+
+- runtime and toolchain execution surfaces
+- supply-chain attack paths
+- secret handling and CI/CD hardening
+- secure defaults and operational guardrails
+
+Suggested files:
+
+- `security/python-before-your-code-runs.md`
 
 ## 12-Week Roadmap
 
