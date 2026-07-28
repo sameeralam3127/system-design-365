@@ -1,0 +1,828 @@
+<title>Twitter System Design</title>
+<style>
+  :root {
+    --bg: #f7f9fa;
+    --surface: #ffffff;
+    --surface-2: #eef3f6;
+    --ink: #0e1720;
+    --muted: #5b6b79;
+    --line: #d8e1e8;
+    --accent: #1d8fe1;
+    --accent-ink: #0b6cb3;
+    --accent-soft: rgba(29, 143, 225, 0.10);
+    --edge: #7c5cd6;      /* clients & edge */
+    --svc: #1d8fe1;       /* online services */
+    --data: #d9822b;      /* storage & cache */
+    --async: #2e9e6b;     /* async / streaming */
+    --code-bg: #0f1b26;
+    --code-ink: #dfe9f1;
+    --shadow: 0 1px 2px rgba(14, 23, 32, 0.06), 0 8px 24px rgba(14, 23, 32, 0.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0c151d;
+      --surface: #131f2a;
+      --surface-2: #1a2937;
+      --ink: #e6edf3;
+      --muted: #8fa3b3;
+      --line: #263745;
+      --accent: #4aa8ec;
+      --accent-ink: #7cc2f4;
+      --accent-soft: rgba(74, 168, 236, 0.12);
+      --edge: #a08ae6;
+      --svc: #4aa8ec;
+      --data: #e39a4f;
+      --async: #4cba86;
+      --code-bg: #0a1219;
+      --code-ink: #d5e2ec;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0c151d;
+    --surface: #131f2a;
+    --surface-2: #1a2937;
+    --ink: #e6edf3;
+    --muted: #8fa3b3;
+    --line: #263745;
+    --accent: #4aa8ec;
+    --accent-ink: #7cc2f4;
+    --accent-soft: rgba(74, 168, 236, 0.12);
+    --edge: #a08ae6;
+    --svc: #4aa8ec;
+    --data: #e39a4f;
+    --async: #4cba86;
+    --code-bg: #0a1219;
+    --code-ink: #d5e2ec;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #f7f9fa;
+    --surface: #ffffff;
+    --surface-2: #eef3f6;
+    --ink: #0e1720;
+    --muted: #5b6b79;
+    --line: #d8e1e8;
+    --accent: #1d8fe1;
+    --accent-ink: #0b6cb3;
+    --accent-soft: rgba(29, 143, 225, 0.10);
+    --edge: #7c5cd6;
+    --svc: #1d8fe1;
+    --data: #d9822b;
+    --async: #2e9e6b;
+    --code-bg: #0f1b26;
+    --code-ink: #dfe9f1;
+    --shadow: 0 1px 2px rgba(14, 23, 32, 0.06), 0 8px 24px rgba(14, 23, 32, 0.05);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+  }
+  .mono { font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- header ---------- */
+  header.hero { padding: 56px 0 32px; border-bottom: 1px solid var(--line); }
+  .eyebrow {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-ink); margin: 0 0 12px;
+  }
+  h1 {
+    font-family: "Avenir Next", "Helvetica Neue", -apple-system, sans-serif;
+    font-size: clamp(34px, 5vw, 52px); font-weight: 700; letter-spacing: -0.02em;
+    line-height: 1.08; margin: 0 0 16px; text-wrap: balance;
+  }
+  .lede { max-width: 64ch; color: var(--muted); font-size: 18px; margin: 0 0 24px; }
+  .fact-row { display: flex; flex-wrap: wrap; gap: 12px; }
+  .fact {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 16px; box-shadow: var(--shadow); min-width: 128px;
+  }
+  .fact b {
+    display: block; font-size: 20px; font-weight: 700;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
+  }
+  .fact span { font-size: 12.5px; color: var(--muted); }
+
+  /* ---------- nav ---------- */
+  nav.toc {
+    position: sticky; top: 0; z-index: 20;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav.toc .wrap { display: flex; gap: 4px; overflow-x: auto; padding-top: 10px; padding-bottom: 10px; }
+  nav.toc a {
+    flex: 0 0 auto; text-decoration: none; color: var(--muted);
+    font-size: 13.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px;
+    border: 1px solid transparent;
+  }
+  nav.toc a:hover, nav.toc a:focus-visible { color: var(--accent-ink); background: var(--accent-soft); }
+  nav.toc a:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  /* ---------- sections ---------- */
+  main { padding: 16px 0 96px; }
+  section { padding-top: 48px; }
+  h2 {
+    font-family: "Avenir Next", "Helvetica Neue", -apple-system, sans-serif;
+    font-size: 27px; font-weight: 700; letter-spacing: -0.015em;
+    margin: 0 0 6px; scroll-margin-top: 76px; text-wrap: balance;
+  }
+  h2 .sec {
+    color: var(--accent-ink);
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 15px; font-weight: 600; letter-spacing: 0.06em;
+    margin-right: 10px; vertical-align: 2px;
+  }
+  h3 { font-size: 19px; font-weight: 700; margin: 32px 0 8px; letter-spacing: -0.01em; }
+  p { max-width: 72ch; margin: 12px 0; }
+  .kicker { color: var(--muted); max-width: 72ch; margin-top: 4px; }
+  ul { max-width: 72ch; padding-left: 22px; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--accent); }
+  strong { font-weight: 650; }
+
+  .callout {
+    max-width: 76ch; margin: 20px 0; padding: 14px 18px;
+    background: var(--accent-soft); border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0; font-size: 15px;
+  }
+  .callout b { color: var(--accent-ink); }
+
+  /* ---------- cards / grids ---------- */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+  @media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 18px 20px; box-shadow: var(--shadow);
+  }
+  .card h4 { margin: 0 0 8px; font-size: 15px; letter-spacing: 0.02em; }
+  .card ul { margin: 0; padding-left: 20px; font-size: 14.5px; }
+
+  /* ---------- tables ---------- */
+  .tablewrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); }
+  table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+  th, td { text-align: left; padding: 10px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  th {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--muted); background: var(--surface-2); white-space: nowrap;
+  }
+  td.num, th.num { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 13.5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  td code, li code, p code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.88em; background: var(--surface-2);
+    padding: 1.5px 6px; border-radius: 6px; border: 1px solid var(--line);
+  }
+
+  /* ---------- code blocks ---------- */
+  pre.block {
+    background: var(--code-bg); color: var(--code-ink);
+    border-radius: 12px; padding: 18px 22px; overflow-x: auto;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13.5px; line-height: 1.7; margin: 18px 0;
+  }
+  pre.block .c { color: #7e97a8; }
+  pre.block .k { color: #6fc2ff; font-weight: 600; }
+  pre.block .s { color: #9fdba8; }
+
+  /* ---------- diagrams ---------- */
+  figure.diagram { margin: 22px 0; }
+  .diagram-frame {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    box-shadow: var(--shadow); overflow-x: auto; padding: 18px 12px;
+  }
+  .diagram-frame svg { display: block; margin: 0 auto; }
+  figcaption { font-size: 13.5px; color: var(--muted); margin-top: 10px; max-width: 80ch; }
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; margin: 12px 2px 0; font-size: 13px; color: var(--muted); }
+  .legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+
+  svg text { font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif; fill: var(--ink); }
+  svg .lbl { font-size: 13px; font-weight: 600; }
+  svg .sub { font-size: 10.5px; fill: var(--muted); font-weight: 400; }
+  svg .tag { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; fill: var(--muted); }
+  svg .edge-note { font-size: 10.5px; fill: var(--muted); }
+  svg .node { fill: var(--surface-2); stroke-width: 1.4; rx: 10; }
+  svg .n-edge  { stroke: var(--edge); }
+  svg .n-svc   { stroke: var(--svc); }
+  svg .n-data  { stroke: var(--data); }
+  svg .n-async { stroke: var(--async); }
+  svg .flow { stroke: var(--muted); stroke-width: 1.4; fill: none; }
+  svg .flow-async { stroke: var(--async); stroke-width: 1.4; fill: none; stroke-dasharray: 5 4; }
+  svg .zone { fill: none; stroke: var(--line); stroke-dasharray: 3 4; rx: 14; }
+
+  /* snowflake id bar */
+  .snowflake { display: flex; margin: 18px 0 6px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow); min-width: 480px; }
+  .snowwrap { overflow-x: auto; }
+  .snowflake div { padding: 12px 8px; text-align: center; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12.5px; color: var(--ink); }
+  .snowflake b { display: block; font-size: 15px; }
+  .sf-ts { flex: 41; background: var(--accent-soft); border-right: 1px solid var(--line); }
+  .sf-dc { flex: 10; background: color-mix(in srgb, var(--edge) 12%, var(--surface)); border-right: 1px solid var(--line); }
+  .sf-wk { flex: 10; background: color-mix(in srgb, var(--async) 12%, var(--surface)); border-right: 1px solid var(--line); }
+  .sf-sq { flex: 12; background: color-mix(in srgb, var(--data) 14%, var(--surface)); }
+
+  footer {
+    border-top: 1px solid var(--line); padding: 28px 0 48px;
+    color: var(--muted); font-size: 13.5px;
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">System Design Case Study · High-Level Design</p>
+    <h1>Designing Twitter</h1>
+    <p class="lede">A read-heavy social feed at planetary scale: how tweets are written once, fanned out to millions of home timelines, and served back in under 200&nbsp;ms — with the fan-out hybrid, sharding scheme, and caching layers that make it work.</p>
+    <div class="fact-row">
+      <div class="fact"><b>200 M</b><span>daily active users</span></div>
+      <div class="fact"><b>~5,800/s</b><span>tweet writes (avg)</span></div>
+      <div class="fact"><b>~1.2 M/s</b><span>timeline reads (peak)</span></div>
+      <div class="fact"><b>200 : 1</b><span>read / write ratio</span></div>
+      <div class="fact"><b>&lt; 200 ms</b><span>p99 timeline load</span></div>
+    </div>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Sections">
+  <div class="wrap">
+    <a href="#requirements">Requirements</a>
+    <a href="#estimation">Estimation</a>
+    <a href="#api">API</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#fanout">Fan-out</a>
+    <a href="#read">Read path</a>
+    <a href="#data">Data model</a>
+    <a href="#deepdives">Deep dives</a>
+    <a href="#tradeoffs">Trade-offs</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- ============ 1. REQUIREMENTS ============ -->
+  <section id="requirements">
+    <h2><span class="sec">01</span>Requirements &amp; scope</h2>
+    <p class="kicker">Pin the problem before drawing boxes. Interviews reward a crisp scope statement more than an exhaustive feature list.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h4>✅ Functional — in scope</h4>
+        <ul>
+          <li>Post a tweet (280 chars, optional image/video)</li>
+          <li>Follow / unfollow users</li>
+          <li><strong>Home timeline</strong> — tweets from people you follow, reverse-chronological (ranking noted as an extension)</li>
+          <li>User timeline — one user's own tweets</li>
+          <li>Like, retweet, reply (counts on each tweet)</li>
+          <li>Search tweets; trending topics</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>🚫 Out of scope</h4>
+        <ul>
+          <li>DMs, Spaces, communities, ads serving</li>
+          <li>ML ranking model internals (we design the hook, not the model)</li>
+          <li>Moderation / spam pipelines</li>
+          <li>Analytics &amp; experimentation platform</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Non-functional requirements</h3>
+    <div class="tablewrap">
+      <table>
+        <tr><th>Property</th><th>Target</th><th>Why it shapes the design</th></tr>
+        <tr><td><strong>Latency</strong></td><td class="num">p99 &lt; 200 ms timeline · &lt; 500 ms tweet post</td><td>Forces precomputed timelines + aggressive caching; nothing on the read path may touch a cold database.</td></tr>
+        <tr><td><strong>Availability</strong></td><td class="num">99.99 % reads</td><td>Reads must degrade gracefully (stale timeline &gt; error page). Favor AP over CP for the feed.</td></tr>
+        <tr><td><strong>Consistency</strong></td><td class="num">Eventual (seconds)</td><td>A follower seeing a tweet 5 s late is fine; losing an accepted tweet is not. Durability on write, eventual visibility.</td></tr>
+        <tr><td><strong>Scale skew</strong></td><td class="num">Followers: median ~200, max 100 M+</td><td>The celebrity long tail breaks naive fan-out — this single fact drives the core architectural decision.</td></tr>
+      </table>
+    </div>
+
+    <div class="callout"><b>The one-sentence framing:</b> Twitter is a <strong>write-once, read-many</strong> system with extreme fan-out skew. Everything below is a consequence of optimizing the read path and taming the celebrity problem.</div>
+  </section>
+
+  <!-- ============ 2. ESTIMATION ============ -->
+  <section id="estimation">
+    <h2><span class="sec">02</span>Back-of-envelope estimation</h2>
+    <p class="kicker">Round numbers, stated assumptions. The goal is orders of magnitude that justify (or kill) design choices.</p>
+
+    <h3>Traffic</h3>
+    <div class="tablewrap">
+      <table>
+        <tr><th>Quantity</th><th class="num">Working</th><th class="num">Result</th></tr>
+        <tr><td>Daily active users (DAU)</td><td class="num">assumption</td><td class="num">200 M</td></tr>
+        <tr><td>Tweets written</td><td class="num">200 M × 2.5 tweets/day</td><td class="num">500 M/day ≈ 5,800/s avg · ~17 k/s peak</td></tr>
+        <tr><td>Timeline reads</td><td class="num">200 M × ~50 loads/day</td><td class="num">10 B/day ≈ 115 k/s avg · ~1.2 M/s peak (incl. polling &amp; refresh)</td></tr>
+        <tr><td>Fan-out deliveries</td><td class="num">500 M tweets × ~200 followers</td><td class="num"><strong>100 B timeline inserts/day ≈ 1.2 M/s</strong></td></tr>
+      </table>
+    </div>
+
+    <h3>Storage</h3>
+    <div class="tablewrap">
+      <table>
+        <tr><th>Quantity</th><th class="num">Working</th><th class="num">Result</th></tr>
+        <tr><td>Tweet record (text + metadata)</td><td class="num">~1 KB × 500 M/day</td><td class="num">0.5 TB/day → ~1 PB / 5 yr (×3 replication: 3 PB)</td></tr>
+        <tr><td>Media</td><td class="num">20 % of tweets × 2 MB avg</td><td class="num">200 TB/day → object store + CDN, lifecycle-tiered</td></tr>
+        <tr><td>Timeline cache (Redis)</td><td class="num">200 M active users × 800 IDs × ~20 B</td><td class="num">~3.2 TB — fits a modest Redis cluster; cache <em>active users only</em></td></tr>
+      </table>
+    </div>
+
+    <div class="callout"><b>What the math tells us:</b> writes (5.8 k/s) are trivial; <strong>fan-out (1.2 M/s inserts) is the real write load</strong>, and it's amplified 200× from user writes. Timeline state fits comfortably in RAM. Conclusion: precompute timelines in memory, but cap fan-out amplification for celebrities.</div>
+  </section>
+
+  <!-- ============ 3. API ============ -->
+  <section id="api">
+    <h2><span class="sec">03</span>API design</h2>
+    <p class="kicker">REST over HTTPS at the edge; services speak gRPC internally. Cursor pagination everywhere — offsets don't survive a moving feed.</p>
+
+<pre class="block"><span class="c"># Post a tweet (idempotency key dedupes client retries)</span>
+<span class="k">POST</span> /v1/tweets
+{ <span class="s">"text"</span>: <span class="s">"hello world"</span>, <span class="s">"media_ids"</span>: [<span class="s">"m_9f2c"</span>], <span class="s">"reply_to"</span>: null,
+  <span class="s">"idempotency_key"</span>: <span class="s">"c1a2-…"</span> }
+<span class="c">→ 201 { "tweet_id": "1849236481024917504", "created_at": … }</span>
+
+<span class="c"># Home timeline — cursor = last seen tweet ID (snowflake IDs are time-sortable)</span>
+<span class="k">GET</span> /v1/timeline/home?cursor=1849236481024917504&amp;count=20
+<span class="c">→ 200 { "tweets": [ …hydrated tweets… ], "next_cursor": "…" }</span>
+
+<span class="k">GET</span>  /v1/users/{id}/tweets?cursor=…&amp;count=20   <span class="c"># user timeline</span>
+<span class="k">POST</span> /v1/users/{id}/follow                     <span class="c"># idempotent</span>
+<span class="k">DELETE</span> /v1/users/{id}/follow
+<span class="k">POST</span> /v1/tweets/{id}/like                      <span class="c"># counter, eventually consistent</span>
+<span class="k">POST</span> /v1/tweets/{id}/retweet
+<span class="k">GET</span>  /v1/search?q=…&amp;cursor=…                   <span class="c"># tweet search</span>
+<span class="k">GET</span>  /v1/trends?place_id=…                     <span class="c"># trending topics</span></pre>
+
+    <ul>
+      <li><strong>Auth:</strong> OAuth 2.0 bearer tokens, validated at the API gateway; user ID flows to services in signed headers.</li>
+      <li><strong>Rate limits:</strong> per-user token buckets at the gateway (e.g. 300 tweets / 3 h, 900 timeline reads / 15 min) — protects fan-out from abuse.</li>
+      <li><strong>Media:</strong> client requests a presigned URL, uploads directly to object storage, then attaches the returned <code>media_id</code> — tweet write path never carries bytes.</li>
+    </ul>
+  </section>
+
+  <!-- ============ 4. ARCHITECTURE ============ -->
+  <section id="architecture">
+    <h2><span class="sec">04</span>High-level architecture</h2>
+    <p class="kicker">Stateless services behind a gateway; synchronous work kept to the minimum, everything amplifying a write pushed through Kafka to async consumers.</p>
+
+    <figure class="diagram">
+      <div class="diagram-frame">
+        <svg width="1000" height="640" viewBox="0 0 1000 640" role="img" aria-label="High-level architecture: clients through CDN and gateway to services, Kafka pipeline, and storage">
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+            </marker>
+            <marker id="arrg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--async)"/>
+            </marker>
+          </defs>
+
+          <!-- zones -->
+          <rect class="zone" x="12" y="14" width="150" height="316"/>
+          <text class="tag" x="28" y="36">CLIENTS</text>
+          <rect class="zone" x="192" y="14" width="150" height="316"/>
+          <text class="tag" x="208" y="36">EDGE</text>
+          <rect class="zone" x="372" y="14" width="240" height="446"/>
+          <text class="tag" x="388" y="36">ONLINE SERVICES</text>
+          <rect class="zone" x="642" y="336" width="196" height="290"/>
+          <text class="tag" x="658" y="358">ASYNC PIPELINE</text>
+          <rect class="zone" x="662" y="14" width="326" height="296"/>
+          <text class="tag" x="678" y="36">STORAGE &amp; CACHE</text>
+
+          <!-- clients -->
+          <rect class="node n-edge" x="28" y="56" width="118" height="46" rx="10"/>
+          <text class="lbl" x="87" y="76" text-anchor="middle">Mobile apps</text>
+          <text class="sub" x="87" y="92" text-anchor="middle">iOS · Android</text>
+          <rect class="node n-edge" x="28" y="116" width="118" height="46" rx="10"/>
+          <text class="lbl" x="87" y="136" text-anchor="middle">Web client</text>
+          <text class="sub" x="87" y="152" text-anchor="middle">SPA</text>
+          <rect class="node n-edge" x="28" y="176" width="118" height="46" rx="10"/>
+          <text class="lbl" x="87" y="196" text-anchor="middle">3rd-party API</text>
+          <text class="sub" x="87" y="212" text-anchor="middle">OAuth apps</text>
+
+          <!-- edge -->
+          <rect class="node n-edge" x="208" y="56" width="118" height="46" rx="10"/>
+          <text class="lbl" x="267" y="76" text-anchor="middle">CDN</text>
+          <text class="sub" x="267" y="92" text-anchor="middle">media · static</text>
+          <rect class="node n-edge" x="208" y="136" width="118" height="46" rx="10"/>
+          <text class="lbl" x="267" y="156" text-anchor="middle">Load balancer</text>
+          <text class="sub" x="267" y="172" text-anchor="middle">L4/L7 · TLS</text>
+          <rect class="node n-edge" x="208" y="216" width="118" height="56" rx="10"/>
+          <text class="lbl" x="267" y="238" text-anchor="middle">API Gateway</text>
+          <text class="sub" x="267" y="256" text-anchor="middle">auth · rate limit · route</text>
+
+          <!-- services -->
+          <rect class="node n-svc" x="392" y="56" width="200" height="50" rx="10"/>
+          <text class="lbl" x="492" y="77" text-anchor="middle">Tweet Service</text>
+          <text class="sub" x="492" y="94" text-anchor="middle">write path · ID gen · persist · publish</text>
+          <rect class="node n-svc" x="392" y="120" width="200" height="50" rx="10"/>
+          <text class="lbl" x="492" y="141" text-anchor="middle">Timeline Service</text>
+          <text class="sub" x="492" y="158" text-anchor="middle">read path · merge · hydrate</text>
+          <rect class="node n-svc" x="392" y="184" width="200" height="50" rx="10"/>
+          <text class="lbl" x="492" y="205" text-anchor="middle">User / Social Graph Service</text>
+          <text class="sub" x="492" y="222" text-anchor="middle">profiles · follow edges</text>
+          <rect class="node n-svc" x="392" y="248" width="200" height="50" rx="10"/>
+          <text class="lbl" x="492" y="269" text-anchor="middle">Search Service</text>
+          <text class="sub" x="492" y="286" text-anchor="middle">query fan-out · rank</text>
+          <rect class="node n-svc" x="392" y="312" width="200" height="50" rx="10"/>
+          <text class="lbl" x="492" y="333" text-anchor="middle">Media Service</text>
+          <text class="sub" x="492" y="350" text-anchor="middle">presigned uploads · transcode</text>
+          <rect class="node n-svc" x="392" y="376" width="200" height="50" rx="10"/>
+          <text class="lbl" x="492" y="397" text-anchor="middle">Engagement Service</text>
+          <text class="sub" x="492" y="414" text-anchor="middle">likes · retweets · counters</text>
+
+          <!-- storage -->
+          <rect class="node n-data" x="678" y="46" width="140" height="50" rx="10"/>
+          <text class="lbl" x="748" y="67" text-anchor="middle">Tweet store</text>
+          <text class="sub" x="748" y="84" text-anchor="middle">sharded MySQL / Manhattan</text>
+          <rect class="node n-data" x="832" y="46" width="140" height="50" rx="10"/>
+          <text class="lbl" x="902" y="67" text-anchor="middle">Graph store</text>
+          <text class="sub" x="902" y="84" text-anchor="middle">follows · FlockDB-style</text>
+          <rect class="node n-data" x="678" y="110" width="140" height="50" rx="10"/>
+          <text class="lbl" x="748" y="131" text-anchor="middle">Timeline cache</text>
+          <text class="sub" x="748" y="148" text-anchor="middle">Redis cluster · lists</text>
+          <rect class="node n-data" x="832" y="110" width="140" height="50" rx="10"/>
+          <text class="lbl" x="902" y="131" text-anchor="middle">Tweet cache</text>
+          <text class="sub" x="902" y="148" text-anchor="middle">Memcached · hot tweets</text>
+          <rect class="node n-data" x="678" y="174" width="140" height="50" rx="10"/>
+          <text class="lbl" x="748" y="195" text-anchor="middle">Object store</text>
+          <text class="sub" x="748" y="212" text-anchor="middle">S3 · media blobs</text>
+          <rect class="node n-data" x="832" y="174" width="140" height="50" rx="10"/>
+          <text class="lbl" x="902" y="195" text-anchor="middle">Search index</text>
+          <text class="sub" x="902" y="212" text-anchor="middle">Elasticsearch / Earlybird</text>
+          <rect class="node n-data" x="678" y="238" width="140" height="50" rx="10"/>
+          <text class="lbl" x="748" y="259" text-anchor="middle">Counter store</text>
+          <text class="sub" x="748" y="276" text-anchor="middle">Redis + rollup DB</text>
+
+          <!-- async -->
+          <rect class="node n-async" x="658" y="372" width="164" height="50" rx="10"/>
+          <text class="lbl" x="740" y="393" text-anchor="middle">Kafka</text>
+          <text class="sub" x="740" y="410" text-anchor="middle">tweet_created · engagement</text>
+          <rect class="node n-async" x="658" y="438" width="164" height="44" rx="10"/>
+          <text class="lbl" x="740" y="456" text-anchor="middle">Fan-out workers</text>
+          <text class="sub" x="740" y="472" text-anchor="middle">push to follower timelines</text>
+          <rect class="node n-async" x="658" y="494" width="164" height="44" rx="10"/>
+          <text class="lbl" x="740" y="512" text-anchor="middle">Index &amp; trends workers</text>
+          <text class="sub" x="740" y="528" text-anchor="middle">search ingest · heavy hitters</text>
+          <rect class="node n-async" x="658" y="550" width="164" height="44" rx="10"/>
+          <text class="lbl" x="740" y="568" text-anchor="middle">Notification workers</text>
+          <text class="sub" x="740" y="584" text-anchor="middle">push · mentions · follows</text>
+
+          <!-- flows: clients to edge -->
+          <path class="flow" d="M146,79 H208" marker-end="url(#arr)"/>
+          <path class="flow" d="M146,139 L208,159" marker-end="url(#arr)"/>
+          <path class="flow" d="M146,199 L208,232" marker-end="url(#arr)"/>
+          <path class="flow" d="M267,102 V136"/>
+          <path class="flow" d="M267,182 V216" marker-end="url(#arr)"/>
+
+          <!-- gateway to services -->
+          <path class="flow" d="M326,236 C360,236 356,81 392,81" marker-end="url(#arr)"/>
+          <path class="flow" d="M326,240 C360,240 356,145 392,145" marker-end="url(#arr)"/>
+          <path class="flow" d="M326,244 C356,244 360,209 392,209" marker-end="url(#arr)"/>
+          <path class="flow" d="M326,248 C356,248 360,273 392,273" marker-end="url(#arr)"/>
+          <path class="flow" d="M326,252 C356,252 360,337 392,337" marker-end="url(#arr)"/>
+          <path class="flow" d="M326,256 C356,256 360,401 392,401" marker-end="url(#arr)"/>
+
+          <!-- services to storage -->
+          <path class="flow" d="M592,71 H678" marker-end="url(#arr)"/>
+          <text class="edge-note" x="614" y="64">persist</text>
+          <path class="flow" d="M592,135 H678" marker-end="url(#arr)"/>
+          <text class="edge-note" x="600" y="128">read timeline</text>
+          <path class="flow" d="M592,150 C640,150 700,135 832,135" marker-end="url(#arr)"/>
+          <path class="flow" d="M592,209 C630,209 640,88 832,74" marker-end="url(#arr)"/>
+          <path class="flow" d="M592,286 C640,286 700,214 832,206" marker-end="url(#arr)"/>
+          <path class="flow" d="M592,337 C630,337 640,199 678,199" marker-end="url(#arr)"/>
+          <path class="flow" d="M592,401 C630,401 640,263 678,263" marker-end="url(#arr)"/>
+
+          <!-- async flows -->
+          <path class="flow-async" d="M492,426 C492,470 560,394 658,394" marker-end="url(#arrg)"/>
+          <text class="edge-note" x="520" y="452">publish events</text>
+          <path class="flow-async" d="M740,422 V438" marker-end="url(#arrg)"/>
+          <path class="flow-async" d="M740,482 V494" marker-end="url(#arrg)"/>
+          <path class="flow-async" d="M740,538 V550" marker-end="url(#arrg)"/>
+          <path class="flow-async" d="M822,458 C900,458 748,230 748,164" marker-end="url(#arrg)"/>
+          <text class="edge-note" x="880" y="420">write timelines</text>
+          <path class="flow-async" d="M822,512 C940,512 902,290 902,228" marker-end="url(#arrg)"/>
+          <text class="edge-note" x="906" y="330">index</text>
+        </svg>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--edge)"></i>Clients &amp; edge</span>
+        <span><i style="background:var(--svc)"></i>Online services (stateless)</span>
+        <span><i style="background:var(--data)"></i>Storage &amp; cache</span>
+        <span><i style="background:var(--async)"></i>Async / streaming (dashed = eventual)</span>
+      </div>
+      <figcaption><strong>Fig 1 — System overview.</strong> The synchronous path (solid) does the minimum: authenticate, persist, respond. Everything that amplifies a write — fan-out, indexing, trends, notifications — hangs off Kafka (dashed) and is eventually consistent.</figcaption>
+    </figure>
+
+    <h3>Component responsibilities</h3>
+    <div class="tablewrap">
+      <table>
+        <tr><th>Component</th><th>Role</th><th>Key decisions</th></tr>
+        <tr><td><strong>API Gateway</strong></td><td>Auth, rate limiting, routing, TLS termination</td><td>Token-bucket limits per user; stateless, scaled horizontally.</td></tr>
+        <tr><td><strong>Tweet Service</strong></td><td>Validate → generate Snowflake ID → persist → publish <code>tweet_created</code></td><td>Returns 201 after durable persist + Kafka ack — fan-out is <em>not</em> awaited.</td></tr>
+        <tr><td><strong>Timeline Service</strong></td><td>Serve home &amp; user timelines</td><td>Reads only from cache in the hot path; DB fallback for cold users.</td></tr>
+        <tr><td><strong>Social Graph Service</strong></td><td>Follow edges, both directions</td><td>Stores <code>followers(user)</code> and <code>following(user)</code> as separate sharded adjacency lists — fan-out needs the former, merge-reads the latter.</td></tr>
+        <tr><td><strong>Fan-out workers</strong></td><td>Consume <code>tweet_created</code>, push tweet ID into follower timelines</td><td>Skip celebrities; skip inactive users; batch Redis pipeline writes.</td></tr>
+        <tr><td><strong>Engagement Service</strong></td><td>Likes / retweets / reply counters</td><td>Redis increments + periodic rollup to durable store; counts are approximate in real time.</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 5. FANOUT ============ -->
+  <section id="fanout">
+    <h2><span class="sec">05</span>The write path: hybrid fan-out</h2>
+    <p class="kicker">The defining problem. Push (fan-out-on-write) gives cheap reads but explodes for celebrities; pull (fan-out-on-read) gives cheap writes but makes every read expensive. Twitter does both.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h4 style="color:var(--async)">Push — fan-out on write</h4>
+        <ul>
+          <li>On tweet: insert its ID into <strong>every follower's</strong> cached timeline</li>
+          <li>Read = one Redis list fetch → fast, O(1)</li>
+          <li>Cost: 100 M followers × 1 tweet = 100 M writes 💥</li>
+          <li><strong>Used for:</strong> the ~99.9 % of users with normal follower counts</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4 style="color:var(--data)">Pull — fan-out on read</h4>
+        <ul>
+          <li>On tweet: write once to the author's own list, nothing else</li>
+          <li>Read = fetch tweets of everyone you follow, merge — O(following)</li>
+          <li>Cost shifts to every single timeline load</li>
+          <li><strong>Used for:</strong> celebrity accounts (&gt; ~1 M followers) and cold/inactive readers</li>
+        </ul>
+      </div>
+    </div>
+
+    <figure class="diagram">
+      <div class="diagram-frame">
+        <svg width="960" height="470" viewBox="0 0 960 470" role="img" aria-label="Hybrid fan-out write path">
+          <defs>
+            <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+            </marker>
+            <marker id="arrg2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--async)"/>
+            </marker>
+          </defs>
+
+          <rect class="node n-edge" x="20" y="60" width="120" height="50" rx="10"/>
+          <text class="lbl" x="80" y="81" text-anchor="middle">Author</text>
+          <text class="sub" x="80" y="98" text-anchor="middle">POST /v1/tweets</text>
+
+          <rect class="node n-svc" x="190" y="60" width="150" height="50" rx="10"/>
+          <text class="lbl" x="265" y="81" text-anchor="middle">Tweet Service</text>
+          <text class="sub" x="265" y="98" text-anchor="middle">ID · validate · persist</text>
+
+          <rect class="node n-data" x="390" y="20" width="140" height="50" rx="10"/>
+          <text class="lbl" x="460" y="41" text-anchor="middle">Tweet store</text>
+          <text class="sub" x="460" y="58" text-anchor="middle">durable write ①</text>
+
+          <rect class="node n-async" x="390" y="100" width="140" height="50" rx="10"/>
+          <text class="lbl" x="460" y="121" text-anchor="middle">Kafka</text>
+          <text class="sub" x="460" y="138" text-anchor="middle">tweet_created ②</text>
+
+          <rect class="node n-async" x="390" y="210" width="140" height="56" rx="10"/>
+          <text class="lbl" x="460" y="232" text-anchor="middle">Fan-out worker</text>
+          <text class="sub" x="460" y="250" text-anchor="middle">consume ③</text>
+
+          <rect class="node n-svc" x="180" y="213" width="150" height="50" rx="10"/>
+          <text class="lbl" x="255" y="234" text-anchor="middle">Graph Service</text>
+          <text class="sub" x="255" y="251" text-anchor="middle">get followers ④</text>
+
+          <!-- decision -->
+          <path d="M600,238 L660,206 L720,238 L660,270 Z" fill="var(--surface-2)" stroke="var(--async)" stroke-width="1.4"/>
+          <text class="lbl" x="660" y="234" text-anchor="middle" style="font-size:11.5px">followers</text>
+          <text class="lbl" x="660" y="248" text-anchor="middle" style="font-size:11.5px">&gt; 1 M ? ⑤</text>
+
+          <rect class="node n-data" x="770" y="120" width="170" height="64" rx="10"/>
+          <text class="lbl" x="855" y="143" text-anchor="middle">Follower timelines</text>
+          <text class="sub" x="855" y="160" text-anchor="middle">Redis: LPUSH tweet_id to each</text>
+          <text class="sub" x="855" y="174" text-anchor="middle">active followers only · cap 800</text>
+
+          <rect class="node n-data" x="770" y="290" width="170" height="64" rx="10"/>
+          <text class="lbl" x="855" y="313" text-anchor="middle">Celebrity list only</text>
+          <text class="sub" x="855" y="330" text-anchor="middle">write to author's own timeline</text>
+          <text class="sub" x="855" y="344" text-anchor="middle">followers merge at read time</text>
+
+          <rect class="node n-async" x="390" y="330" width="140" height="50" rx="10"/>
+          <text class="lbl" x="460" y="351" text-anchor="middle">Retry / DLQ</text>
+          <text class="sub" x="460" y="368" text-anchor="middle">at-least-once + idempotent</text>
+
+          <path class="flow" d="M140,85 H190" marker-end="url(#arr2)"/>
+          <path class="flow" d="M340,72 C360,60 370,50 390,46 " marker-end="url(#arr2)"/>
+          <path class="flow" d="M340,98 C360,105 370,115 390,120" marker-end="url(#arr2)"/>
+          <path class="flow" d="M190,98 C160,120 120,115 100,110" style="stroke-dasharray:3 3"/>
+          <text class="edge-note" x="112" y="130">201 Created (before fan-out)</text>
+
+          <path class="flow-async" d="M460,150 V210" marker-end="url(#arrg2)"/>
+          <path class="flow-async" d="M390,238 H330" marker-end="url(#arrg2)"/>
+          <path class="flow-async" d="M530,238 H600" marker-end="url(#arrg2)"/>
+          <path class="flow-async" d="M700,222 C730,190 740,165 770,155" marker-end="url(#arrg2)"/>
+          <text class="edge-note" x="694" y="185">no → push ⑥a</text>
+          <path class="flow-async" d="M700,254 C730,286 740,305 770,315" marker-end="url(#arrg2)"/>
+          <text class="edge-note" x="694" y="292">yes → skip ⑥b</text>
+          <path class="flow-async" d="M460,266 V330" marker-end="url(#arrg2)"/>
+          <text class="edge-note" x="470" y="304">on failure</text>
+        </svg>
+      </div>
+      <figcaption><strong>Fig 2 — Hybrid fan-out on write.</strong> The author gets a 201 the moment the tweet is durable and the event is acked (① – ②). Workers fan out asynchronously (③ – ⑥): normal accounts are pushed into each active follower's Redis list; celebrity tweets are written once and merged at read time. Delivery is at-least-once — <code>LPUSH</code> is guarded by a dedupe check so retries are idempotent.</figcaption>
+    </figure>
+
+    <ul>
+      <li><strong>Latency budget:</strong> median fan-out completes in &lt; 5 s; a Lady Gaga-scale push would take minutes and melt Redis — hence the celebrity bypass.</li>
+      <li><strong>Active-only optimization:</strong> fan out only to followers active in the last ~30 days. An inactive user's timeline is rebuilt via pull when they return — this cuts fan-out volume by 50 %+.</li>
+      <li><strong>Ordering:</strong> partition Kafka by author ID so one author's tweets are processed in order; readers see global order via time-sortable Snowflake IDs, not delivery order.</li>
+      <li><strong>Unfollow / delete:</strong> lazy repair — filtered out at read time (hydration checks tweet existence and block/unfollow sets) rather than eagerly scrubbing millions of lists.</li>
+    </ul>
+  </section>
+
+  <!-- ============ 6. READ PATH ============ -->
+  <section id="read">
+    <h2><span class="sec">06</span>The read path: serving a home timeline</h2>
+    <p class="kicker">1.2 M requests/s at peak, p99 under 200 ms. The invariant: the hot path touches only memory.</p>
+
+    <figure class="diagram">
+      <div class="diagram-frame">
+        <svg width="960" height="380" viewBox="0 0 960 380" role="img" aria-label="Timeline read path with merge and hydration">
+          <defs>
+            <marker id="arr3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+            </marker>
+          </defs>
+
+          <rect class="node n-edge" x="20" y="150" width="120" height="50" rx="10"/>
+          <text class="lbl" x="80" y="171" text-anchor="middle">Reader</text>
+          <text class="sub" x="80" y="188" text-anchor="middle">GET /timeline/home</text>
+
+          <rect class="node n-svc" x="200" y="150" width="160" height="50" rx="10"/>
+          <text class="lbl" x="280" y="171" text-anchor="middle">Timeline Service</text>
+          <text class="sub" x="280" y="188" text-anchor="middle">merge · hydrate · trim</text>
+
+          <rect class="node n-data" x="430" y="40" width="180" height="56" rx="10"/>
+          <text class="lbl" x="520" y="62" text-anchor="middle">Redis: home timeline</text>
+          <text class="sub" x="520" y="79" text-anchor="middle">① LRANGE — 800 precomputed IDs</text>
+
+          <rect class="node n-svc" x="430" y="130" width="180" height="56" rx="10"/>
+          <text class="lbl" x="520" y="152" text-anchor="middle">Celebrity merge</text>
+          <text class="sub" x="520" y="169" text-anchor="middle">② recent IDs of followed celebs</text>
+
+          <rect class="node n-data" x="430" y="220" width="180" height="56" rx="10"/>
+          <text class="lbl" x="520" y="242" text-anchor="middle">Memcached: tweets</text>
+          <text class="sub" x="520" y="259" text-anchor="middle">③ hydrate IDs → objects (~99 % hit)</text>
+
+          <rect class="node n-data" x="700" y="220" width="150" height="56" rx="10"/>
+          <text class="lbl" x="775" y="242" text-anchor="middle">Tweet store</text>
+          <text class="sub" x="775" y="259" text-anchor="middle">cache-miss fallback</text>
+
+          <rect class="node n-svc" x="700" y="40" width="150" height="56" rx="10"/>
+          <text class="lbl" x="775" y="62" text-anchor="middle">Ranking hook</text>
+          <text class="sub" x="775" y="79" text-anchor="middle">optional ML re-order ④</text>
+
+          <path class="flow" d="M140,175 H200" marker-end="url(#arr3)"/>
+          <path class="flow" d="M360,160 C390,140 400,80 430,70" marker-end="url(#arr3)"/>
+          <path class="flow" d="M360,172 C390,168 400,158 430,158" marker-end="url(#arr3)"/>
+          <path class="flow" d="M360,188 C390,195 400,240 430,246" marker-end="url(#arr3)"/>
+          <path class="flow" d="M610,248 H700" marker-end="url(#arr3)"/>
+          <text class="edge-note" x="628" y="240">on miss</text>
+          <path class="flow" d="M610,68 H700" marker-end="url(#arr3)"/>
+          <path class="flow" d="M200,188 C170,210 130,205 108,200" style="stroke-dasharray:3 3"/>
+          <text class="edge-note" x="90" y="226">⑤ 20 hydrated tweets + next_cursor</text>
+        </svg>
+      </div>
+      <figcaption><strong>Fig 3 — Read path.</strong> Fetch the precomputed ID list (①), merge in celebrity tweets by time-sorted Snowflake ID (②), hydrate IDs into full objects from Memcached (③), optionally re-rank (④), return a page (⑤). Steps ① – ③ are all in-memory; the DB appears only on cache misses.</figcaption>
+    </figure>
+
+    <ul>
+      <li><strong>Why store IDs, not full tweets, in timelines?</strong> 20 bytes vs ~1 KB per entry (50× less RAM), edits/deletes stay consistent (one canonical copy), and hydration hits a shared hot-tweet cache with a very high hit rate.</li>
+      <li><strong>Cold user (cache miss on the whole list):</strong> rebuild via pull — fetch <code>following</code>, grab each one's recent tweet IDs, merge, cache the result. One slow load (~1–2 s), fast thereafter.</li>
+      <li><strong>Graceful degradation:</strong> if the celebrity-merge or ranking step fails, serve the raw precomputed list — a slightly stale, unranked timeline beats an error.</li>
+    </ul>
+  </section>
+
+  <!-- ============ 7. DATA MODEL ============ -->
+  <section id="data">
+    <h2><span class="sec">07</span>Data model &amp; storage choices</h2>
+
+    <h3>Snowflake IDs — 64 bits, time-sortable, coordination-free</h3>
+    <p>Every tweet needs a unique ID minted at 17 k/s across many hosts. Auto-increment can't be sharded; UUIDs aren't sortable. Snowflake packs time into the high bits so <strong>sorting by ID is sorting by time</strong> — which is what makes cursor pagination and timeline merging trivial.</p>
+    <div class="snowwrap">
+      <div class="snowflake">
+        <div class="sf-ts"><b>41 bits</b>timestamp (ms since epoch) — ~69 years</div>
+        <div class="sf-dc"><b>5 bits</b>datacenter</div>
+        <div class="sf-wk"><b>5 bits</b>worker</div>
+        <div class="sf-sq"><b>12 bits</b>sequence / ms</div>
+      </div>
+    </div>
+    <figcaption>4,096 IDs per millisecond per worker × 1,024 workers — no central coordinator, no hot spot.</figcaption>
+
+    <h3>Core tables</h3>
+<pre class="block"><span class="k">tweets</span>    (tweet_id PK, author_id, text, media_ids[], reply_to, created_at)
+          <span class="c">-- sharded by tweet_id → uniform write load; author timeline queries</span>
+          <span class="c">-- served by a per-author index/cache, not a cross-shard scan</span>
+
+<span class="k">users</span>     (user_id PK, handle UNIQUE, display_name, bio, follower_count,
+           following_count, created_at)          <span class="c">-- sharded by user_id</span>
+
+<span class="k">follows</span>   (follower_id, followee_id, created_at)
+          <span class="c">-- stored twice, sharded both ways:</span>
+          <span class="c">--   by followee_id → "who follows X"  (fan-out)</span>
+          <span class="c">--   by follower_id → "who does X follow" (pull merge)</span>
+
+<span class="k">likes</span>     (user_id, tweet_id, created_at)       <span class="c">-- dedupe + counter source</span></pre>
+
+    <h3>Redis timeline structure</h3>
+<pre class="block"><span class="c"># One capped list per active user — IDs only, newest first</span>
+<span class="k">LPUSH</span> timeline:{user_id} {tweet_id}
+<span class="k">LTRIM</span> timeline:{user_id} 0 799        <span class="c"># cap at 800 entries</span>
+<span class="k">EXPIRE</span> timeline:{user_id} 2592000     <span class="c"># 30 d idle → evict, rebuild on return</span></pre>
+
+    <h3>Why these stores</h3>
+    <div class="tablewrap">
+      <table>
+        <tr><th>Data</th><th>Store</th><th>Reasoning</th></tr>
+        <tr><td>Tweets</td><td>Sharded MySQL / wide-column (Manhattan, Cassandra)</td><td>Simple key access by ID, massive write scale, no cross-entity transactions needed. Replicated 3×, cross-region async.</td></tr>
+        <tr><td>Social graph</td><td>Sharded adjacency lists (MySQL/Redis, FlockDB-style)</td><td>Two access patterns, both "get list by key" — no graph traversals needed, so no graph DB required.</td></tr>
+        <tr><td>Home timelines</td><td>Redis cluster (RAM)</td><td>1.2 M inserts/s + 1.2 M reads/s of tiny list ops — this is exactly what Redis is for. Loss is acceptable: rebuildable via pull.</td></tr>
+        <tr><td>Media</td><td>Object store + CDN</td><td>Immutable blobs; CDN serves ~90 %+ of media bytes at the edge.</td></tr>
+        <tr><td>Search</td><td>Inverted index (Elasticsearch / Earlybird)</td><td>Time-partitioned indexes; recent partitions in RAM since most queries target the last hours.</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 8. DEEP DIVES ============ -->
+  <section id="deepdives">
+    <h2><span class="sec">08</span>Deep dives</h2>
+
+    <h3>Search &amp; trending</h3>
+    <ul>
+      <li><strong>Ingestion:</strong> index workers consume <code>tweet_created</code> from Kafka; tweets are searchable within seconds. The index is <strong>time-partitioned</strong> — a query starts at the newest partition and walks backwards, terminating early once it has enough results.</li>
+      <li><strong>Query:</strong> scatter-gather across shards of the relevant time partitions; blend recency + engagement for ranking.</li>
+      <li><strong>Trending:</strong> a streaming job (Flink/Storm) runs sliding-window counts over hashtags/phrases with a heavy-hitters sketch (count-min), scores by <em>acceleration</em> vs a historical baseline (so "Monday" never trends), segments by geo, and publishes top-K to a cache every ~60 s.</li>
+    </ul>
+
+    <h3>Engagement counters at scale</h3>
+    <ul>
+      <li>A viral tweet takes thousands of likes/sec — a per-row DB counter becomes a hot spot. Instead: <code>INCR</code> sharded Redis counters (split hot keys into N sub-counters, sum on read), roll up to durable storage every few seconds.</li>
+      <li>Display counts are eventually consistent and approximate ("1.2 M") — nobody audits them; the <code>likes</code> table remains the source of truth for "did <em>I</em> like this," which must be exact.</li>
+    </ul>
+
+    <h3>Availability &amp; multi-region</h3>
+    <ul>
+      <li>Stateless services scale horizontally behind LBs; Redis and DBs run replicated with automated failover.</li>
+      <li>Multi-region: active-active for reads (each region holds full timeline caches), writes homed to one region per shard with async cross-region replication — a few seconds of cross-region staleness is within the consistency budget.</li>
+      <li>Degradation ladder: drop ranking → serve stale cache → serve user-timeline-only. Never a blank feed.</li>
+      <li>Back-pressure: if fan-out lag grows, Kafka absorbs the backlog — tweet posting never blocks; timelines just go slightly stale, and lag is the #1 dashboard metric.</li>
+    </ul>
+
+    <h3>Observability — what to watch</h3>
+    <div class="tablewrap">
+      <table>
+        <tr><th>Signal</th><th class="num">Healthy</th><th>Meaning when it degrades</th></tr>
+        <tr><td>Fan-out lag (Kafka consumer)</td><td class="num">&lt; 5 s</td><td>Timelines going stale; scale workers or shed inactive-user pushes.</td></tr>
+        <tr><td>Timeline cache hit rate</td><td class="num">&gt; 99 %</td><td>DB rebuild storm risk — check Redis evictions and cluster health.</td></tr>
+        <tr><td>Tweet-hydration hit rate</td><td class="num">&gt; 98 %</td><td>Memcached capacity or a cold shard after failover.</td></tr>
+        <tr><td>p99 home timeline</td><td class="num">&lt; 200 ms</td><td>Usually a slow celebrity merge or a hot Redis shard.</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 9. TRADEOFFS ============ -->
+  <section id="tradeoffs">
+    <h2><span class="sec">09</span>Trade-offs &amp; interview talking points</h2>
+    <div class="tablewrap">
+      <table>
+        <tr><th>Decision</th><th>We chose</th><th>We gave up</th><th>Why it's right here</th></tr>
+        <tr><td>Fan-out strategy</td><td>Hybrid push + pull</td><td>Simplicity of a single path</td><td>Pure push melts on celebrities; pure pull makes every read O(following). The split costs one branch and buys both cheap reads and bounded writes.</td></tr>
+        <tr><td>Consistency</td><td>Eventual (seconds)</td><td>Read-your-follower's-write immediacy</td><td>Feed staleness is invisible at 5 s; the RTT and coordination cost of strong consistency is not. Author always sees their own tweet instantly (write-through to own timeline).</td></tr>
+        <tr><td>Timeline storage</td><td>IDs in Redis, capped at 800</td><td>Infinite scroll of precomputed feed</td><td>50× RAM savings, one canonical tweet copy; &lt; 0.1 % of sessions scroll past 800 entries — those fall back to pull.</td></tr>
+        <tr><td>Delivery semantics</td><td>At-least-once + idempotent insert</td><td>Exactly-once machinery</td><td>A dedup check on <code>LPUSH</code> is cheap; distributed exactly-once is not. Missing a tweet is worse than a redundant retry.</td></tr>
+        <tr><td>Counters</td><td>Approximate, sharded, async rollup</td><td>Exact real-time counts</td><td>Hot-key correctness at thousands of writes/sec would serialize on a row lock for a number nobody verifies.</td></tr>
+      </table>
+    </div>
+
+    <h3>Extension questions to expect</h3>
+    <ul>
+      <li><strong>Ranked (ML) timeline?</strong> Keep the same candidate-generation machinery; insert a ranking service between hydration and response that scores ~500 candidates per request with engagement-prediction features.</li>
+      <li><strong>Real-time delivery (new-tweets banner)?</strong> WebSocket/SSE gateway subscribed to fan-out events for online users — push the <em>signal</em>, let the client pull the tweets through the normal read path.</li>
+      <li><strong>Edit/delete propagation?</strong> Nothing to fan out — timelines hold only IDs, so hydration reflects the canonical row immediately; just invalidate the tweet cache entry.</li>
+      <li><strong>Thundering herd on a viral tweet?</strong> Request coalescing at the cache layer (single flight), plus per-object hot-key replication in Memcached.</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    Twitter / X system design case study · numbers are illustrative estimates for interview practice · system-design-365
+  </div>
+</footer>
