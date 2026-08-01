@@ -1,9 +1,10 @@
 /** Page templates: home, section index, article, 404. */
 
 import { baseLayout } from "./layout.mjs";
-import { esc, breadcrumbs, tocPanel, prevNext, pageMeta, card, sectionCard } from "./components.mjs";
+import { esc, icon, breadcrumbs, tocPanel, prevNext, pageMeta, card, sectionCard } from "./components.mjs";
 
-export function homePage(site, sections) {
+export function homePage(config, sections) {
+  const site = config.site;
   const cs = sections.find((s) => s.dir === "case-studies");
   const csPages = cs ? cs.pages.filter((p) => !p.isReadme) : [];
   const done = csPages.filter((p) => !p.placeholder).length;
@@ -17,11 +18,11 @@ export function homePage(site, sections) {
   <p class="hero-tagline">${esc(site.tagline)}</p>
   <p class="hero-desc">${esc(site.description)}</p>
   <div class="hero-actions">
-    <a class="btn btn-primary" href="${cs ? cs.url : site.baseUrl}">Browse case studies</a>
-    <a class="btn" href="${site.repo}" target="_blank" rel="noopener">Star on GitHub</a>
+    <a class="btn btn-primary" href="${cs ? cs.url : site.baseUrl}">Browse case studies ${icon("arrowRight")}</a>
+    <a class="btn" href="${site.repo}" target="_blank" rel="noopener">${icon("github")} View on GitHub</a>
   </div>
-  <div class="hero-progress" role="img" aria-label="${done} of ${total} case studies complete">
-    <div class="hero-progress-top"><span>Case study progress</span><strong>${done}/${total}</strong></div>
+  <div class="hero-progress" role="img" aria-label="${done} of ${total} case studies written">
+    <div class="hero-progress-top"><span>Case studies written</span><strong>${done} / ${total}</strong></div>
     <div class="hero-progress-bar"><div style="width:${pct}%"></div></div>
   </div>
 </section>
@@ -37,17 +38,18 @@ ${featured.length ? `<section>
 </section>` : ""}
 </main>`;
 
-  return baseLayout({ site, sections, content, bodyClass: "is-home", url: site.baseUrl });
+  return baseLayout({ site, theme: config.theme, sections, content, bodyClass: "is-home", url: site.baseUrl });
 }
 
-export function sectionIndexPage(site, sections, sec) {
+export function sectionIndexPage(config, sections, sec) {
+  const site = config.site;
   const readme = sec.pages.find((p) => p.isReadme);
   const listing = sec.pages.filter((p) => !p.isReadme);
   const content = `<main class="main">
 <article class="article">
   ${breadcrumbs(site, [{ label: sec.label, url: sec.url }])}
   <header class="page-header">
-    <h1>${sec.icon} ${esc(sec.label)}</h1>
+    <h1><span class="header-icon">${icon(sec.icon)}</span>${esc(sec.label)}</h1>
     <p class="lead">${esc(sec.blurb)}</p>
   </header>
   ${readme ? `<div class="prose">${readme.html}</div>` : ""}
@@ -55,7 +57,7 @@ export function sectionIndexPage(site, sections, sec) {
 </article>
 </main>`;
   return baseLayout({
-    site, sections,
+    site, theme: config.theme, sections,
     activeSection: sec,
     activePage: readme || null,
     title: sec.label,
@@ -65,12 +67,13 @@ export function sectionIndexPage(site, sections, sec) {
   });
 }
 
-export function articlePage(site, sections, sec, page) {
+export function articlePage(config, sections, sec, page) {
+  const site = config.site;
   const body = page.placeholder
     ? `<div class="prose">${page.html}
-<div class="callout callout-info"><div class="callout-title">🚧 Planned</div>
-<p>This case study hasn't been written yet. It's part of the 365-day roadmap —
-<a href="${site.repo}" target="_blank" rel="noopener">contributions are welcome</a>.</p></div></div>`
+<div class="callout callout-info"><div class="callout-title">${icon("clock")} Not written yet</div>
+<p>This case study is on the roadmap.
+<a href="${site.repo}" target="_blank" rel="noopener">Contributions are welcome</a> — the structure to follow is in <code>templates/case-study.md</code>.</p></div></div>`
     : `<div class="prose">${page.html}</div>`;
 
   const content = `<main class="main has-toc">
@@ -87,7 +90,7 @@ ${tocPanel(page.headings)}
 </main>`;
 
   return baseLayout({
-    site, sections,
+    site, theme: config.theme, sections,
     activeSection: sec,
     activePage: page,
     title: page.title,
@@ -96,11 +99,13 @@ ${tocPanel(page.headings)}
   });
 }
 
-export function notFoundPage(site, sections) {
+export function notFoundPage(config, sections) {
+  const site = config.site;
   const content = `<main class="main"><article class="article center-404">
-  <h1>404</h1>
-  <p class="lead">This page doesn't exist (yet — it might be on the roadmap).</p>
-  <p><a class="btn btn-primary" href="${site.baseUrl}">Back to home</a></p>
+  <div class="e404">404</div>
+  <h1>Page not found</h1>
+  <p class="lead">This page doesn't exist — it may not be written yet.</p>
+  <p><a class="btn btn-primary" href="${site.baseUrl}">Back to home ${icon("arrowRight")}</a></p>
 </article></main>`;
-  return baseLayout({ site, sections, title: "Not found", content, url: site.baseUrl + "404.html" });
+  return baseLayout({ site, theme: config.theme, sections, title: "Not found", content, url: site.baseUrl + "404.html" });
 }

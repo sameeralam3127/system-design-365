@@ -1,8 +1,8 @@
 # System Design 365
 
-**One year. 100 case studies. Interview-ready system design.**
+**System design case studies, from first requirement to final architecture.**
 
-📖 **Live site:** https://sameeralam3127.github.io/system-design-365/
+**Live site:** https://sameeralam3127.github.io/system-design-365/
 
 A structured, open knowledge base for system design interview prep with a
 FAANG-style focus — case studies, high-level and low-level design, patterns,
@@ -54,6 +54,19 @@ updated: 2026-08-01
 Markdown supports Mermaid diagrams (```mermaid fences), GitHub-style callouts
 (`> [!NOTE]`, `> [!TIP]`, `> [!WARNING]`, …), tables, and code blocks with
 copy buttons and syntax highlighting.
+
+## Reading the site
+
+The sidebar steps out of the way once you scroll into an article so long-form
+content gets the full width, and returns when you scroll back up. Keyboard:
+
+| Key | Action |
+|---|---|
+| `/` or `Ctrl`/`⌘` + `K` | Search |
+| `\` | Show/hide sidebar (remembered) |
+| `[` / `]` | Previous / next page |
+| `t` | Toggle light/dark theme |
+| `Esc` | Close search or diagram zoom |
 
 ## What goes where
 

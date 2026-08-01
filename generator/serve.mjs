@@ -41,7 +41,7 @@ export async function serve(port = 4365) {
     if (fs.existsSync(p)) fs.watch(p, { recursive: true }, () => rebuild(dir));
   }
 
-  http
+  const server = http
     .createServer((req, res) => {
       let urlPath = decodeURIComponent(new URL(req.url, "http://x").pathname);
       if (urlPath === "/") { res.writeHead(302, { Location: base }); return res.end(); }
@@ -56,5 +56,16 @@ export async function serve(port = 4365) {
       res.writeHead(200, { "Content-Type": MIME[path.extname(file)] || "application/octet-stream" });
       res.end(fs.readFileSync(file));
     })
-    .listen(port, () => console.log(`▶ Serving http://localhost:${port}${base} (watching for changes)`));
+    .listen(port, () => console.log(`▶ Serving http://localhost:${server.address().port}${base} (watching for changes)`));
+
+  let retried = false;
+  server.on("error", (err) => {
+    if (err.code === "EADDRINUSE" && !retried) {
+      retried = true;
+      console.warn(`⚠ Port ${port} is in use (another sd365 serve running?) — picking a free port…`);
+      server.listen(0);
+    } else {
+      throw err;
+    }
+  });
 }

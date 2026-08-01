@@ -10,13 +10,14 @@
  */
 
 import { Marked } from "../vendor/marked.esm.js";
+import { icon, CALLOUT_ICONS } from "./icons.mjs";
 
 const CALLOUTS = {
-  NOTE: { label: "Note", icon: "ℹ️" },
-  INFO: { label: "Info", icon: "ℹ️" },
-  TIP: { label: "Tip", icon: "💡" },
-  WARNING: { label: "Warning", icon: "⚠️" },
-  DANGER: { label: "Danger", icon: "🚨" },
+  NOTE: "Note",
+  INFO: "Info",
+  TIP: "Tip",
+  WARNING: "Warning",
+  DANGER: "Danger",
 };
 
 export function slugify(text) {
@@ -53,18 +54,22 @@ export function renderMarkdown(src, { siteOrigin = "" } = {}) {
         let id = slugify(text) || `section-${headings.length}`;
         while (usedIds.has(id)) id += "-x";
         usedIds.add(id);
-        const plain = text.replace(/<[^>]*>/g, "");
+        const plain = text
+          .replace(/<[^>]*>/g, "")
+          .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+          .replace(/&quot;/g, '"').replace(/&#39;/g, "'");
         if (depth === 2 || depth === 3) headings.push({ depth, id, text: plain });
-        return `<h${depth} id="${id}"><a class="anchor" href="#${id}" aria-label="Link to ${escapeHtml(plain)}">#</a>${text}</h${depth}>\n`;
+        return `<h${depth} id="${id}"><a class="anchor" href="#${id}" aria-label="Link to ${escapeHtml(plain)}">${icon("link")}</a>${text}</h${depth}>\n`;
       },
       code(code, infostring) {
         const lang = (infostring || "").trim().split(/\s+/)[0];
         if (lang === "mermaid") {
-          return `<div class="diagram" data-zoomable><pre class="mermaid">${escapeHtml(code)}</pre></div>\n`;
+          return `<figure class="diagram" data-zoomable><pre class="mermaid">${escapeHtml(code)}</pre>` +
+            `<figcaption class="diagram-hint">${icon("expand")} Click to enlarge</figcaption></figure>\n`;
         }
         const cls = lang ? ` class="language-${escapeHtml(lang)}"` : "";
         const label = lang ? `<span class="code-lang">${escapeHtml(lang)}</span>` : "";
-        return `<div class="code-block">${label}<button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code${cls}>${escapeHtml(code)}</code></pre></div>\n`;
+        return `<div class="code-block">${label}<button class="copy-btn" type="button" aria-label="Copy code">${icon("copy")}<span>Copy</span></button><pre><code${cls}>${escapeHtml(code)}</code></pre></div>\n`;
       },
       table(header, body) {
         return `<div class="table-wrap"><table><thead>${header}</thead><tbody>${body}</tbody></table></div>\n`;
@@ -73,9 +78,8 @@ export function renderMarkdown(src, { siteOrigin = "" } = {}) {
         const m = quote.match(/^<p>\[!(NOTE|INFO|TIP|WARNING|DANGER)\]\s*(?:<br>)?/);
         if (m) {
           const kind = m[1];
-          const { label, icon } = CALLOUTS[kind];
           const inner = quote.replace(m[0], "<p>").replace(/^<p>\s*<\/p>/, "");
-          return `<div class="callout callout-${kind.toLowerCase()}"><div class="callout-title">${icon} ${label}</div>${inner}</div>\n`;
+          return `<div class="callout callout-${kind.toLowerCase()}"><div class="callout-title">${icon(CALLOUT_ICONS[kind])} ${CALLOUTS[kind]}</div>${inner}</div>\n`;
         }
         return `<blockquote>${quote}</blockquote>\n`;
       },

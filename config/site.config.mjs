@@ -6,7 +6,7 @@
 export default {
   site: {
     title: "System Design 365",
-    tagline: "One year. 100 case studies. Interview-ready system design.",
+    tagline: "System design case studies, from first requirement to final architecture.",
     description:
       "A structured, open knowledge base for system design interview prep: case studies, high-level and low-level design, patterns, trade-offs, and mock interviews.",
     // Project pages live under /<repo>/ on GitHub Pages.
@@ -17,18 +17,26 @@ export default {
     language: "en",
   },
 
-  // Content sections, in sidebar/nav order. `dir` is a folder under content/.
+  // Content sections, in sidebar/nav order. `dir` is a folder under content/,
+  // `icon` is a name from generator/lib/icons.mjs.
   sections: [
-    { dir: "case-studies", label: "Case Studies", icon: "📚", blurb: "Classic interview systems designed end to end." },
-    { dir: "hld", label: "High-Level Design", icon: "🏗️", blurb: "Architecture, scalability, and distributed systems." },
-    { dir: "lld", label: "Low-Level Design", icon: "🧩", blurb: "Object modeling, APIs, and machine coding." },
-    { dir: "patterns", label: "Patterns", icon: "🧱", blurb: "Reusable building blocks and techniques." },
-    { dir: "trade-offs", label: "Trade-offs", icon: "⚖️", blurb: "Decision frameworks and comparisons." },
-    { dir: "interview", label: "Mock Interviews", icon: "🎤", blurb: "Prompts, session templates, and checklists." },
-    { dir: "security", label: "Security", icon: "🔐", blurb: "Runtime, supply-chain, and operational risk." },
-    { dir: "glossary", label: "Glossary", icon: "📖", blurb: "Terms you should be able to define cold." },
-    { dir: "notes", label: "Notes", icon: "📝", blurb: "Free-form study notes." },
+    { dir: "case-studies", label: "Case Studies", icon: "layers", blurb: "Classic interview systems designed end to end." },
+    { dir: "hld", label: "High-Level Design", icon: "network", blurb: "Architecture, scalability, and distributed systems." },
+    { dir: "lld", label: "Low-Level Design", icon: "chip", blurb: "Object modeling, APIs, and machine coding." },
+    { dir: "patterns", label: "Patterns", icon: "grid", blurb: "Reusable building blocks and techniques." },
+    { dir: "trade-offs", label: "Trade-offs", icon: "scale", blurb: "Decision frameworks and comparisons." },
+    { dir: "interview", label: "Mock Interviews", icon: "mic", blurb: "Prompts, session templates, and checklists." },
+    { dir: "security", label: "Security", icon: "shield", blurb: "Runtime, supply-chain, and operational risk." },
+    { dir: "glossary", label: "Glossary", icon: "book", blurb: "Terms you should be able to define cold." },
+    { dir: "notes", label: "Notes", icon: "note", blurb: "Free-form study notes." },
   ],
+
+  theme: {
+    // Collapse the sidebar automatically once the reader scrolls into an
+    // article, so long-form content gets the full width. A manual toggle
+    // (button or the \ key) always wins and is remembered.
+    autoHideSidebar: true,
+  },
 
   build: {
     contentDir: "content",

@@ -142,7 +142,9 @@ Flow:
 
 ---
 
-👉 Best practical choice: **Distributed ID + Base62**
+> [!TIP]
+> Best practical choice: **distributed ID generation + Base62 encoding**. It
+> scales horizontally, guarantees uniqueness, and keeps codes short.
 
 ---
 
@@ -223,7 +225,7 @@ Let’s sanity-check:
 If each record ≈ 200 bytes:
 → ~7.2 TB/year
 
-👉 Totally manageable with sharding
+**Verdict:** totally manageable with sharding.
 
 ---
 
@@ -238,7 +240,7 @@ Peak could be 10x:
 
 - ~100K reads/sec
 
-👉 Needs:
+**This needs:**
 
 - CDN (optional)
 - Aggressive caching

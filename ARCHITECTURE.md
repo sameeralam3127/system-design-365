@@ -14,6 +14,7 @@ is a vendored copy of the `marked` markdown parser) and turns the Markdown in
 | Vendored `marked` (MIT, 90 KB) | CommonMark + GFM parsing is the one problem not worth re-solving | Vendored file must be bumped manually |
 | Server-side rendering to plain HTML | SEO, instant first paint, works with JS disabled (search/mermaid degrade gracefully) | Interactivity is layered on with a small client runtime |
 | Mermaid + highlight.js from CDN at runtime | Mermaid is ~2 MB — shipping it in the repo or rendering at build time isn't worth it | Diagrams need JS; pages still readable without it |
+| Inline SVG icon set, no emoji | Emoji render differently per OS/font and carry no semantics; inline SVG inherits `currentColor` and font size, so icons stay optically aligned in both themes | Icons are hand-maintained in one module |
 | Pretty URLs (`/case-studies/001-url-shortener/`) | Clean canonical URLs on GitHub Pages without server rewrites | One folder per page in `dist/` |
 
 ## Repository layout
@@ -31,7 +32,7 @@ system-design-365/
 │   ├── serve.mjs       #   dev server (watch + rebuild)
 │   ├── new.mjs         #   content scaffolding
 │   ├── validate.mjs    #   content linting (links, frontmatter)
-│   ├── lib/            #   frontmatter, markdown, content loader, plugin runner
+│   ├── lib/            #   frontmatter, markdown, content loader, icons, plugin runner
 │   ├── theme/          #   layout + components + page templates (JS functions)
 │   ├── plugins/        #   search-index, sitemap, rss, og-meta
 │   └── vendor/         #   marked.esm.js (vendored)
@@ -60,8 +61,10 @@ flowchart LR
 
 Every stage is a pure function over the page model, so the whole build is
 deterministic: same input → byte-identical `dist/`. Files are only rewritten
-when their content hash changes, which keeps watch-mode rebuilds (~50 ms for
-110 pages) and CI deploys fast.
+when their content changes, which keeps watch-mode rebuilds (~50 ms for
+110 pages) and CI deploys fast. The build also tracks every path it owns and
+prunes anything else from `dist/`, so renamed or deleted content can't linger
+as an orphaned page.
 
 ## Rendering pipeline (per page)
 
@@ -122,19 +125,34 @@ export default {
 search indexes, feeds, OG images, PDF exports, analytics manifests, etc.
 Shipped plugins: `search-index`, `sitemap`, `rss`, `og-meta` (SEO lint).
 
-## Client runtime (assets/js/app.js, ~6 KB)
+## Client runtime (assets/js/app.js, ~7 KB)
 
 No framework. Progressive enhancement on top of server-rendered HTML:
 
 - **Search** — fetches `search-index.json` on first open; AND-semantics term
-  scoring (exact title > title prefix > title > tags > body; placeholders
+  scoring (exact title > title prefix > title > tags > body; unwritten pages
   demoted), section filter chips, `↑↓/↵` navigation, match highlighting.
-- **Shortcuts** — `/` or `Ctrl/⌘-K` search · `[` `]` prev/next page · `t` theme · `Esc` close.
-- **Theme** — light/dark/auto with pre-paint localStorage read (no flash);
-  Mermaid re-renders and highlight.js restyles on toggle.
+- **Reading mode** — the sidebar collapses once the reader scrolls into an
+  article, giving long-form content the full column width, and comes back at
+  the top of the page. A manual toggle (topbar button or `\`) overrides it and
+  is remembered in `localStorage`; set `theme.autoHideSidebar: false` in the
+  config to disable the automatic behavior entirely.
+- **Shortcuts** — `/` or `Ctrl/⌘-K` search · `\` sidebar · `[` `]` prev/next
+  page · `t` theme · `Esc` close.
+- **Theme** — light/dark/auto with a pre-paint `localStorage` read (no flash,
+  and the same read restores the sidebar state); Mermaid re-renders and
+  highlight.js restyles on toggle.
 - **Diagrams** — Mermaid rendered client-side, click to zoom in an overlay.
 - Reading-progress bar, TOC scrollspy (IntersectionObserver), copy-code buttons,
   mobile drawer navigation.
+
+## Icons
+
+`generator/lib/icons.mjs` is the single source of every glyph — 24×24 stroke
+paths that inherit `currentColor`, plus the GitHub brand mark. Sections declare
+an icon by name in `config/site.config.mjs` (`icon: "layers"`), callouts map
+kinds to icons, and `icon(name, extraClass)` renders one. There are no emoji and
+no icon font, so glyphs look identical across platforms and in both themes.
 
 ## Deployment
 

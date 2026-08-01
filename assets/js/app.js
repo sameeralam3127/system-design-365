@@ -1,14 +1,15 @@
-/* sd365 client runtime: theme toggle, mobile nav, reading progress,
-   TOC scrollspy, copy buttons, mermaid + zoom, syntax highlight,
+/* sd365 client runtime: theme, collapsible sidebar (reading mode), reading
+   progress, TOC scrollspy, copy buttons, mermaid + zoom, syntax highlight,
    and the client-side search engine. No frameworks. */
 (function () {
   "use strict";
-  var BASE = (window.SD365 && window.SD365.base) || "/";
+  var CFG = window.SD365 || {};
+  var BASE = CFG.base || "/";
   var $ = function (s, el) { return (el || document).querySelector(s); };
   var $$ = function (s, el) { return Array.prototype.slice.call((el || document).querySelectorAll(s)); };
+  var root = document.documentElement;
 
   /* ---------- theme ---------- */
-  var root = document.documentElement;
   function isDark() {
     var t = root.dataset.theme;
     if (t === "dark") return true;
@@ -23,16 +24,45 @@
     highlightTheme();
   });
 
+  /* ---------- sidebar: manual toggle + reading auto-hide ---------- */
+  var sidebarBtn = $("#sidebar-btn");
+  var stored = localStorage.getItem("sd365-sidebar"); // "open" | "closed" | null
+  // Auto-hide only applies on article pages when the reader hasn't chosen.
+  var autoArmed = CFG.autoHideSidebar !== false && stored === null &&
+    !document.body.classList.contains("is-home") && !!$(".prose");
+  var autoHidden = false;
+
+  function setCollapsed(on) { root.classList.toggle("sidebar-collapsed", on); }
+
+  sidebarBtn.addEventListener("click", function () {
+    var collapsed = !root.classList.contains("sidebar-collapsed");
+    setCollapsed(collapsed);
+    localStorage.setItem("sd365-sidebar", collapsed ? "closed" : "open");
+    autoArmed = false; // an explicit choice wins from here on
+    autoHidden = false;
+  });
+
   /* ---------- mobile nav ---------- */
   $("#menu-btn").addEventListener("click", function () { document.body.classList.toggle("nav-open"); });
   $("#sidebar-scrim").addEventListener("click", function () { document.body.classList.remove("nav-open"); });
 
-  /* ---------- reading progress ---------- */
+  /* ---------- reading progress (+ auto-hide trigger) ---------- */
   var prog = $("#progress");
   function onScroll() {
-    var h = document.documentElement;
+    var h = root;
     var max = h.scrollHeight - h.clientHeight;
-    prog.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + "%";
+    var y = h.scrollTop;
+    prog.style.width = (max > 0 ? (y / max) * 100 : 0) + "%";
+
+    if (autoArmed && innerWidth >= 1000) {
+      if (!autoHidden && y > 480 && !root.classList.contains("sidebar-collapsed")) {
+        setCollapsed(true);
+        autoHidden = true;
+      } else if (autoHidden && y < 140) {
+        setCollapsed(false);
+        autoHidden = false;
+      }
+    }
   }
   addEventListener("scroll", onScroll, { passive: true });
   onScroll();
@@ -51,7 +81,7 @@
           if (active) active.classList.add("active");
         }
       });
-    }, { rootMargin: "-60px 0px -70% 0px" });
+    }, { rootMargin: "-70px 0px -70% 0px" });
     Object.keys(map).forEach(function (id) {
       var el = document.getElementById(id);
       if (el) obs.observe(el);
@@ -63,9 +93,11 @@
     var btn = e.target.closest(".copy-btn");
     if (!btn) return;
     var code = btn.parentElement.querySelector("code");
+    var label = btn.querySelector("span");
     navigator.clipboard.writeText(code.innerText).then(function () {
-      btn.textContent = "Copied ✓";
-      setTimeout(function () { btn.textContent = "Copy"; }, 1600);
+      label.textContent = "Copied";
+      btn.classList.add("copied");
+      setTimeout(function () { label.textContent = "Copy"; btn.classList.remove("copied"); }, 1600);
     });
   });
 
@@ -83,7 +115,12 @@
         b.textContent = mermaidSources[i];
       });
     }
-    window.mermaid.initialize({ startOnLoad: false, theme: isDark() ? "dark" : "default", securityLevel: "loose" });
+    window.mermaid.initialize({
+      startOnLoad: false,
+      theme: isDark() ? "dark" : "default",
+      securityLevel: "loose",
+      fontFamily: getComputedStyle(document.body).fontFamily,
+    });
     window.mermaid.run({ nodes: blocks });
   }
 
@@ -97,6 +134,7 @@
       zoomInner.innerHTML = "";
       var clone = svg.cloneNode(true);
       clone.removeAttribute("width");
+      clone.removeAttribute("height");
       clone.style.maxWidth = "none";
       zoomInner.appendChild(clone);
       overlay.hidden = false;
@@ -137,11 +175,8 @@
     if (!index) {
       fetch(BASE + "search-index.json")
         .then(function (r) { return r.json(); })
-        .then(function (j) {
-          index = j.docs;
-          buildFilters();
-          run("");
-        });
+        .then(function (j) { index = j.docs; buildFilters(); run(""); })
+        .catch(function () { resultsEl.innerHTML = '<li class="search-empty">Search index unavailable.</li>'; });
     } else run("");
   }
   function closeSearch() { modal.hidden = true; }
@@ -157,6 +192,7 @@
         activeFilter = activeFilter === s ? null : s;
         $$("button", filtersEl).forEach(function (x) { x.classList.toggle("on", x.textContent === activeFilter); });
         run(input.value);
+        input.focus();
       });
       filtersEl.appendChild(b);
     });
@@ -167,25 +203,24 @@
     for (var i = 0; i < terms.length; i++) {
       var q = terms[i];
       var inTitle = tl.indexOf(q) >= 0, inTags = tags.indexOf(q) >= 0, inBody = xl.indexOf(q) >= 0;
-      if (!inTitle && !inTags && !inBody) return 0; // AND semantics
+      if (!inTitle && !inTags && !inBody) return 0; // every term must match somewhere
       if (tl === q) s += 100;
       else if (tl.indexOf(q) === 0) s += 40;
       else if (inTitle) s += 25;
       if (inTags) s += 15;
       if (inBody) s += 5;
     }
-    if (doc.p) s -= 20; // placeholders rank below written content
+    if (doc.p) s -= 20; // unwritten pages rank below real content
     return s;
   }
 
   function mark(text, terms) {
-    var out = text;
+    var out = text.replace(/&/g, "&amp;").replace(/</g, "&lt;");
     terms.forEach(function (q) {
       if (!q) return;
       out = out.replace(new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "ig"), "\x01$1\x02");
     });
-    return out.replace(/&/g, "&amp;").replace(/</g, "&lt;")
-      .replace(/\x01/g, "<mark>").replace(/\x02/g, "</mark>");
+    return out.replace(/\x01/g, "<mark>").replace(/\x02/g, "</mark>");
   }
 
   function snippet(doc, terms) {
@@ -222,7 +257,7 @@
     resultsEl.innerHTML = results.map(function (d, i) {
       return '<li class="' + (i === sel ? "sel" : "") + '"><a href="' + d.u + '">' +
         '<div class="sr-title">' + mark(d.t, terms) +
-        '<span class="sr-meta">' + d.s + (d.p ? " · planned" : "") + "</span></div>" +
+        '<span class="sr-meta">' + d.s + (d.p ? " · not written yet" : "") + "</span></div>" +
         (terms.length && d.x ? '<div class="sr-snip">' + mark(snippet(d, terms), terms) + "</div>" : "") +
         "</a></li>";
     }).join("");
@@ -233,7 +268,8 @@
   input.addEventListener("keydown", function (e) {
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
       e.preventDefault();
-      sel = (sel + (e.key === "ArrowDown" ? 1 : results.length - 1)) % Math.max(results.length, 1);
+      if (!results.length) return;
+      sel = (sel + (e.key === "ArrowDown" ? 1 : results.length - 1)) % results.length;
       render(input.value.toLowerCase().split(/\s+/).filter(Boolean));
       var s = $(".search-results .sel");
       if (s) s.scrollIntoView({ block: "nearest" });
@@ -256,6 +292,9 @@
     if (e.key === "/" || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k")) {
       e.preventDefault();
       openSearch();
+    } else if (e.key === "\\") {
+      e.preventDefault();
+      sidebarBtn.click();
     } else if (e.key === "[" || e.key === "]") {
       var link = $(".pn-" + (e.key === "[" ? "prev" : "next"));
       if (link) location.href = link.getAttribute("href");

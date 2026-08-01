@@ -35,15 +35,35 @@ function writeIfChanged(file, contents) {
   return true;
 }
 
-function copyDir(src, dest) {
+function copyDir(src, dest, onFile) {
   if (!fs.existsSync(src)) return;
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
     if (entry.name.startsWith(".") && entry.name !== ".nojekyll") continue;
     const s = path.join(src, entry.name);
     const d = path.join(dest, entry.name);
-    if (entry.isDirectory()) copyDir(s, d);
-    else writeIfChanged(d, fs.readFileSync(s));
+    if (entry.isDirectory()) copyDir(s, d, onFile);
+    else onFile(d, fs.readFileSync(s));
   }
+}
+
+/**
+ * Delete anything in dist/ that this build didn't produce, so renamed or
+ * removed content can't linger as an orphaned page, then drop the empty
+ * directories left behind.
+ */
+function prune(dir, keep, outDir) {
+  let removed = 0;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      removed += prune(full, keep, outDir);
+      if (fs.readdirSync(full).length === 0) fs.rmdirSync(full);
+    } else if (!keep.has(path.relative(outDir, full))) {
+      fs.unlinkSync(full);
+      removed++;
+    }
+  }
+  return removed;
 }
 
 export async function build({ quiet = false } = {}) {
@@ -56,44 +76,51 @@ export async function build({ quiet = false } = {}) {
 
   const stripBase = (url) => url.slice(config.site.baseUrl.length);
   let written = 0;
+  const emitted = new Set(); // every path this build owns, for pruning
+  const write = (file, contents) => {
+    emitted.add(path.relative(outDir, file));
+    if (writeIfChanged(file, contents)) written++;
+  };
   const ctx = {
     config, sections, pages, outDir, root: ROOT,
     emit(rel, contents) {
-      if (writeIfChanged(path.join(outDir, rel), contents)) written++;
+      write(path.join(outDir, rel), contents);
     },
   };
 
   await runHook(plugins, "setup", ctx);
 
   // Home + 404
-  ctx.emit("index.html", homePage(config.site, sections));
-  ctx.emit("404.html", notFoundPage(config.site, sections));
+  ctx.emit("index.html", homePage(config, sections));
+  ctx.emit("404.html", notFoundPage(config, sections));
 
   // Sections and pages
   for (const sec of sections) {
-    ctx.emit(path.join(stripBase(sec.url), "index.html"), sectionIndexPage(config.site, sections, sec));
+    ctx.emit(path.join(stripBase(sec.url), "index.html"), sectionIndexPage(config, sections, sec));
     for (const page of sec.pages) {
       await runHook(plugins, "onPage", page, ctx);
       if (page.isReadme) continue; // rendered as the section index
       if (page.type === "html") {
         ctx.emit(stripBase(page.url), page.raw);
       } else {
-        ctx.emit(path.join(stripBase(page.url), "index.html"), articlePage(config.site, sections, sec, page));
+        ctx.emit(path.join(stripBase(page.url), "index.html"), articlePage(config, sections, sec, page));
       }
     }
   }
 
   // Static passthrough: theme assets + public files (robots.txt, .nojekyll…)
-  copyDir(path.join(ROOT, config.build.assetsDir), path.join(outDir, "assets"));
-  copyDir(path.join(ROOT, config.build.publicDir), outDir);
+  copyDir(path.join(ROOT, config.build.assetsDir), path.join(outDir, "assets"), write);
+  copyDir(path.join(ROOT, config.build.publicDir), outDir, write);
 
   await runHook(plugins, "onDone", ctx);
+
+  const removed = prune(outDir, emitted, outDir);
 
   if (!quiet) {
     const total = pages.filter((p) => !p.isReadme).length;
     console.log(
       `✓ Built ${total} pages across ${sections.length} sections → ${path.relative(ROOT, outDir)}/ ` +
-      `(${written} files written, ${Date.now() - t0}ms)`
+      `(${written} written${removed ? `, ${removed} stale removed` : ""}, ${Date.now() - t0}ms)`
     );
   }
   return { config, sections, pages, outDir };

@@ -1,6 +1,6 @@
 /** Base HTML document layout: head/SEO, header, sidebar, search modal, footer. */
 
-import { esc, sidebar } from "./components.mjs";
+import { esc, sidebar, icon } from "./components.mjs";
 
 function jsonLd(site, page) {
   if (!page) {
@@ -25,7 +25,7 @@ function jsonLd(site, page) {
 
 /**
  * @param {object} o
- *  site, sections, activePage, activeSection, title, description,
+ *  site, theme, sections, activePage, activeSection, title, description,
  *  content (main HTML), bodyClass, extraHead
  */
 export function baseLayout(o) {
@@ -55,8 +55,12 @@ export function baseLayout(o) {
 <link rel="alternate" type="application/rss+xml" title="${esc(site.title)}" href="${b}rss.xml">
 <link rel="stylesheet" href="${b}assets/css/theme.css">
 <script>
-// Apply saved theme before first paint to avoid a flash.
-(function(){var t=localStorage.getItem("sd365-theme");if(t)document.documentElement.dataset.theme=t;})();
+// Apply saved theme and sidebar state before first paint to avoid a flash.
+(function(){
+  var t=localStorage.getItem("sd365-theme");
+  if(t)document.documentElement.dataset.theme=t;
+  if(localStorage.getItem("sd365-sidebar")==="closed")document.documentElement.classList.add("sidebar-collapsed");
+})();
 </script>
 <script type="application/ld+json">${JSON.stringify(jsonLd(site, o.activePage))}</script>
 ${o.extraHead || ""}
@@ -64,16 +68,20 @@ ${o.extraHead || ""}
 <body class="${o.bodyClass || ""}">
 <div class="progress-bar" aria-hidden="true"><div id="progress"></div></div>
 <header class="topbar">
-  <button id="menu-btn" class="icon-btn" aria-label="Toggle navigation">☰</button>
-  <a class="brand" href="${b}"><span class="brand-mark">SD</span><span class="brand-name">${esc(site.title)}</span></a>
+  <button id="menu-btn" class="icon-btn" aria-label="Open navigation">${icon("menu")}</button>
+  <button id="sidebar-btn" class="icon-btn" aria-label="Toggle sidebar" title="Toggle sidebar (\\)">${icon("panelClose", "i-close")}${icon("panelOpen", "i-open")}</button>
+  <a class="brand" href="${b}">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 4.5-8 4.5-8-4.5 8-4.5Z" fill="currentColor" opacity=".95"/><path d="m4 12.5 8 4.5 8-4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".65"/></svg>
+    </span>
+    <span class="brand-name">${esc(site.title)}</span>
+  </a>
   <button id="search-btn" class="search-fake" aria-label="Search (press / or Ctrl+K)">
-    <span>🔍 Search…</span><kbd>Ctrl K</kbd>
+    ${icon("search")}<span class="search-fake-label">Search documentation</span><kbd>Ctrl K</kbd>
   </button>
   <div class="topbar-right">
-    <button id="theme-btn" class="icon-btn" aria-label="Toggle dark mode">🌓</button>
-    <a class="icon-btn gh" href="${site.repo}" target="_blank" rel="noopener" aria-label="GitHub repository">
-      <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-    </a>
+    <button id="theme-btn" class="icon-btn" aria-label="Toggle dark mode" title="Toggle theme (t)">${icon("sun", "i-sun")}${icon("moon", "i-moon")}</button>
+    <a class="icon-btn" href="${site.repo}" target="_blank" rel="noopener" aria-label="GitHub repository">${icon("github")}</a>
   </div>
 </header>
 <div class="shell">
@@ -83,21 +91,21 @@ ${o.extraHead || ""}
 </div>
 <footer class="footer">
   <span>© ${new Date().getFullYear()} ${esc(site.author)} · <a href="${site.repo}" target="_blank" rel="noopener">Contribute on GitHub</a></span>
-  <span class="muted">Built with the sd365 static site generator — no framework, just Markdown.</span>
+  <span class="muted">Built with sd365 — a custom static site generator. Content is plain Markdown.</span>
 </footer>
 
 <div class="search-modal" id="search-modal" hidden>
   <div class="search-panel" role="dialog" aria-modal="true" aria-label="Search">
-    <input id="search-input" type="search" placeholder="Search case studies, patterns, concepts…" autocomplete="off" spellcheck="false">
+    <div class="search-input-row">${icon("search")}<input id="search-input" type="search" placeholder="Search case studies, patterns, concepts…" autocomplete="off" spellcheck="false"></div>
     <div class="search-filters" id="search-filters"></div>
     <ul class="search-results" id="search-results"></ul>
-    <div class="search-help"><kbd>↑↓</kbd> navigate <kbd>↵</kbd> open <kbd>esc</kbd> close</div>
+    <div class="search-help"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>↵</kbd> open</span><span><kbd>esc</kbd> close</span></div>
   </div>
 </div>
 
 <div class="zoom-overlay" id="zoom-overlay" hidden><div class="zoom-inner" id="zoom-inner"></div></div>
 
-<script>window.SD365={base:"${b}"};</script>
+<script>window.SD365={base:"${b}",autoHideSidebar:${o.theme?.autoHideSidebar !== false}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js" defer></script>
 <script src="${b}assets/js/app.js" defer></script>
