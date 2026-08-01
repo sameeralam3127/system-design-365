@@ -1,6 +1,13 @@
-# Rate Limiter
-
-# Case Study: Designing a Rate Limiter
+---
+title: Rate Limiter
+description: Designing a distributed rate limiter for a multi-region API gateway — algorithm selection, Redis-backed token buckets, and fail-open semantics.
+tags: [api-gateway, redis, token-bucket, throttling]
+difficulty: medium
+author: Sameer Alam
+created: 2026-07-28
+updated: 2026-08-01
+status: published
+---
 
 ## 1. Problem Statement
 
@@ -58,6 +65,18 @@ For this platform, **token bucket** was chosen: it tolerates legitimate bursts (
 
 Rate limiting logic sits in the API gateway, before requests reach backend services, so rejected requests never consume backend capacity.
 
+```mermaid
+flowchart LR
+  C[Clients] --> LB[Load Balancer]
+  LB --> GW1[Gateway Node 1]
+  LB --> GW2[Gateway Node 2]
+  LB --> GWn[Gateway Node N]
+  GW1 & GW2 & GWn -->|Lua: refill + consume| R[(Redis Cluster<br/>token buckets)]
+  GW1 & GW2 & GWn -->|allowed| S[Backend Services]
+  GW1 -.->|429 + Retry-After| C
+  CFG[Limits Config Service] -.->|per-tier limits| GW1 & GW2 & GWn
+```
+
 ### 4.2 Distributed state
 
 Since the gateway runs on many nodes, per-client counters can't live in local process memory — a client's requests may hit a different node each time. Two options were considered:
@@ -66,6 +85,24 @@ Since the gateway runs on many nodes, per-client counters can't live in local pr
 - **Local approximate counting with periodic sync**: each node keeps a local counter and periodically syncs with peers. Lower latency, higher throughput, but allows more slack in enforcement (a client could exceed the limit by a multiple of the number of nodes before the sync catches up).
 
 The platform chose **Redis-backed token buckets**, with the atomic refill-and-consume logic implemented as a single Lua script to avoid race conditions between the "check" and "decrement" steps. Redis's in-memory speed keeps added latency to roughly 1–2 ms, and Redis Cluster provides horizontal scaling and replication for availability.
+
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant G as Gateway
+  participant R as Redis (Lua script)
+  participant B as Backend
+  C->>G: API request (key: client_id)
+  G->>R: EVAL refill+consume(client_id)
+  alt tokens available
+    R-->>G: allowed, remaining=n
+    G->>B: forward request
+    B-->>C: 200 + X-RateLimit-* headers
+  else bucket empty
+    R-->>G: rejected, retry_after=t
+    G-->>C: 429 + Retry-After: t
+  end
+```
 
 ### 4.3 Failure handling
 

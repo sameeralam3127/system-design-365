@@ -1,0 +1,15 @@
+{
+  "name": "system-design-365",
+  "version": "1.0.0",
+  "private": true,
+  "description": "System Design 365 — custom static site generator (sd365) and content",
+  "type": "module",
+  "bin": { "sd365": "scripts/sd365.mjs" },
+  "scripts": {
+    "build": "node scripts/sd365.mjs build",
+    "serve": "node scripts/sd365.mjs serve",
+    "new": "node scripts/sd365.mjs new",
+    "validate": "node scripts/sd365.mjs validate"
+  },
+  "engines": { "node": ">=20" }
+}

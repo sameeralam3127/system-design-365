@@ -1,3 +1,14 @@
+---
+title: URL Shortener
+description: Designing a read-heavy URL shortener at billions-of-URLs scale — Base62 encoding, distributed ID generation, caching, and CDN edge redirects.
+tags: [caching, sharding, base62, id-generation, cdn]
+difficulty: easy
+author: Sameer Alam
+created: 2026-07-20
+updated: 2026-08-01
+status: published
+---
+
 ## 1. Clarify Requirements
 
 Before jumping into architecture, we need to pin things down:
@@ -28,6 +39,16 @@ Let’s assume:
 ## 2. High-Level Design
 
 At a high level, the system has two main flows:
+
+```mermaid
+flowchart LR
+  U[User] --> CDN[CDN / Edge]
+  CDN --> LB[Load Balancer]
+  LB --> APP[App Servers<br/>stateless]
+  APP --> RC[(Redis Cache<br/>hot short codes)]
+  APP --> DB[(Sharded NoSQL<br/>short_code → long_url)]
+  APP --> IDG[Distributed ID Generator<br/>Snowflake + Base62]
+```
 
 ### A. Write path (shorten URL)
 
@@ -169,6 +190,25 @@ Reads dominate, so optimize heavily:
 1. Check cache
 2. If miss → DB
 3. Populate cache
+
+```mermaid
+sequenceDiagram
+  participant U as User
+  participant A as App Server
+  participant R as Redis
+  participant D as Database
+  U->>A: GET /aZ9kL
+  A->>R: GET aZ9kL
+  alt cache hit
+    R-->>A: long_url
+  else cache miss
+    R-->>A: nil
+    A->>D: SELECT long_url WHERE short_code = 'aZ9kL'
+    D-->>A: long_url
+    A->>R: SET aZ9kL → long_url (TTL)
+  end
+  A-->>U: 302 Redirect → long_url
+```
 
 ---
 
