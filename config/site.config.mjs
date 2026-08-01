@@ -45,9 +45,12 @@ export default {
     outDir: "dist",
     // Words-per-minute used for reading-time estimates.
     wpm: 220,
+    // Set false to keep the built HTML/CSS readable while debugging.
+    minify: true,
   },
 
   // Plugins run in order. Each is a module in generator/plugins/ exporting
-  // { name, setup?, onPage?, onDone? }.
-  plugins: ["search-index", "sitemap", "rss", "og-meta"],
+  // { name, setup?, onPage?, onDone? }. `minify` rewrites emitted files, so
+  // it must run last.
+  plugins: ["search-index", "sitemap", "rss", "og-meta", "minify"],
 };

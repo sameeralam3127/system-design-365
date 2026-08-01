@@ -13,7 +13,7 @@ is a vendored copy of the `marked` markdown parser) and turns the Markdown in
 | Zero npm dependencies | `git clone` → `node scripts/sd365.mjs build` just works; no lockfile drift, no supply-chain surface | No ecosystem plugins for free |
 | Vendored `marked` (MIT, 90 KB) | CommonMark + GFM parsing is the one problem not worth re-solving | Vendored file must be bumped manually |
 | Server-side rendering to plain HTML | SEO, instant first paint, works with JS disabled (search/mermaid degrade gracefully) | Interactivity is layered on with a small client runtime |
-| Mermaid + highlight.js from CDN at runtime | Mermaid is ~2 MB — shipping it in the repo or rendering at build time isn't worth it | Diagrams need JS; pages still readable without it |
+| Mermaid + highlight.js from CDN, loaded per page | Mermaid alone is 3.3 MB, so it is requested only by the pages that actually contain a diagram (2 of 108 today) rather than by every visitor. Both are pinned with Subresource Integrity | Diagrams need JS; pages still readable without it |
 | Inline SVG icon set, no emoji | Emoji render differently per OS/font and carry no semantics; inline SVG inherits `currentColor` and font size, so icons stay optically aligned in both themes | Icons are hand-maintained in one module |
 | Pretty URLs (`/case-studies/001-url-shortener/`) | Clean canonical URLs on GitHub Pages without server rewrites | One folder per page in `dist/` |
 
@@ -30,11 +30,12 @@ system-design-365/
 ├── generator/          # the SSG itself
 │   ├── build.mjs       #   orchestrator
 │   ├── serve.mjs       #   dev server (watch + rebuild)
+│   ├── init.mjs        #   scaffold a brand-new site
 │   ├── new.mjs         #   content scaffolding
 │   ├── validate.mjs    #   content linting (links, frontmatter)
 │   ├── lib/            #   frontmatter, markdown, content loader, icons, plugin runner
 │   ├── theme/          #   layout + components + page templates (JS functions)
-│   ├── plugins/        #   search-index, sitemap, rss, og-meta
+│   ├── plugins/        #   search-index, sitemap, rss, og-meta, minify
 │   └── vendor/         #   marked.esm.js (vendored)
 ├── assets/             # theme CSS + client JS + favicon (copied to dist)
 ├── public/             # static passthrough (robots.txt, .nojekyll)
@@ -121,17 +122,18 @@ export default {
 };
 ```
 
-`ctx` carries `{ config, sections, pages, outDir, emit }` — enough to build
-search indexes, feeds, OG images, PDF exports, analytics manifests, etc.
-Shipped plugins: `search-index`, `sitemap`, `rss`, `og-meta` (SEO lint).
+`ctx` carries `{ config, sections, pages, outDir, emit, written }` — enough to
+build search indexes, feeds, OG images, PDF exports, or to post-process the
+emitted output. Shipped plugins: `search-index`, `sitemap`, `rss`, `og-meta`
+(SEO lint), and `minify` (which reads `ctx.written` and must run last).
 
 ## Client runtime (assets/js/app.js, ~7 KB)
 
 No framework. Progressive enhancement on top of server-rendered HTML:
 
-- **Search** — fetches `search-index.json` on first open; AND-semantics term
-  scoring (exact title > title prefix > title > tags > body; unwritten pages
-  demoted), section filter chips, `↑↓/↵` navigation, match highlighting.
+- **Search** — BM25F ranking over an inverted index, prefetched while idle;
+  section filter chips, `↑↓/↵` navigation, match highlighting, and results
+  that resolve to a heading anchor. See [Search](#search) below.
 - **Reading mode** — the sidebar collapses once the reader scrolls into an
   article, giving long-form content the full column width, and comes back at
   the top of the page. A manual toggle (topbar button or `\`) overrides it and
@@ -146,6 +148,75 @@ No framework. Progressive enhancement on top of server-rendered HTML:
 - Reading-progress bar, TOC scrollspy (IntersectionObserver), copy-code buttons,
   mobile drawer navigation.
 
+## Layout: why content never moves
+
+The sidebar is `position: fixed`, deliberately. If it occupied layout space,
+the content column would re-centre in whatever space was left over — so
+toggling the sidebar, or moving between a page with a table of contents and
+one without, would slide the text sideways.
+
+Instead the article is centred against the *viewport* and stays there:
+
+```
+--rail: <sidebar width>                 space reserved on BOTH sides
+--cw:   min(--content-w,                the ideal measure, narrowed only
+             100vw - 2*(--rail+gutter)) when the viewport can't fit it
+.article { max-width: var(--cw); margin: 0 auto; }
+.toc     { position: fixed; left: calc(50% + var(--cw)/2 + gutter); }
+```
+
+Because the reservation is symmetric, the content column is exactly
+viewport-centred, and because neither rail nor width depends on sidebar
+state, showing or hiding it changes nothing about where the text sits —
+only how much empty space is beside it. Verified at 1280/1440/1600 px and on
+mobile: the article's centre is within 1 px of the viewport centre in every
+state.
+
+Below 1200 px the sidebar becomes an overlay drawer and the rail drops to
+zero, so narrow screens get the full width instead of a squeezed column.
+
+## Search
+
+Client-side, no service, in `assets/js/search.js` (~10 KB). The pipeline:
+
+```mermaid
+flowchart TB
+  Q[query] --> T[tokenise + drop stopwords]
+  T --> S[light stemmer]
+  S --> SYN[synonym expansion<br/>db → database, lb → load balancer]
+  SYN --> EXP[per-term expansion]
+  EXP --> E1[exact token 1.0]
+  EXP --> E2[prefix, as-you-type 0.65]
+  EXP --> E3[one-edit typo 0.35<br/>incl. transpositions]
+  E1 & E2 & E3 --> IDX[(inverted index)]
+  IDX --> BM[BM25F scoring]
+  BM --> AGG[require every term<br/>pick best section per page]
+  AGG --> R[ranked results → #anchor]
+```
+
+Design decisions worth naming:
+
+- **Two index scopes.** Page fields (title, tags) and section fields (heading,
+  body) are indexed separately. Page fields lift the whole document but are
+  excluded from choosing *which* section to link to — otherwise a tag present
+  in every section decides the anchor, and BM25's length normalisation makes
+  the shortest section win. Getting this wrong sent "token bucket" to
+  *2. Requirements* instead of *3.4 Token Bucket*.
+- **BM25F**, not raw term counts: term frequency saturates (`k1 = 1.4`) so
+  repetition stops paying, and length normalisation (`b = 0.72`) stops long
+  sections from crowding out short precise ones. IDF is computed over units.
+- **Typo tolerance includes transpositions** (Damerau, distance 1). "reids"
+  for "redis" is one of the most common typing slips and plain edit distance
+  scores it as two edits, so it would otherwise be missed.
+- **Fuzzy matching only runs when the exact term is unknown**, so a correctly
+  spelled query is never diluted by near-misses.
+- **AND semantics** across terms, but a term may match via any field or
+  synonym, so precision stays high without punishing vocabulary mismatch.
+
+Cost on this corpus: 216 scoring units, 1,289 vocabulary terms, ~5 ms to build
+the index once, **0.007 ms per query** — the whole index is 50 KB and is
+prefetched while the browser is idle.
+
 ## Icons
 
 `generator/lib/icons.mjs` is the single source of every glyph — 24×24 stroke
@@ -153,6 +224,19 @@ paths that inherit `currentColor`, plus the GitHub brand mark. Sections declare
 an icon by name in `config/site.config.mjs` (`icon: "layers"`), callouts map
 kinds to icons, and `icon(name, extraClass)` renders one. There are no emoji and
 no icon font, so glyphs look identical across platforms and in both themes.
+
+## Packaging
+
+`PKG_ROOT` (where sd365 lives) and `ROOT` (`process.cwd()`, the project being
+built) are kept separate, which is what allows the generator to be installed
+from npm and run against someone else's content. Theme assets, templates, and
+plugins resolve from the project first and fall back to the package, so a
+consumer only ships the files they actually override.
+
+The one thing that deliberately does *not* fall back is `config/site.config.mjs`
+— resolving that from the package would silently build sd365's own site inside
+a user's directory instead of telling them what is missing. `sd365 init`
+scaffolds it.
 
 ## Deployment
 
@@ -179,6 +263,23 @@ node scripts/sd365.mjs validate                   # lint links + frontmatter (CI
 ```
 
 (or `npm run build|serve|validate`)
+
+## Security posture
+
+- **Content-Security-Policy** on every page with SHA-256 hashes for the two
+  inline scripts, so scripts need no `'unsafe-inline'`. `object-src 'none'`,
+  `base-uri 'self'`, `form-action 'none'`.
+- **Subresource Integrity** plus `crossorigin` and `referrerpolicy` on both
+  CDN scripts — a mutated CDN file is refused rather than executed.
+- **No CDN stylesheets.** Syntax-highlight colors live in `theme.css`, so
+  `style-src` stays on `'self'`.
+- **Mermaid runs at `securityLevel: "antiscript"`**, not `loose`, so a diagram
+  can't carry markup into the page.
+- **`<script>`-embedded JSON is escaped** (`\u003c`), because `JSON.stringify`
+  leaves `<` alone and a page title containing `</script>` would otherwise
+  break out of the JSON-LD block.
+- **URL slugs are restricted** to `[A-Za-z0-9._~-]`, so a filename can't inject
+  an attribute into the `href` of every link that points at it.
 
 ## Roadmap
 

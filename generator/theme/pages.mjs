@@ -38,7 +38,7 @@ ${featured.length ? `<section>
 </section>` : ""}
 </main>`;
 
-  return baseLayout({ site, theme: config.theme, sections, content, bodyClass: "is-home", url: site.baseUrl });
+  return baseLayout({ site, theme: config.theme, sections, content, bodyClass: "is-home", url: site.baseUrl, needs: {} });
 }
 
 export function sectionIndexPage(config, sections, sec) {
@@ -64,6 +64,7 @@ export function sectionIndexPage(config, sections, sec) {
     description: sec.blurb,
     content,
     url: sec.url,
+    needs: { mermaid: !!readme?.hasMermaid, hljs: !!readme?.hasCode },
   });
 }
 
@@ -96,6 +97,7 @@ ${tocPanel(page.headings)}
     title: page.title,
     description: page.description,
     content,
+    needs: { mermaid: page.hasMermaid, hljs: page.hasCode },
   });
 }
 
@@ -107,5 +109,5 @@ export function notFoundPage(config, sections) {
   <p class="lead">This page doesn't exist — it may not be written yet.</p>
   <p><a class="btn btn-primary" href="${site.baseUrl}">Back to home ${icon("arrowRight")}</a></p>
 </article></main>`;
-  return baseLayout({ site, theme: config.theme, sections, title: "Not found", content, url: site.baseUrl + "404.html" });
+  return baseLayout({ site, theme: config.theme, sections, title: "Not found", content, url: site.baseUrl + "404.html", needs: {} });
 }

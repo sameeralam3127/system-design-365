@@ -24,8 +24,18 @@
 
   --topbar-h: 58px;
   --sidebar-w: 286px;
-  --toc-w: 232px;
-  --content-w: 764px;
+  --toc-w: 208px;
+  --content-w: 736px;
+  --gutter: 32px;
+  /* Space reserved on BOTH sides of the content column. Because it is
+     symmetric, the column sits exactly in the middle of the viewport and
+     still can never slide under the sidebar (left) or the table of
+     contents (right). It does not change when the sidebar is toggled, so
+     nothing on the page shifts. */
+  --rail: var(--sidebar-w);
+  /* Actual content width: the ideal measure, narrowed only if the viewport
+     can't fit it between the rails. */
+  --cw: min(var(--content-w), calc(100vw - 2 * (var(--rail) + var(--gutter))));
   color-scheme: light;
 }
 
@@ -164,23 +174,29 @@ html.sidebar-collapsed .i-open { display: block; }
 /* ============================================================
    Shell: sidebar + main + toc
    ============================================================ */
-.shell { display: flex; padding-top: var(--topbar-h); min-height: calc(100vh - var(--topbar-h)); }
+/* The sidebar is fixed rather than in the layout flow. That is what keeps
+   the content column anchored to the centre of the viewport: showing or
+   hiding the sidebar changes nothing about the space the article occupies. */
+.shell { display: block; padding-top: var(--topbar-h); min-height: calc(100vh - var(--topbar-h)); }
 .sidebar {
-  position: sticky; top: var(--topbar-h); align-self: flex-start;
-  width: var(--sidebar-w); flex: none; height: calc(100vh - var(--topbar-h));
+  position: fixed; left: 0; top: var(--topbar-h); z-index: 30;
+  width: var(--sidebar-w); height: calc(100vh - var(--topbar-h));
   overflow-y: auto; overflow-x: hidden; padding: 18px 10px 48px;
   border-right: 1px solid var(--border-soft);
+  background: var(--bg);
   scrollbar-width: thin; scrollbar-color: var(--border) transparent;
-  transition: width .22s ease, padding .22s ease, opacity .16s ease;
+  transition: transform .22s ease, opacity .18s ease;
 }
 .sidebar::-webkit-scrollbar { width: 8px; }
 .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 8px; }
 .sidebar-scrim { display: none; }
 
-/* Collapsed (desktop reading mode) */
+/* Collapsed (reading mode): slides out of view. The content does not move,
+   because the sidebar never occupied layout space to begin with. */
 html.sidebar-collapsed .sidebar {
-  width: 0; padding-left: 0; padding-right: 0; opacity: 0;
-  border-right-color: transparent; pointer-events: none;
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .nav-group { margin-bottom: 2px; }
@@ -215,8 +231,13 @@ html.sidebar-collapsed .sidebar {
 /* ============================================================
    Main / article
    ============================================================ */
-.main { flex: 1; min-width: 0; display: flex; justify-content: center; gap: 44px; padding: 34px 44px 88px; }
-.article { width: 100%; max-width: var(--content-w); min-width: 0; }
+/* The content column is anchored to the middle of the *viewport*, not the
+   middle of the space left over by the sidebar. The left padding absorbs
+   the sidebar's width, so showing or hiding the sidebar doesn't move the
+   text a single pixel — it only changes how much empty space sits beside
+   it. The table of contents takes the remaining right-hand column. */
+.main { display: block; padding: 34px var(--gutter) 88px; }
+.article { width: 100%; max-width: var(--cw); min-width: 0; margin: 0 auto; }
 
 .breadcrumbs ol { display: flex; flex-wrap: wrap; gap: 7px; list-style: none; margin: 0 0 20px; padding: 0; font-size: 13px; color: var(--text-faint); }
 .breadcrumbs a { color: var(--text-faint); }
@@ -308,6 +329,33 @@ html.sidebar-collapsed .sidebar {
 .code-block:hover .copy-btn, .copy-btn:focus-visible { opacity: 1; }
 .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
 
+/* Syntax highlighting (highlight.js token classes) — defined here rather
+   than pulled from a CDN stylesheet, so it matches our palette, needs no
+   extra request, and keeps style-src locked to 'self'. */
+.hljs-comment, .hljs-quote { color: var(--text-faint); font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-literal, .hljs-section, .hljs-doctag, .hljs-type { color: var(--syn-kw); }
+.hljs-string, .hljs-regexp, .hljs-addition, .hljs-attribute, .hljs-meta .hljs-string { color: var(--syn-str); }
+.hljs-number, .hljs-symbol, .hljs-bullet, .hljs-meta, .hljs-deletion { color: var(--syn-num); }
+.hljs-title, .hljs-title\.function_, .hljs-function .hljs-title, .hljs-name { color: var(--syn-fn); }
+.hljs-attr, .hljs-variable, .hljs-template-variable, .hljs-property, .hljs-selector-attr { color: var(--syn-attr); }
+.hljs-built_in, .hljs-class .hljs-title, .hljs-title\.class_ { color: var(--syn-type); }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: 700; }
+:root {
+  --syn-kw: #a626a4; --syn-str: #0a7a3f; --syn-num: #b06000;
+  --syn-fn: #3355ff; --syn-attr: #b3261e; --syn-type: #0184bc;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="auto"] {
+    --syn-kw: #d2a8ff; --syn-str: #7ee787; --syn-num: #ffa657;
+    --syn-fn: #79c0ff; --syn-attr: #ff7b72; --syn-type: #56d4dd;
+  }
+}
+:root[data-theme="dark"] {
+  --syn-kw: #d2a8ff; --syn-str: #7ee787; --syn-num: #ffa657;
+  --syn-fn: #79c0ff; --syn-attr: #ff7b72; --syn-type: #56d4dd;
+}
+
 .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--border-soft); border-radius: var(--radius); }
 .prose table { border-collapse: collapse; width: 100%; font-size: 14px; }
 .prose th, .prose td { padding: 10px 15px; border-bottom: 1px solid var(--border-soft); text-align: left; }
@@ -366,10 +414,14 @@ html.sidebar-collapsed .sidebar {
 .zoom-inner { max-width: 94vw; max-height: 92vh; overflow: auto; }
 .zoom-inner svg { width: auto; height: auto; min-width: min(70vw, 900px); }
 
-/* TOC */
+/* TOC — fixed just to the right of the centred content column, so it never
+   pushes the article off-centre. */
 .toc {
-  position: sticky; top: calc(var(--topbar-h) + 34px); align-self: flex-start;
-  width: var(--toc-w); flex: none; max-height: calc(100vh - var(--topbar-h) - 70px);
+  position: fixed;
+  top: calc(var(--topbar-h) + 34px);
+  left: calc(50% + var(--cw) / 2 + var(--gutter));
+  width: var(--toc-w);
+  max-height: calc(100vh - var(--topbar-h) - 70px);
   overflow-y: auto; font-size: 13px; scrollbar-width: thin;
 }
 .toc-title { font-weight: 650; font-size: 11px; text-transform: uppercase; letter-spacing: .9px; color: var(--text-faint); margin-bottom: 11px; }
@@ -398,10 +450,14 @@ html.sidebar-collapsed .sidebar {
 /* ============================================================
    Home & cards
    ============================================================ */
-.home { display: block; max-width: 1120px; }
+/* The landing page is wider than an article but centres on the same axis. */
+.home { max-width: min(1120px, calc(100vw - 2 * (var(--rail) + var(--gutter)))); margin: 0 auto; }
 .hero { position: relative; text-align: center; padding: 60px 0 46px; }
+/* Decorative glow: never wider than its container, or it stretches the
+   layout viewport on phones and pushes the topbar controls off-screen. */
 .hero::before {
-  content: ""; position: absolute; left: 50%; top: -60px; width: 620px; height: 320px;
+  content: ""; position: absolute; left: 50%; top: -60px;
+  width: min(620px, 100%); height: 320px;
   transform: translateX(-50%);
   background: radial-gradient(ellipse at center, var(--accent-ring), transparent 68%);
   filter: blur(28px); pointer-events: none; z-index: -1;
@@ -468,8 +524,9 @@ html.sidebar-collapsed .sidebar {
 .search-input-row { display: flex; align-items: center; gap: 10px; padding: 0 16px; border-bottom: 1px solid var(--border-soft); }
 .search-input-row .icon { width: 17px; height: 17px; color: var(--text-faint); }
 #search-input {
-  flex: 1; font: 15.5px var(--font-sans); padding: 15px 0; border: none; outline: none;
-  background: transparent; color: var(--text);
+  /* 16px keeps iOS Safari from zooming the page on focus. */
+  flex: 1; font: 16px var(--font-sans); padding: 15px 0; border: none; outline: none;
+  background: transparent; color: var(--text); min-width: 0;
 }
 #search-input::-webkit-search-cancel-button { display: none; }
 .search-filters { display: flex; flex-wrap: wrap; gap: 6px; padding: 11px 14px 5px; }
@@ -486,6 +543,11 @@ html.sidebar-collapsed .sidebar {
 .sr-title { font-weight: 600; font-size: 14px; }
 .sr-title mark, .sr-snip mark { background: transparent; color: var(--accent); font-weight: 700; }
 .sr-meta { font-size: 11.5px; color: var(--text-faint); margin-left: 8px; font-weight: 400; }
+.sr-crumb {
+  display: inline-flex; align-items: center; gap: 5px; margin-top: 2px;
+  font-size: 12.5px; color: var(--text-soft);
+}
+.sr-crumb::before { content: "›"; color: var(--text-faint); }
 .sr-snip { font-size: 12.5px; color: var(--text-soft); margin-top: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .search-help { padding: 10px 16px; border-top: 1px solid var(--border-soft); font-size: 11.5px; color: var(--text-faint); display: flex; gap: 16px; }
 .search-help span { display: inline-flex; align-items: center; gap: 5px; }
@@ -507,30 +569,65 @@ html.sidebar-collapsed .sidebar {
 /* ============================================================
    Responsive
    ============================================================ */
-@media (max-width: 1180px) { .toc { display: none; } .main { gap: 0; } }
-@media (max-width: 900px) {
+/* Below this the sidebar can't share the row with centred content without
+   squeezing it, so it becomes an overlay drawer and the rail drops to zero —
+   the content stays centred, just wider. */
+@media (max-width: 1200px) {
+  :root { --rail: 0px; }
+  .toc { display: none; }
+  .sidebar { transform: translateX(-100%); opacity: 0; pointer-events: none; box-shadow: var(--shadow); }
+  body.nav-open .sidebar { transform: none; opacity: 1; pointer-events: auto; }
+  body.nav-open .sidebar-scrim { display: block; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 25; background: rgb(0 0 0 / .38); }
   #menu-btn { display: grid; }
   #sidebar-btn { display: none; }
-  .brand-name { display: none; }
-  .search-fake { min-width: 0; margin-left: 8px; padding: 7px 10px; }
-  .search-fake .search-fake-label, .search-fake kbd { display: none; }
-  .sidebar {
-    position: fixed; left: 0; top: var(--topbar-h); z-index: 45; background: var(--bg);
-    width: min(310px, 86vw); padding: 18px 10px 48px; opacity: 1; pointer-events: auto;
-    transform: translateX(-100%); transition: transform .22s ease; box-shadow: var(--shadow);
-  }
-  html.sidebar-collapsed .sidebar { width: min(310px, 86vw); padding: 18px 10px 48px; opacity: 1; }
-  body.nav-open .sidebar { transform: none; pointer-events: auto; }
-  body.nav-open .sidebar-scrim { display: block; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 40; background: rgb(0 0 0 / .4); }
-  .main { padding: 24px 18px 64px; }
-  .hero { padding: 40px 0 32px; }
-  .hero h1 { font-size: 38px; letter-spacing: -1.4px; }
-  .hero-tagline { font-size: 17px; }
-  .page-header h1 { font-size: 28px; }
-  .prev-next { grid-template-columns: 1fr; }
-  .prose h2 .anchor, .prose h3 .anchor { display: none; }
 }
+@media (max-width: 900px) {
+  .brand-name { display: none; }
+  .search-fake { min-width: 0; margin-left: 4px; padding: 8px 10px; }
+  .search-fake .search-fake-label, .search-fake kbd { display: none; }
+  .sidebar { width: min(310px, 86vw); }
+  .main { padding: 22px 16px 64px; }
+  .hero { padding: 36px 0 30px; }
+  .hero h1 { font-size: clamp(30px, 9vw, 40px); letter-spacing: -1.4px; }
+  .hero-tagline { font-size: 17px; }
+  .hero-actions .btn { justify-content: center; }
+  .page-header h1 { font-size: clamp(24px, 7.5vw, 30px); }
+  .prev-next { grid-template-columns: 1fr; }
+  .pn-next { text-align: left; align-items: flex-start; }
+  .prose h2 .anchor, .prose h3 .anchor { display: none; }
+  .prose h2 { font-size: 21px; margin-top: 34px; }
+  .prose h3 { font-size: 17px; }
+
+  /* Touch targets: 40px+ so links aren't a coin toss on a phone. */
+  .icon-btn { width: 40px; height: 40px; }
+  .brand, .search-fake { min-height: 40px; }
+  .search-fake { align-items: center; }
+  .nav-group summary { padding: 10px; }
+  .nav-group li a { padding: 9px 10px; }
+  .toc li a { padding: 8px 0 8px 14px; }
+  .search-filters button { padding: 7px 12px; }
+  .search-results li a { padding: 12px; }
+
+  /* Search sheet fills more of a small screen. */
+  .search-modal { padding: 6vh 10px 0; }
+  .search-panel { max-height: 82vh; }
+}
+
+/* Long tokens (URLs, identifiers) must never widen the page. */
+.prose code, .prose a, .page-header h1, .card h3, .sr-title { overflow-wrap: anywhere; }
+.prose { overflow-wrap: break-word; }
+
+/* Respect notches and rounded corners. */
+@supports (padding: env(safe-area-inset-left)) {
+  .topbar { padding-left: max(14px, env(safe-area-inset-left)); padding-right: max(14px, env(safe-area-inset-right)); }
+  .footer { padding-bottom: max(44px, env(safe-area-inset-bottom)); }
+}
+
+* { -webkit-tap-highlight-color: rgb(51 85 255 / .12); }
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+/* The persistent shortcut hint is noise on a small screen. */
+@media (max-width: 640px) { .search-help-mod { display: none; } }

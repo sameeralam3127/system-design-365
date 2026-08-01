@@ -2,7 +2,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import { ROOT, loadConfig } from "./build.mjs";
+import { ROOT, loadConfig, resolveFromProject } from "./build.mjs";
 
 export async function scaffold(sectionDir, title) {
   const config = await loadConfig();
@@ -25,7 +25,10 @@ export async function scaffold(sectionDir, title) {
     slug = `${next}-${slugBase}`;
   }
 
-  const templateFile = path.join(ROOT, "templates", `${sectionDir === "case-studies" ? "case-study" : "page"}.md`);
+  const templateFile = resolveFromProject(
+    "templates",
+    `${sectionDir === "case-studies" ? "case-study" : "page"}.md`
+  );
   const today = new Date().toISOString().slice(0, 10);
   let body = fs.existsSync(templateFile)
     ? fs.readFileSync(templateFile, "utf8")

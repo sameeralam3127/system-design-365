@@ -18,6 +18,18 @@ const NUM_PREFIX_RE = /^(\d+)-/;
 const SMALL_WORDS = new Set(["a", "an", "and", "as", "of", "the", "to", "vs", "for", "in"]);
 const KEEP_UPPER = new Set(["api", "cdn", "ci", "cd", "id", "url", "sql", "nosql", "http", "iot", "ai", "cqrs", "dns", "kv", "s3"]);
 
+/**
+ * Restrict a path segment to characters that are safe in a URL and in an
+ * HTML attribute. Slugs come from filenames, which a contributor controls;
+ * without this a name containing a quote could break out of an href="…"
+ * in the sidebar, cards, or search results.
+ */
+function urlSafe(segment) {
+  return segment.replace(/[^A-Za-z0-9._~-]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
+const urlSafePath = (p) => p.split("/").map(urlSafe).filter(Boolean).join("/");
+
 export function titleFromFilename(stem) {
   return stem
     .replace(NUM_PREFIX_RE, "")
@@ -43,6 +55,29 @@ function firstParagraph(md) {
     return t.replace(/\s+/g, " ").replace(/[*_`\[\]]/g, "").slice(0, 200);
   }
   return null;
+}
+
+/**
+ * Split a markdown body into its h2/h3 sections, in document order, so the
+ * search index can point at a heading anchor instead of just the page.
+ * Fenced code is skipped so a `## ` inside a code block isn't mistaken for
+ * a heading — matching how the renderer sees the document.
+ */
+function sectionChunks(md) {
+  const out = [];
+  let current = null;
+  let inFence = false;
+  for (const line of md.split(/\r?\n/)) {
+    if (/^\s*```/.test(line)) inFence = !inFence;
+    const m = inFence ? null : line.match(/^(#{2,3})\s+(.*)$/);
+    if (m) {
+      current = { depth: m[1].length, title: m[2].replace(/[*_`]/g, "").trim(), lines: [] };
+      out.push(current);
+    } else if (current) {
+      current.lines.push(line);
+    }
+  }
+  return out;
 }
 
 function plainText(md, limit = 6000) {
@@ -81,7 +116,7 @@ export function loadContent(config, root) {
         pages.push({
           section: sec,
           slug: rel.replace(/\.html$/i, ""),
-          url: `${config.site.baseUrl}${sec.dir}/${rel}`,
+          url: `${config.site.baseUrl}${sec.dir}/${urlSafePath(rel.replace(/\.html$/i, ""))}.html`,
           title: titleFromFilename(stem),
           description: "",
           type: "html",
@@ -99,6 +134,19 @@ export function loadContent(config, root) {
       const isReadme = stem.toLowerCase() === "readme";
       const slug = isReadme ? "index" : rel.replace(/\.md$/i, "");
       const { html, headings } = renderMarkdown(body, { siteOrigin: config.site.origin });
+
+      // Pair each heading (which carries the final, de-duplicated anchor id)
+      // with the prose beneath it. Order matches because both walk the
+      // document top to bottom over the same h2/h3 set.
+      const chunks = sectionChunks(body);
+      const sections =
+        chunks.length === headings.length
+          ? headings.map((h, i) => ({
+              title: h.text,
+              anchor: h.id,
+              text: plainText(chunks[i].lines.join("\n"), 700),
+            }))
+          : [];
       const words = plainText(body, 1e9).split(/\s+/).filter(Boolean).length;
       const numMatch = stem.match(NUM_PREFIX_RE);
       const placeholder = fm.status === "draft" || PLACEHOLDER_RE.test(body) || words < 15;
@@ -106,7 +154,7 @@ export function loadContent(config, root) {
       pages.push({
         section: sec,
         slug,
-        url: `${config.site.baseUrl}${sec.dir}/${slug === "index" ? "" : slug + "/"}`,
+        url: `${config.site.baseUrl}${sec.dir}/${slug === "index" ? "" : urlSafePath(slug) + "/"}`,
         title: fm.title || firstHeading(body) || (isReadme ? `${sec.label} Overview` : titleFromFilename(stem)),
         description: fm.description || firstParagraph(body) || "",
         type: "md",
@@ -123,7 +171,12 @@ export function loadContent(config, root) {
         words,
         headings,
         html,
-        searchText: plainText(body),
+        // Drives per-page script loading: mermaid alone is >3 MB, so pages
+        // without diagrams must not pay for it.
+        hasMermaid: html.includes('class="mermaid"'),
+        hasCode: html.includes('<code class="language-'),
+        searchText: plainText(body, 600),
+        searchSections: sections,
         srcPath: file,
         isReadme,
       });

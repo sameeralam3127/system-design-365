@@ -9,6 +9,14 @@
   var $$ = function (s, el) { return Array.prototype.slice.call((el || document).querySelectorAll(s)); };
   var root = document.documentElement;
 
+  /* ---------- platform-aware shortcut hints ---------- */
+  // Rendered as "Ctrl" server-side; swapped to the Command symbol on Apple
+  // hardware so the hint matches the key the reader actually presses.
+  var isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent || "");
+  if (isMac) {
+    $$(".kbd-mod").forEach(function (el) { el.textContent = "⌘"; });
+  }
+
   /* ---------- theme ---------- */
   function isDark() {
     var t = root.dataset.theme;
@@ -21,7 +29,6 @@
     root.dataset.theme = next;
     localStorage.setItem("sd365-theme", next);
     renderMermaid(true);
-    highlightTheme();
   });
 
   /* ---------- sidebar: manual toggle + reading auto-hide ---------- */
@@ -118,7 +125,10 @@
     window.mermaid.initialize({
       startOnLoad: false,
       theme: isDark() ? "dark" : "default",
-      securityLevel: "loose",
+      // "antiscript" keeps <br> in node labels working while stripping
+      // script content — "loose" would allow arbitrary HTML/JS from a
+      // diagram, which is a needless risk for contributed content.
+      securityLevel: "antiscript",
       fontFamily: getComputedStyle(document.body).fontFamily,
     });
     window.mermaid.run({ nodes: blocks });
@@ -144,20 +154,10 @@
   });
 
   /* ---------- syntax highlight ---------- */
-  var hlLink = null;
-  function highlightTheme() {
-    var href = "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/" +
-      (isDark() ? "github-dark.min.css" : "github.min.css");
-    if (!hlLink) {
-      hlLink = document.createElement("link");
-      hlLink.rel = "stylesheet";
-      document.head.appendChild(hlLink);
-    }
-    hlLink.href = href;
-  }
+  // Token colors live in theme.css and follow the theme variables, so
+  // switching themes needs no work here.
   function highlight() {
     if (!window.hljs) return;
-    highlightTheme();
     $$("pre code[class*='language-']").forEach(function (el) { window.hljs.highlightElement(el); });
   }
 
@@ -166,24 +166,78 @@
   /* ---------- search ---------- */
   var modal = $("#search-modal"), input = $("#search-input"),
       resultsEl = $("#search-results"), filtersEl = $("#search-filters");
-  var index = null, sel = 0, results = [], activeFilter = null;
+  var index = null, sel = 0, results = [], activeFilter = null, lastTerms = [];
 
   function openSearch() {
     modal.hidden = false;
+    document.body.style.overflow = "hidden"; // don't scroll the page behind the sheet
     input.value = "";
     input.focus();
     if (!index) {
+      resultsEl.innerHTML = '<li class="search-empty">Loading…</li>';
       fetch(BASE + "search-index.json")
         .then(function (r) { return r.json(); })
-        .then(function (j) { index = j.docs; buildFilters(); run(""); })
+        .then(function (j) {
+          index = SD365Search.prepare(j.docs);
+          buildFilters();
+          run("");
+        })
         .catch(function () { resultsEl.innerHTML = '<li class="search-empty">Search index unavailable.</li>'; });
     } else run("");
   }
-  function closeSearch() { modal.hidden = true; }
+  function closeSearch() {
+    modal.hidden = true;
+    document.body.style.overflow = "";
+  }
+
+  // Warm the index while the browser is idle so the first keystroke has
+  // nothing to wait for. Never blocks page load, and is skipped on metered
+  // or slow connections where the extra request isn't worth it.
+  function prefetchIndex() {
+    if (index) return;
+    var conn = navigator.connection;
+    if (conn && (conn.saveData || /2g/.test(conn.effectiveType || ""))) return;
+    fetch(BASE + "search-index.json")
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (!index) { index = SD365Search.prepare(j.docs); buildFilters(); }
+      })
+      .catch(function () { /* search falls back to fetching on open */ });
+  }
+  if (window.requestIdleCallback) requestIdleCallback(prefetchIndex, { timeout: 4000 });
+  else addEventListener("load", function () { setTimeout(prefetchIndex, 1500); });
+
+  /**
+   * Follow a result. A hit on the page you're already reading is only a hash
+   * change, so the browser never reloads — the modal has to be dismissed and
+   * the scroll lock released here, or it looks like the click did nothing.
+   */
+  function goTo(url) {
+    var hashAt = url.indexOf("#");
+    var path = hashAt < 0 ? url : url.slice(0, hashAt);
+    var hash = hashAt < 0 ? "" : url.slice(hashAt);
+    closeSearch();
+    if (hash && path === location.pathname) {
+      history.replaceState(null, "", url);
+      var target = document.getElementById(hash.slice(1));
+      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      location.href = url;
+    }
+  }
+
+  // Links keep real hrefs so middle-click and "open in new tab" still work;
+  // only a plain left click is intercepted.
+  resultsEl.addEventListener("click", function (e) {
+    var a = e.target.closest("a");
+    if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+    e.preventDefault();
+    goTo(a.getAttribute("href"));
+  });
 
   function buildFilters() {
     var secs = [];
-    index.forEach(function (d) { if (secs.indexOf(d.s) < 0) secs.push(d.s); });
+    index.docs.forEach(function (d) { if (secs.indexOf(d.s) < 0) secs.push(d.s); });
     filtersEl.innerHTML = "";
     secs.forEach(function (s) {
       var b = document.createElement("button");
@@ -198,22 +252,6 @@
     });
   }
 
-  function score(doc, terms) {
-    var s = 0, tl = doc.t.toLowerCase(), xl = doc.x.toLowerCase(), tags = doc.g.join(" ").toLowerCase();
-    for (var i = 0; i < terms.length; i++) {
-      var q = terms[i];
-      var inTitle = tl.indexOf(q) >= 0, inTags = tags.indexOf(q) >= 0, inBody = xl.indexOf(q) >= 0;
-      if (!inTitle && !inTags && !inBody) return 0; // every term must match somewhere
-      if (tl === q) s += 100;
-      else if (tl.indexOf(q) === 0) s += 40;
-      else if (inTitle) s += 25;
-      if (inTags) s += 15;
-      if (inBody) s += 5;
-    }
-    if (doc.p) s -= 20; // unwritten pages rank below real content
-    return s;
-  }
-
   function mark(text, terms) {
     var out = text.replace(/&/g, "&amp;").replace(/</g, "&lt;");
     terms.forEach(function (q) {
@@ -223,42 +261,31 @@
     return out.replace(/\x01/g, "<mark>").replace(/\x02/g, "</mark>");
   }
 
-  function snippet(doc, terms) {
-    var xl = doc.x.toLowerCase(), pos = -1;
-    for (var i = 0; i < terms.length; i++) { pos = xl.indexOf(terms[i]); if (pos >= 0) break; }
-    if (pos < 0) return doc.x.slice(0, 120);
-    var start = Math.max(0, pos - 50);
-    return (start ? "…" : "") + doc.x.slice(start, start + 150) + "…";
-  }
-
   function run(q) {
     if (!index) return;
-    var terms = q.toLowerCase().split(/\s+/).filter(Boolean);
-    var pool = activeFilter ? index.filter(function (d) { return d.s === activeFilter; }) : index;
-    if (!terms.length) {
-      results = pool.filter(function (d) { return !d.p; }).slice(0, 12);
-    } else {
-      results = pool
-        .map(function (d) { return { d: d, s: score(d, terms) }; })
-        .filter(function (r) { return r.s > 0; })
-        .sort(function (a, b) { return b.s - a.s; })
-        .slice(0, 20)
-        .map(function (r) { return r.d; });
-    }
+    lastTerms = SD365Search.terms(q);
+    results = SD365Search.search(index, q, activeFilter);
     sel = 0;
-    render(terms);
+    render();
   }
 
-  function render(terms) {
+  function render() {
     if (!results.length) {
-      resultsEl.innerHTML = '<li class="search-empty">No results. Try different keywords.</li>';
+      resultsEl.innerHTML = '<li class="search-empty">No matches. Try fewer or different words.</li>';
       return;
     }
-    resultsEl.innerHTML = results.map(function (d, i) {
-      return '<li class="' + (i === sel ? "sel" : "") + '"><a href="' + d.u + '">' +
-        '<div class="sr-title">' + mark(d.t, terms) +
-        '<span class="sr-meta">' + d.s + (d.p ? " · not written yet" : "") + "</span></div>" +
-        (terms.length && d.x ? '<div class="sr-snip">' + mark(snippet(d, terms), terms) + "</div>" : "") +
+    resultsEl.innerHTML = results.map(function (h, i) {
+      var d = h.doc;
+      var crumb = h.section
+        ? '<span class="sr-crumb">' + mark(h.section.t, lastTerms) + "</span>"
+        : "";
+      var snip = lastTerms.length ? SD365Search.snippet(h, lastTerms) : "";
+      return '<li class="' + (i === sel ? "sel" : "") + '"><a href="' + d.u +
+        (h.section ? "#" + h.section.a : "") + '">' +
+        '<div class="sr-title">' + mark(d.t, lastTerms) +
+        '<span class="sr-meta">' + mark(d.s, []) + (d.p ? " · not written yet" : "") + "</span></div>" +
+        crumb +
+        (snip ? '<div class="sr-snip">' + mark(snip, lastTerms) + "</div>" : "") +
         "</a></li>";
     }).join("");
   }
@@ -270,12 +297,12 @@
       e.preventDefault();
       if (!results.length) return;
       sel = (sel + (e.key === "ArrowDown" ? 1 : results.length - 1)) % results.length;
-      render(input.value.toLowerCase().split(/\s+/).filter(Boolean));
+      render();
       var s = $(".search-results .sel");
       if (s) s.scrollIntoView({ block: "nearest" });
     } else if (e.key === "Enter") {
       var a = $(".search-results .sel a");
-      if (a) location.href = a.getAttribute("href");
+      if (a) goTo(a.getAttribute("href"));
     }
   });
   modal.addEventListener("click", function (e) { if (e.target === modal) closeSearch(); });

@@ -17,11 +17,36 @@ import { loadContent } from "./lib/content.mjs";
 import { loadPlugins, runHook } from "./lib/plugins.mjs";
 import { homePage, sectionIndexPage, articlePage, notFoundPage } from "./theme/pages.mjs";
 
-export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+/**
+ * PKG_ROOT is where sd365 itself lives (this repo, or node_modules/sd365 once
+ * installed). ROOT is the project being built — the current working
+ * directory. Keeping them separate is what lets the generator be published
+ * and used against someone else's content.
+ */
+export const PKG_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+export const ROOT = process.cwd();
+
+/** Look for a path in the project first, then fall back to the package. */
+export function resolveFromProject(...segments) {
+  const projectPath = path.join(ROOT, ...segments);
+  if (fs.existsSync(projectPath)) return projectPath;
+  const pkgPath = path.join(PKG_ROOT, ...segments);
+  return fs.existsSync(pkgPath) ? pkgPath : projectPath;
+}
 
 export async function loadConfig() {
+  // Config is deliberately NOT resolved from the package: falling back to
+  // sd365's own config would silently build the wrong site in someone's
+  // directory instead of telling them what's missing.
+  const file = path.join(ROOT, "config", "site.config.mjs");
+  if (!fs.existsSync(file)) {
+    throw new Error(
+      `No config found at ${path.relative(ROOT, file) || file}.\n` +
+      `Run "sd365 init" to scaffold a new site in this directory.`
+    );
+  }
   // Cache-bust so `serve` picks up config edits without restarting.
-  const url = pathToFileURL(path.join(ROOT, "config", "site.config.mjs")).href + `?t=${Date.now()}`;
+  const url = pathToFileURL(file).href + `?t=${Date.now()}`;
   return (await import(url)).default;
 }
 
@@ -35,6 +60,8 @@ function writeIfChanged(file, contents) {
   return true;
 }
 
+const TEXT_ASSET = /\.(css|js|mjs|svg|txt|json|xml|html|webmanifest)$/i;
+
 function copyDir(src, dest, onFile) {
   if (!fs.existsSync(src)) return;
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
@@ -42,7 +69,9 @@ function copyDir(src, dest, onFile) {
     const s = path.join(src, entry.name);
     const d = path.join(dest, entry.name);
     if (entry.isDirectory()) copyDir(s, d, onFile);
-    else onFile(d, fs.readFileSync(s));
+    // Text assets are passed as strings so plugins (e.g. minify) can rewrite
+    // them; everything else stays a Buffer.
+    else onFile(d, TEXT_ASSET.test(entry.name) ? fs.readFileSync(s, "utf8") : fs.readFileSync(s));
   }
 }
 
@@ -72,17 +101,21 @@ export async function build({ quiet = false } = {}) {
   const outDir = path.join(ROOT, config.build.outDir);
   const sections = loadContent(config, ROOT);
   const pages = sections.flatMap((s) => s.pages);
-  const plugins = await loadPlugins(config, ROOT);
+  const plugins = await loadPlugins(config, ROOT, PKG_ROOT);
 
   const stripBase = (url) => url.slice(config.site.baseUrl.length);
   let written = 0;
-  const emitted = new Set(); // every path this build owns, for pruning
+  const emitted = new Set();          // every path this build owns, for pruning
+  const emittedContent = new Map();   // rel -> contents, for post-processing plugins
   const write = (file, contents) => {
-    emitted.add(path.relative(outDir, file));
+    const rel = path.relative(outDir, file);
+    emitted.add(rel);
+    emittedContent.set(rel, contents);
     if (writeIfChanged(file, contents)) written++;
   };
   const ctx = {
     config, sections, pages, outDir, root: ROOT,
+    written: emittedContent,
     emit(rel, contents) {
       write(path.join(outDir, rel), contents);
     },
@@ -108,8 +141,12 @@ export async function build({ quiet = false } = {}) {
     }
   }
 
-  // Static passthrough: theme assets + public files (robots.txt, .nojekyll…)
-  copyDir(path.join(ROOT, config.build.assetsDir), path.join(outDir, "assets"), write);
+  // Static passthrough. Package defaults are laid down first so a project
+  // only needs to ship the files it actually overrides.
+  const projectAssets = path.join(ROOT, config.build.assetsDir);
+  const pkgAssets = path.join(PKG_ROOT, config.build.assetsDir);
+  if (pkgAssets !== projectAssets) copyDir(pkgAssets, path.join(outDir, "assets"), write);
+  copyDir(projectAssets, path.join(outDir, "assets"), write);
   copyDir(path.join(ROOT, config.build.publicDir), outDir, write);
 
   await runHook(plugins, "onDone", ctx);
