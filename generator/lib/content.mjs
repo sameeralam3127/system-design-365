@@ -1,5 +1,5 @@
 /**
- * Content loader: walks content/<section>/ and produces the page model
+ * Content loader: walks <contentDir>/<section>/ and produces the page model
  * consumed by templates and plugins.
  *
  * Markdown files become rendered pages; plain .html files are passed
@@ -11,6 +11,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { parseFrontmatter } from "./frontmatter.mjs";
 import { renderMarkdown } from "./markdown.mjs";
+import { emojify } from "./emoji.mjs";
 
 const PLACEHOLDER_RE = /placeholder for .* content/i;
 const NUM_PREFIX_RE = /^(\d+)-/;
@@ -93,6 +94,10 @@ function plainText(md, limit = 6000) {
 /** Load every page in every configured section. */
 export function loadContent(config, root) {
   const contentDir = path.join(root, config.build.contentDir);
+  const emoji = config.markdown?.emoji !== false;
+  // Frontmatter never passes through the markdown parser, so shortcodes in a
+  // title or description are expanded here instead.
+  const fmText = (v) => (emoji && v ? emojify(String(v)) : v);
   const sections = [];
 
   for (const sec of config.sections) {
@@ -133,7 +138,7 @@ export function loadContent(config, root) {
       const { data: fm, body } = parseFrontmatter(raw);
       const isReadme = stem.toLowerCase() === "readme";
       const slug = isReadme ? "index" : rel.replace(/\.md$/i, "");
-      const { html, headings } = renderMarkdown(body, { siteOrigin: config.site.origin });
+      const { html, headings } = renderMarkdown(body, { siteOrigin: config.site.origin, emoji });
 
       // Pair each heading (which carries the final, de-duplicated anchor id)
       // with the prose beneath it. Order matches because both walk the
@@ -155,8 +160,8 @@ export function loadContent(config, root) {
         section: sec,
         slug,
         url: `${config.site.baseUrl}${sec.dir}/${slug === "index" ? "" : urlSafePath(slug) + "/"}`,
-        title: fm.title || firstHeading(body) || (isReadme ? `${sec.label} Overview` : titleFromFilename(stem)),
-        description: fm.description || firstParagraph(body) || "",
+        title: fmText(fm.title) || fmText(firstHeading(body)) || (isReadme ? `${sec.label} Overview` : titleFromFilename(stem)),
+        description: fmText(fm.description) || fmText(firstParagraph(body)) || "",
         type: "md",
         num: numMatch ? Number(numMatch[1]) : null,
         tags: Array.isArray(fm.tags) ? fm.tags : fm.tags ? [fm.tags] : [],

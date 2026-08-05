@@ -33,14 +33,14 @@ more to me than a star. Open an issue or a PR.
 
 | Folder | What lives there |
 |---|---|
-| [content/case-studies/](content/case-studies/) | Systems designed end to end — URL shortener, rate limiter, chat, news feed, and 96 more to go |
-| [content/hld/](content/hld/) | High-level design: scalability, caching, databases, CAP, sharding, queues |
-| [content/lld/](content/lld/) | Low-level design: object modelling, API contracts, concurrency |
-| [content/patterns/](content/patterns/) | Reusable building blocks — cache-aside, pub/sub, leader election, circuit breaker |
-| [content/trade-offs/](content/trade-offs/) | The comparisons that come up every interview: SQL vs NoSQL, push vs pull, strong vs eventual |
-| [content/interview/](content/interview/) | Mock interview prompts, a session template, an interviewer checklist |
-| [content/security/](content/security/) | Runtime, supply-chain, and operational security notes |
-| [content/glossary/](content/glossary/) | Terms I want to be able to define cold |
+| [docs/case-studies/](docs/case-studies/) | Systems designed end to end — URL shortener, rate limiter, chat, news feed, and 96 more to go |
+| [docs/hld/](docs/hld/) | High-level design: scalability, caching, databases, CAP, sharding, queues |
+| [docs/lld/](docs/lld/) | Low-level design: object modelling, API contracts, concurrency |
+| [docs/patterns/](docs/patterns/) | Reusable building blocks — cache-aside, pub/sub, leader election, circuit breaker |
+| [docs/trade-offs/](docs/trade-offs/) | The comparisons that come up every interview: SQL vs NoSQL, push vs pull, strong vs eventual |
+| [docs/interview/](docs/interview/) | Mock interview prompts, a session template, an interviewer checklist |
+| [docs/security/](docs/security/) | Runtime, supply-chain, and operational security notes |
+| [docs/glossary/](docs/glossary/) | Terms I want to be able to define cold |
 
 Every page is plain Markdown. No database, no CMS — just files you can read on
 GitHub without the site at all.
@@ -79,11 +79,14 @@ What it does:
 
 - **Markdown in, static HTML out** — optional frontmatter, and every field degrades gracefully so a bare `.md` file still renders properly
 - **Full-text search** with BM25 ranking, typo tolerance, and results that deep-link to the exact heading rather than dumping you at the top of a long page
+- **Admonitions** — 12 kinds, custom titles, and collapsible variants that use a native `<details>` so they work without JavaScript
+- **Emoji shortcodes** — `:rocket:` becomes 🚀 in prose, and is left alone inside code
+- **Tags** — frontmatter tags become a browsable `/tags/` index and a page per tag, generated automatically
 - **Mermaid diagrams** from fenced code blocks, click to zoom
 - **Light and dark themes**, no flash on load, respects your system setting
 - **A sidebar that gets out of the way** once you start reading, and content that stays centred whether it is open or closed
 - **Keyboard driven** — see the shortcuts below
-- **Fast**: ~90 ms to build 108 pages; heavy scripts load only on pages that actually need them
+- **Fast**: ~110 ms to build 136 pages; heavy scripts load only on pages that actually need them
 - **Plugin architecture** for search indexing, sitemaps, RSS, SEO checks, and minification
 
 Read [ARCHITECTURE.md](ARCHITECTURE.md) for how it fits together, with diagrams.
@@ -94,17 +97,27 @@ Read [ARCHITECTURE.md](ARCHITECTURE.md) for how it fits together, with diagrams.
 
 ```bash
 npm install -D sd365
-npx sd365 init        # scaffolds config, content folders, and a deploy workflow
+npx sd365 init        # scaffolds config, docs folders, and a deploy workflow
 npx sd365 serve       # preview at http://localhost:4365
 ```
 
-Until then, clone this repo and point it at your own `content/` folder.
+Until then, clone this repo and point it at your own `docs/` folder.
 
 ```bash
 npx sd365 build                            # build into dist/
 npx sd365 serve [port]                     # dev server with live rebuild
 npx sd365 new case-studies "Design X"      # scaffold the next numbered page
 npx sd365 validate                         # check links and frontmatter
+npx sd365 doctor                           # check config, sections, and plugins
+npx sd365 help <command>                   # detail on any command
+```
+
+There is also a **`template` branch**: the generator with an empty starter
+`docs/`, ready to clone for your own documentation.
+
+```bash
+git clone -b template https://github.com/sameeralam3127/system-design-365.git my-docs
+cd my-docs && node scripts/sd365.mjs serve
 ```
 
 Adding a page is just creating a Markdown file. Navigation, search, reading
@@ -121,9 +134,26 @@ updated: 2026-08-01
 ---
 ```
 
-Supported in the body: Mermaid diagrams, callouts (`> [!NOTE]`, `> [!TIP]`,
-`> [!WARNING]`, `> [!DANGER]`), tables, and code blocks with copy buttons and
-syntax highlighting.
+Supported in the body: Mermaid diagrams, admonitions, emoji shortcodes, tables,
+and code blocks with copy buttons and syntax highlighting.
+
+```markdown
+> [!TIP] Prefer distributed ID generation
+> Custom title on the marker line.
+
+> [!EXAMPLE]- Full capacity calculation
+> A `-` collapses it; a `+` makes it collapsible but open.
+
+Ship it :rocket: — shortcodes in `code` are left alone.
+```
+
+Admonition kinds: `NOTE` `INFO` `TIP` `IMPORTANT` `SUCCESS` `QUESTION` `WARNING`
+`DANGER` `BUG` `EXAMPLE` `QUOTE` `ABSTRACT`, plus aliases (`HINT`, `CAUTION`,
+`ERROR`, `TLDR`, …). An unrecognised marker stays an ordinary blockquote, so a
+typo is visible rather than silent.
+
+The full reference, with every feature rendered next to its source, lives at
+[docs/notes/markdown-reference.md](docs/notes/markdown-reference.md).
 
 ### Keyboard shortcuts
 
@@ -155,6 +185,6 @@ have explained something badly or got it wrong, I want to know.
 Two licenses, because there are two kinds of work here:
 
 - **Code** (`generator/`, `scripts/`, `assets/`, `templates/`) — [MIT](LICENSE). Reuse it freely, including commercially.
-- **Writing** (`content/`) — [CC BY 4.0](LICENSE-CONTENT.md). Share and adapt it, just credit and link back.
+- **Writing** (`docs/`) — [CC BY 4.0](LICENSE-CONTENT.md). Share and adapt it, just credit and link back.
 
 See [LICENSE-CONTENT.md](LICENSE-CONTENT.md) for the reasoning.

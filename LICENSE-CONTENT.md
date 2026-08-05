@@ -14,7 +14,7 @@ needed, just keep the copyright notice.
 
 ## The writing — CC BY 4.0
 
-Everything under `content/`: the case studies, notes, trade-off write-ups, and
+Everything under `docs/`: the case studies, notes, trade-off write-ups, and
 mock interview material, plus the diagrams in them.
 
 Licensed under the

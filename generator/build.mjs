@@ -14,8 +14,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { loadContent } from "./lib/content.mjs";
+import { collectTags } from "./lib/tags.mjs";
+import { c, sym, ok, hint, bytes, plural } from "./lib/cli.mjs";
 import { loadPlugins, runHook } from "./lib/plugins.mjs";
-import { homePage, sectionIndexPage, articlePage, notFoundPage } from "./theme/pages.mjs";
+import { homePage, sectionIndexPage, articlePage, tagIndexPage, tagPage, notFoundPage } from "./theme/pages.mjs";
 
 /**
  * PKG_ROOT is where sd365 itself lives (this repo, or node_modules/sd365 once
@@ -101,6 +103,7 @@ export async function build({ quiet = false } = {}) {
   const outDir = path.join(ROOT, config.build.outDir);
   const sections = loadContent(config, ROOT);
   const pages = sections.flatMap((s) => s.pages);
+  const tags = config.theme?.tags === false ? [] : collectTags(config, sections);
   const plugins = await loadPlugins(config, ROOT, PKG_ROOT);
 
   const stripBase = (url) => url.slice(config.site.baseUrl.length);
@@ -114,7 +117,7 @@ export async function build({ quiet = false } = {}) {
     if (writeIfChanged(file, contents)) written++;
   };
   const ctx = {
-    config, sections, pages, outDir, root: ROOT,
+    config, sections, pages, tags, outDir, root: ROOT,
     written: emittedContent,
     emit(rel, contents) {
       write(path.join(outDir, rel), contents);
@@ -124,20 +127,28 @@ export async function build({ quiet = false } = {}) {
   await runHook(plugins, "setup", ctx);
 
   // Home + 404
-  ctx.emit("index.html", homePage(config, sections));
-  ctx.emit("404.html", notFoundPage(config, sections));
+  ctx.emit("index.html", homePage(config, sections, tags));
+  ctx.emit("404.html", notFoundPage(config, sections, tags));
 
   // Sections and pages
   for (const sec of sections) {
-    ctx.emit(path.join(stripBase(sec.url), "index.html"), sectionIndexPage(config, sections, sec));
+    ctx.emit(path.join(stripBase(sec.url), "index.html"), sectionIndexPage(config, sections, sec, tags));
     for (const page of sec.pages) {
       await runHook(plugins, "onPage", page, ctx);
       if (page.isReadme) continue; // rendered as the section index
       if (page.type === "html") {
         ctx.emit(stripBase(page.url), page.raw);
       } else {
-        ctx.emit(path.join(stripBase(page.url), "index.html"), articlePage(config, sections, sec, page));
+        ctx.emit(path.join(stripBase(page.url), "index.html"), articlePage(config, sections, sec, page, tags));
       }
+    }
+  }
+
+  // Tag index and one page per tag.
+  if (tags.length) {
+    ctx.emit(path.join("tags", "index.html"), tagIndexPage(config, sections, tags));
+    for (const tag of tags) {
+      ctx.emit(path.join("tags", tag.slug, "index.html"), tagPage(config, sections, tag, tags));
     }
   }
 
@@ -154,13 +165,25 @@ export async function build({ quiet = false } = {}) {
   const removed = prune(outDir, emitted, outDir);
 
   if (!quiet) {
-    const total = pages.filter((p) => !p.isReadme).length;
-    console.log(
-      `✓ Built ${total} pages across ${sections.length} sections → ${path.relative(ROOT, outDir)}/ ` +
-      `(${written} written${removed ? `, ${removed} stale removed` : ""}, ${Date.now() - t0}ms)`
+    const articles = pages.filter((p) => !p.isReadme).length;
+    const drafts = pages.filter((p) => !p.isReadme && p.placeholder).length;
+    const totalPages = articles + sections.length + (tags.length ? tags.length + 1 : 0);
+    let outBytes = 0;
+    for (const rel of emitted) {
+      try { outBytes += fs.statSync(path.join(outDir, rel)).size; } catch { /* pruned mid-build */ }
+    }
+    ok(
+      `Built ${c.bold(plural(totalPages, "page"))} ` +
+      `${c.gray(`(${plural(articles, "article")}${drafts ? `, ${plural(drafts, "draft")}` : ""}, ` +
+        `${plural(sections.length, "section")}${tags.length ? `, ${plural(tags.length, "tag")}` : ""})`)} ` +
+      `→ ${path.relative(ROOT, outDir)}/`
+    );
+    hint(
+      `${plural(written, "file")} written${removed ? `, ${plural(removed, "stale file")} removed` : ""} ` +
+      `${sym.bullet} ${bytes(outBytes)} ${sym.bullet} ${Date.now() - t0}ms`
     );
   }
-  return { config, sections, pages, outDir };
+  return { config, sections, pages, tags, outDir };
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {

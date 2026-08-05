@@ -11,7 +11,7 @@ export function statusBadge(page) {
   return "";
 }
 
-export function sidebar(sections, activePage, activeSection) {
+export function sidebar(sections, activePage, activeSection, opts = {}) {
   const groups = sections
     .map((sec) => {
       const isActive = activeSection?.dir === sec.dir;
@@ -34,7 +34,14 @@ export function sidebar(sections, activePage, activeSection) {
 </details>`;
     })
     .join("\n");
-  return `<nav class="sidebar-nav" aria-label="Content">${groups}</nav>`;
+  // Tags are a cross-cutting view rather than a section, so they sit outside
+  // the collapsible groups instead of pretending to be one.
+  const extras = opts.tagsUrl
+    ? `<a class="nav-extra" href="${opts.tagsUrl}"${opts.tagsActive ? ` aria-current="page"` : ""}>${icon("tag", "nav-icon")}<span class="nav-label">Browse by tag</span>${
+        opts.tagCount ? `<span class="nav-count">${opts.tagCount}</span>` : ""
+      }</a>`
+    : "";
+  return `<nav class="sidebar-nav" aria-label="Content">${groups}${extras}</nav>`;
 }
 
 export function breadcrumbs(site, trail) {
@@ -72,13 +79,32 @@ export function prevNext(page) {
   return `<nav class="prev-next" aria-label="Pagination">${cell(page.prev, "prev")}${cell(page.next, "next")}</nav>`;
 }
 
-export function pageMeta(page) {
+/**
+ * Tag chips. `resolved` entries carry a url and become links; a bare string
+ * renders as a plain chip, which is what happens when the tag index is
+ * unavailable (e.g. a partial render in a test).
+ */
+export function tagChips(tags, cls = "meta-tags") {
+  if (!tags?.length) return "";
+  const chips = tags
+    .map((t) =>
+      typeof t === "string"
+        ? `<span class="tag">${esc(t)}</span>`
+        : `<a class="tag" href="${t.url}">${esc(t.name)}${
+            t.count != null ? `<span class="tag-count">${t.count}</span>` : ""
+          }</a>`
+    )
+    .join("");
+  return `<span class="${cls}">${chips}</span>`;
+}
+
+export function pageMeta(page, tags = null) {
   const bits = [];
   if (page.num != null) bits.push(`<span class="meta-num">${String(page.num).padStart(3, "0")}</span>`);
   bits.push(statusBadge(page));
   if (!page.placeholder) bits.push(`<span class="meta-item">${icon("clock")}${page.readingTime} min read</span>`);
   if (page.updated) bits.push(`<span class="meta-item">${icon("calendar")}${esc(String(page.updated))}</span>`);
-  if (page.tags.length) bits.push(`<span class="meta-tags">${page.tags.map((t) => `<span class="tag">${esc(String(t))}</span>`).join("")}</span>`);
+  bits.push(tagChips(tags?.length ? tags : page.tags.map((t) => String(t))));
   return `<div class="page-meta">${bits.filter(Boolean).join("")}</div>`;
 }
 

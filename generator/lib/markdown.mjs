@@ -4,21 +4,29 @@
  * Built on the vendored `marked` parser with sd365 extensions:
  *  - heading IDs + anchor links (feeds the on-page TOC)
  *  - ```mermaid fences → <pre class="mermaid"> rendered client-side
- *  - GitHub-style callouts: > [!NOTE] / [!TIP] / [!WARNING] / [!DANGER] / [!INFO]
+ *  - admonitions: > [!NOTE], custom titles, and collapsible variants
+ *    (see admonitions.mjs for the full marker list)
+ *  - `:rocket:` emoji shortcodes (see emoji.mjs)
  *  - external links open in a new tab
  *  - tables and code blocks wrapped for horizontal scrolling
  */
 
 import { Marked } from "../vendor/marked.esm.js";
-import { icon, CALLOUT_ICONS } from "./icons.mjs";
+import { icon } from "./icons.mjs";
+import { resolveAdmonition } from "./admonitions.mjs";
+import { matchShortcode } from "./emoji.mjs";
 
-const CALLOUTS = {
-  NOTE: "Note",
-  INFO: "Info",
-  TIP: "Tip",
-  WARNING: "Warning",
-  DANGER: "Danger",
-};
+/**
+ * Marker line of an admonition, as it looks *after* marked has rendered the
+ * blockquote. Groups: type, fold flag (- collapsed, + open), custom title,
+ * and the terminator.
+ *
+ * The terminator varies with what follows the marker: a newline when body
+ * text continues in the same paragraph (the common case, since `breaks` is
+ * off), `<br>` if soft breaks are ever turned on, and `</p>` when the marker
+ * line is a paragraph by itself.
+ */
+const ADMONITION_RE = /^<p>\[!([A-Za-z]+)\]([-+]?)[^\S\n]*([^\n]*?)[^\S\n]*(\n|<br>|<\/p>)/;
 
 export function slugify(text) {
   return String(text)
@@ -42,11 +50,32 @@ export function escapeHtml(s) {
  * Render markdown to HTML. Returns { html, headings } where headings is
  * [{ depth, id, text }] for h2/h3 (used for the sticky TOC).
  */
-export function renderMarkdown(src, { siteOrigin = "" } = {}) {
+export function renderMarkdown(src, { siteOrigin = "", emoji = true } = {}) {
   const headings = [];
   const usedIds = new Set();
 
   const marked = new Marked({ gfm: true, breaks: false });
+
+  if (emoji) {
+    // An inline tokenizer, not a string replace over the source: this way a
+    // shortcode inside `code` or a fenced block is left alone, because those
+    // are tokenized before inline rules ever see the text.
+    marked.use({
+      extensions: [
+        {
+          name: "emoji",
+          level: "inline",
+          start: (src) => src.indexOf(":"),
+          tokenizer(src) {
+            const hit = matchShortcode(src);
+            if (hit) return { type: "emoji", raw: hit.raw, name: hit.name, char: hit.char };
+          },
+          renderer: (t) =>
+            `<span class="emoji" role="img" aria-label="${escapeHtml(t.name.replace(/[_-]+/g, " "))}">${t.char}</span>`,
+        },
+      ],
+    });
+  }
 
   marked.use({
     renderer: {
@@ -75,13 +104,29 @@ export function renderMarkdown(src, { siteOrigin = "" } = {}) {
         return `<div class="table-wrap"><table><thead>${header}</thead><tbody>${body}</tbody></table></div>\n`;
       },
       blockquote(quote) {
-        const m = quote.match(/^<p>\[!(NOTE|INFO|TIP|WARNING|DANGER)\]\s*(?:<br>)?/);
-        if (m) {
-          const kind = m[1];
-          const inner = quote.replace(m[0], "<p>").replace(/^<p>\s*<\/p>/, "");
-          return `<div class="callout callout-${kind.toLowerCase()}"><div class="callout-title">${icon(CALLOUT_ICONS[kind])} ${CALLOUTS[kind]}</div>${inner}</div>\n`;
+        const m = quote.match(ADMONITION_RE);
+        const spec = m && resolveAdmonition(m[1]);
+        // Unknown marker: leave it as the literal blockquote the author wrote
+        // rather than inventing a box for a typo.
+        if (!spec) return `<blockquote>${quote}</blockquote>\n`;
+
+        const [, , fold, customTitle, terminator] = m;
+        // Prose continuing in the same paragraph needs that paragraph
+        // reopened; a `</p>` terminator means the marker line stood alone, so
+        // the whole paragraph goes away.
+        const inner = terminator === "</p>"
+          ? quote.replace(m[0], "")
+          : quote.replace(m[0], "<p>").replace(/^<p>\s*<\/p>\s*/, "");
+        const title = customTitle || spec.label;
+        const head = `${icon(spec.icon)} <span class="callout-label">${title}</span>`;
+        const cls = `callout callout-${spec.kind}`;
+
+        if (fold) {
+          return `<details class="${cls} callout-fold"${fold === "+" ? " open" : ""}>` +
+            `<summary class="callout-title">${head}</summary>` +
+            `<div class="callout-body">${inner}</div></details>\n`;
         }
-        return `<blockquote>${quote}</blockquote>\n`;
+        return `<div class="${cls}"><div class="callout-title">${head}</div>${inner}</div>\n`;
       },
       link(href, title, text) {
         const t = title ? ` title="${escapeHtml(title)}"` : "";

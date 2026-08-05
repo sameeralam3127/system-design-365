@@ -17,7 +17,7 @@ export default {
     language: "en",
   },
 
-  // Content sections, in sidebar/nav order. `dir` is a folder under content/,
+  // Content sections, in sidebar/nav order. `dir` is a folder under docs/,
   // `icon` is a name from generator/lib/icons.mjs.
   sections: [
     { dir: "case-studies", label: "Case Studies", icon: "layers", blurb: "Classic interview systems designed end to end." },
@@ -36,10 +36,19 @@ export default {
     // article, so long-form content gets the full width. A manual toggle
     // (button or the \ key) always wins and is remembered.
     autoHideSidebar: true,
+    // Generate /tags/ and /tags/<tag>/ from frontmatter `tags`, and turn the
+    // tag chips on each page into links. Set false to drop them entirely.
+    tags: true,
+  },
+
+  markdown: {
+    // Expand `:rocket:` shortcodes to emoji in body text, titles, and
+    // descriptions. Code spans and fenced blocks are never touched.
+    emoji: true,
   },
 
   build: {
-    contentDir: "content",
+    contentDir: "docs",
     assetsDir: "assets",
     publicDir: "public",
     outDir: "dist",

@@ -1,6 +1,6 @@
 /**
- * Dev server: serves dist/ at the site baseUrl and rebuilds when
- * content/, config/, assets/, or the generator itself changes.
+ * Dev server: serves dist/ at the site baseUrl and rebuilds when the
+ * content dir, config/, assets/, or the generator itself changes.
  * Zero dependencies — plain node:http + fs.watch.
  */
 
@@ -8,6 +8,7 @@ import fs from "node:fs";
 import http from "node:http";
 import path from "node:path";
 import { build, ROOT, loadConfig } from "./build.mjs";
+import { c, sym, warn, fail, hint } from "./lib/cli.mjs";
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
@@ -33,10 +34,13 @@ export async function serve(port = 4365) {
     clearTimeout(pending);
     pending = setTimeout(async () => {
       try { await build({ quiet: false }); }
-      catch (e) { console.error("Build failed:", e.message); }
+      catch (e) { fail(`Build failed: ${e.message}`); }
     }, 150);
   };
-  for (const dir of ["content", "config", "assets", "public", "generator"]) {
+  // Watch the configured content dir rather than a hardcoded name, so a
+  // project that renamed it (docs/, notes/, …) still gets live rebuilds.
+  const watched = [config.build.contentDir, "config", config.build.assetsDir, config.build.publicDir, "generator"];
+  for (const dir of [...new Set(watched)]) {
     const p = path.join(ROOT, dir);
     if (fs.existsSync(p)) fs.watch(p, { recursive: true }, () => rebuild(dir));
   }
@@ -56,13 +60,18 @@ export async function serve(port = 4365) {
       res.writeHead(200, { "Content-Type": MIME[path.extname(file)] || "application/octet-stream" });
       res.end(fs.readFileSync(file));
     })
-    .listen(port, () => console.log(`▶ Serving http://localhost:${server.address().port}${base} (watching for changes)`));
+    .listen(port, () => {
+      const url = `http://localhost:${server.address().port}${base}`;
+      console.log(`\n${c.green(sym.play)} ${c.bold(url)}`);
+      hint(`watching ${[...new Set(watched)].map((d) => `${d}/`).join(", ")}`);
+      hint(`Ctrl+C to stop`);
+    });
 
   let retried = false;
   server.on("error", (err) => {
     if (err.code === "EADDRINUSE" && !retried) {
       retried = true;
-      console.warn(`⚠ Port ${port} is in use (another sd365 serve running?) — picking a free port…`);
+      warn(`Port ${port} is in use (another sd365 serve running?) — picking a free port…`);
       server.listen(0);
     } else {
       throw err;

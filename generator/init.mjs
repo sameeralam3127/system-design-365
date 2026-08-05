@@ -1,7 +1,7 @@
 /**
  * `sd365 init` — scaffold a new documentation site in the current directory.
  *
- * Writes a config, the content folders with a starter page, the deploy
+ * Writes a config, the docs folders with a starter page, the deploy
  * workflow, and the static passthrough files. Existing files are never
  * overwritten: init is safe to re-run in a project that already has some
  * of these in place.
@@ -44,7 +44,7 @@ export default {
     language: "en",
   },
 
-  // Each entry maps to a folder under content/. Icons come from
+  // Each entry maps to a folder under docs/. Icons come from
   // generator/lib/icons.mjs.
   sections: [
 ${SECTIONS.map(
@@ -56,10 +56,17 @@ ${SECTIONS.map(
   theme: {
     // Collapse the sidebar once the reader scrolls into an article.
     autoHideSidebar: true,
+    // Build /tags/ and /tags/<tag>/ from frontmatter \`tags\`.
+    tags: true,
+  },
+
+  markdown: {
+    // Expand \`:rocket:\` shortcodes to emoji. Code is never touched.
+    emoji: true,
   },
 
   build: {
-    contentDir: "content",
+    contentDir: "docs",
     assetsDir: "assets",
     publicDir: "public",
     outDir: "dist",
@@ -123,7 +130,7 @@ export async function init() {
 
   for (const [dir, label, , blurb] of SECTIONS) {
     write(
-      `content/${dir}/README.md`,
+      `docs/${dir}/README.md`,
       `---\ntitle: ${label}\ndescription: ${blurb}\n---\n\nAn overview of this section. This page becomes the section landing page.\n`,
       results
     );
@@ -134,7 +141,7 @@ export async function init() {
   const starterBody = fs.existsSync(starter)
     ? fs.readFileSync(starter, "utf8").replaceAll("{{title}}", "My First Case Study").replaceAll("{{date}}", today)
     : `---\ntitle: My First Case Study\nstatus: draft\n---\n\n## Overview\n`;
-  write("content/case-studies/001-my-first-case-study.md", starterBody, results);
+  write("docs/case-studies/001-my-first-case-study.md", starterBody, results);
 
   write("public/.nojekyll", "", results);
   write("public/robots.txt", "User-agent: *\nAllow: /\n", results);

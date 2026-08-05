@@ -3,7 +3,7 @@
 `sd365` is the custom static site generator that powers System Design 365. It is
 built from scratch on Node.js (zero npm dependencies — the only third-party code
 is a vendored copy of the `marked` markdown parser) and turns the Markdown in
-`content/` into the static site deployed to GitHub Pages.
+`docs/` into the static site deployed to GitHub Pages.
 
 ## Why a custom SSG?
 
@@ -21,7 +21,7 @@ is a vendored copy of the `marked` markdown parser) and turns the Markdown in
 
 ```
 system-design-365/
-├── content/            # ALL site content — Markdown (+ raw HTML passthrough)
+├── docs/               # ALL site content — Markdown (+ raw HTML passthrough)
 │   ├── case-studies/   #   001-…100 numbered case studies
 │   ├── hld/  lld/      #   high/low-level design topics
 │   ├── patterns/  trade-offs/  interview/  security/  glossary/  notes/
@@ -33,7 +33,9 @@ system-design-365/
 │   ├── init.mjs        #   scaffold a brand-new site
 │   ├── new.mjs         #   content scaffolding
 │   ├── validate.mjs    #   content linting (links, frontmatter)
-│   ├── lib/            #   frontmatter, markdown, content loader, icons, plugin runner
+│   ├── doctor.mjs      #   config/setup diagnostics
+│   ├── lib/            #   frontmatter, markdown, admonitions, emoji, tags,
+│   │                   #   content loader, icons, cli output, plugin runner
 │   ├── theme/          #   layout + components + page templates (JS functions)
 │   ├── plugins/        #   search-index, sitemap, rss, og-meta, minify
 │   └── vendor/         #   marked.esm.js (vendored)
@@ -48,11 +50,14 @@ system-design-365/
 ```mermaid
 flowchart LR
   A[config/site.config.mjs] --> B[Content Loader]
-  C[content/**/*.md,*.html] --> B
+  C[docs/**/*.md,*.html] --> B
   B -->|frontmatter parse| D[Markdown Pipeline<br/>marked + extensions]
   D --> E[Page Model<br/>title · toc · tags · reading time · prev/next]
+  E --> T[Tag Index<br/>tag → pages]
   E --> F[Theme<br/>layout + components]
+  T --> F
   F --> G[dist/**/index.html]
+  T --> G2[dist/tags/**/index.html]
   E --> H[Plugin Hooks]
   H --> I[search-index.json]
   H --> J[sitemap.xml]
@@ -284,7 +289,7 @@ node scripts/sd365.mjs validate                   # lint links + frontmatter (CI
 ## Roadmap
 
 - Versioned docs (`content@v2/` + version switcher in the topbar)
-- i18n (`content/<lang>/` mirrors + `hreflang`)
+- i18n (`docs/<lang>/` mirrors + `hreflang`)
 - Build-time OG image generation (SVG → PNG per page)
 - PDF export plugin (print-CSS driven)
 - Interactive/animated architecture diagrams

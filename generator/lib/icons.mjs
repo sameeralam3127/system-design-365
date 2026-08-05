@@ -49,6 +49,19 @@ const STROKE = {
   danger:
     '<path d="M8 2.2h8L21.8 8v8L16 21.8H8L2.2 16V8L8 2.2Z"/><path d="M12 7.8v4.4"/><path d="M12 16.2h.01"/>',
   spark: '<path d="M12 2.5 14 9l6.5 2-6.5 2-2 6.5-2-6.5L3.5 11 10 9Z"/>',
+
+  // Admonitions
+  question: '<circle cx="12" cy="12" r="9.2"/><path d="M9.4 9.4a2.7 2.7 0 0 1 5.2.8c0 1.8-2.6 2.2-2.6 3.9"/><path d="M12 17.3h.01"/>',
+  success: '<circle cx="12" cy="12" r="9.2"/><path d="m8 12.2 2.8 2.8L16 9.8"/>',
+  star: '<path d="m12 2.6 2.9 5.9 6.5.95-4.7 4.6 1.1 6.5-5.8-3.05-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6Z"/>',
+  bug: '<path d="M8 6.5a4 4 0 0 1 8 0"/><rect x="7" y="6.5" width="10" height="12" rx="5"/><path d="M2.8 11h4.2M17 11h4.2M3.6 6.6 6.4 8.3M20.4 6.6 17.6 8.3M3.6 16.4 6.4 14.7M20.4 16.4 17.6 14.7"/>',
+  terminal: '<rect x="2.5" y="4" width="19" height="16" rx="2.5"/><path d="m7 9.5 3 2.5-3 2.5"/><path d="M12.5 15h5"/>',
+  quote: '<path d="M10 11H6.5A2.5 2.5 0 0 1 4 8.5v-1A2.5 2.5 0 0 1 6.5 5H8a2 2 0 0 1 2 2v6c0 3-1.8 5.2-4.5 6"/><path d="M20 11h-3.5A2.5 2.5 0 0 1 14 8.5v-1A2.5 2.5 0 0 1 16.5 5H18a2 2 0 0 1 2 2v6c0 3-1.8 5.2-4.5 6"/>',
+  list: '<path d="M8.5 6h12.5M8.5 12h12.5M8.5 18h12.5"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/>',
+
+  // Tags
+  tag: '<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><path d="M7.6 7.6h.01"/>',
+  hash: '<path d="M4.5 9h15M4.5 15h15M10 3.5 8 20.5M16.5 3.5l-2 17"/>',
 };
 
 const BRAND = {
@@ -66,10 +79,5 @@ export function icon(name, cls = "") {
   return `<svg class="icon ${cls}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${paths}</svg>`;
 }
 
-export const CALLOUT_ICONS = {
-  NOTE: "info",
-  INFO: "info",
-  TIP: "bulb",
-  WARNING: "warning",
-  DANGER: "danger",
-};
+/** Names every icon this module can render — used by `sd365 doctor`. */
+export const ICON_NAMES = [...Object.keys(STROKE), ...Object.keys(BRAND)];

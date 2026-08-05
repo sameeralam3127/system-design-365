@@ -142,7 +142,11 @@ ${o.extraHead || ""}
   </div>
 </header>
 <div class="shell">
-  <aside class="sidebar" id="sidebar">${sidebar(sections, o.activePage, o.activeSection)}</aside>
+  <aside class="sidebar" id="sidebar">${sidebar(sections, o.activePage, o.activeSection, {
+    tagsUrl: o.tags?.length ? `${b}tags/` : null,
+    tagCount: o.tags?.length || 0,
+    tagsActive: !!o.tagsActive,
+  })}</aside>
   <div class="sidebar-scrim" id="sidebar-scrim"></div>
   ${o.content}
 </div>

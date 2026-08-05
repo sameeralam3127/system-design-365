@@ -6,13 +6,22 @@
 
 import { loadConfig } from "./build.mjs";
 import { loadContent } from "./lib/content.mjs";
+import { collectTags } from "./lib/tags.mjs";
 import { ROOT } from "./build.mjs";
+import { ok, warn, fail, plural } from "./lib/cli.mjs";
 
 export async function validate() {
   const config = await loadConfig();
   const sections = loadContent(config, ROOT);
   const pages = sections.flatMap((s) => s.pages);
-  const urls = new Set([config.site.baseUrl, ...sections.map((s) => s.url), ...pages.map((p) => p.url)]);
+  const tags = config.theme?.tags === false ? [] : collectTags(config, sections);
+  const urls = new Set([
+    config.site.baseUrl,
+    ...sections.map((s) => s.url),
+    ...pages.map((p) => p.url),
+    ...(tags.length ? [`${config.site.baseUrl}tags/`] : []),
+    ...tags.map((t) => t.url),
+  ]);
   const errors = [];
   const warnings = [];
 
@@ -37,8 +46,12 @@ export async function validate() {
     }
   }
 
-  for (const w of warnings) console.warn(`⚠ ${w}`);
-  for (const e of errors) console.error(`✗ ${e}`);
-  console.log(`Validation: ${errors.length} errors, ${warnings.length} warnings across ${pages.length} pages.`);
-  if (errors.length) process.exit(1);
+  for (const w of warnings) warn(w);
+  for (const e of errors) fail(e);
+  const summary = `${plural(errors.length, "error")}, ${plural(warnings.length, "warning")} across ${plural(pages.length, "page")}`;
+  if (errors.length) {
+    fail(`Validation failed — ${summary}.`);
+    process.exit(1);
+  }
+  ok(`Validation passed — ${summary}.`);
 }
