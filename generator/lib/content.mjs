@@ -91,6 +91,48 @@ function plainText(md, limit = 6000) {
     .slice(0, limit);
 }
 
+/**
+ * Rewrite relative `*.md` links to the URLs those files are published at.
+ *
+ * This is what lets one link work in both places. A contributor writes
+ * `[Rate Limiter](002-rate-limiter.md)` — the form GitHub renders correctly
+ * when browsing the repo — and the built site turns it into
+ * `/base/case-studies/002-rate-limiter/`. Without this the author has to
+ * choose which of the two audiences gets working links.
+ *
+ * Runs after every section is loaded because a link may point across
+ * sections, so the full path→URL map has to exist first. Targets that don't
+ * resolve are left untouched for `validate` to report.
+ */
+function rewriteDocLinks(sections) {
+  const byPath = new Map();
+  for (const sec of sections) {
+    for (const page of sec.pages) {
+      if (!page.contentRel) continue;
+      byPath.set(page.contentRel.toLowerCase(), page.url);
+    }
+  }
+
+  const isExternal = (href) => /^([a-z][a-z0-9+.-]*:|\/\/|\/|#)/i.test(href);
+
+  for (const sec of sections) {
+    for (const page of sec.pages) {
+      if (page.type !== "md" || !page.html.includes(".md")) continue;
+      const dir = path.posix.dirname(page.contentRel);
+      page.html = page.html.replace(/href="([^"]+)"/g, (whole, href) => {
+        if (isExternal(href)) return whole;
+        const [target, hash] = href.split("#");
+        if (!/\.md$/i.test(target)) return whole;
+        // path.posix.join normalises the ../ segments the same way a
+        // filesystem would, which is exactly how GitHub resolves them.
+        const resolved = path.posix.join(dir, decodeURI(target)).toLowerCase();
+        const url = byPath.get(resolved);
+        return url ? `href="${url}${hash ? `#${hash}` : ""}"` : whole;
+      });
+    }
+  }
+}
+
 /** Load every page in every configured section. */
 export function loadContent(config, root) {
   const contentDir = path.join(root, config.build.contentDir);
@@ -117,9 +159,14 @@ export function loadContent(config, root) {
       const isMd = /\.md$/i.test(file);
       const raw = fs.readFileSync(file, "utf8");
 
+      // Path relative to the content root, e.g. "guides/001-intro.md". This
+      // is what a relative link in the markdown source resolves against.
+      const contentRel = `${sec.dir}/${rel}`;
+
       if (!isMd) {
         pages.push({
           section: sec,
+          contentRel,
           slug: rel.replace(/\.html$/i, ""),
           url: `${config.site.baseUrl}${sec.dir}/${urlSafePath(rel.replace(/\.html$/i, ""))}.html`,
           title: titleFromFilename(stem),
@@ -158,6 +205,7 @@ export function loadContent(config, root) {
 
       pages.push({
         section: sec,
+        contentRel,
         slug,
         url: `${config.site.baseUrl}${sec.dir}/${slug === "index" ? "" : urlSafePath(slug) + "/"}`,
         title: fmText(fm.title) || fmText(firstHeading(body)) || (isReadme ? `${sec.label} Overview` : titleFromFilename(stem)),
@@ -191,6 +239,8 @@ export function loadContent(config, root) {
     pages.sort((a, b) => (a.isReadme ? -1 : b.isReadme ? 1 : (a.num ?? 1e9) - (b.num ?? 1e9)) || a.slug.localeCompare(b.slug));
     sections.push({ ...sec, pages, url: `${config.site.baseUrl}${sec.dir}/` });
   }
+
+  rewriteDocLinks(sections);
 
   // prev/next within each section (markdown, non-index pages only).
   for (const sec of sections) {

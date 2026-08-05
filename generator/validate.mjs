@@ -36,6 +36,12 @@ export async function validate() {
       if (/^(https?:|mailto:|#)/.test(href)) continue;
       const clean = href.split("#")[0];
       if (!clean) continue;
+      // A surviving relative *.md href means the rewriter could not find
+      // that file — the link is broken on the site AND on GitHub.
+      if (/\.md$/i.test(clean) && !clean.startsWith("/")) {
+        errors.push(`${p.srcPath}: link to a file that doesn't exist → ${href}`);
+        continue;
+      }
       if (clean.startsWith(config.site.baseUrl) && !urls.has(clean) && !clean.match(/\.(css|js|json|xml|svg|png|jpg)$/)) {
         errors.push(`${p.srcPath}: broken internal link → ${href}`);
       }
