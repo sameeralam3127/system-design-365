@@ -2,33 +2,34 @@
  * Central configuration for the sd365 static site generator.
  * Everything the build needs to know about the site lives here —
  * the generator itself is content-agnostic.
+ *
+ * Start here: set title, baseUrl, origin, and repo, then run
+ * `npm run doctor` to check the result.
  */
 export default {
   site: {
-    title: "System Design 365",
-    tagline: "System design case studies, from first requirement to final architecture.",
+    title: "My Documentation",
+    tagline: "A short line that sits under the title on the home page.",
     description:
-      "A structured, open knowledge base for system design interview prep: case studies, high-level and low-level design, patterns, trade-offs, and mock interviews.",
-    // Project pages live under /<repo>/ on GitHub Pages.
-    baseUrl: "/system-design-365/",
-    origin: "https://sameeralam3127.github.io",
-    repo: "https://github.com/sameeralam3127/system-design-365",
-    author: "Sameer Alam",
+      "A longer sentence used for search engines, social cards, and the home page intro.",
+    // GitHub Pages project sites live under /<repo-name>/ — the trailing
+    // slash is load-bearing, since every generated link concatenates onto
+    // it. Use "/" only for a <user>.github.io repository.
+    baseUrl: "/my-docs/",
+    origin: "https://your-username.github.io",
+    repo: "https://github.com/your-username/my-docs",
+    author: "Your Name",
     language: "en",
   },
 
   // Content sections, in sidebar/nav order. `dir` is a folder under docs/,
-  // `icon` is a name from generator/lib/icons.mjs.
+  // `icon` is a name from generator/lib/icons.mjs. Rename, reorder, add, or
+  // delete freely — a section whose folder is missing is skipped.
   sections: [
-    { dir: "case-studies", label: "Case Studies", icon: "layers", blurb: "Classic interview systems designed end to end." },
-    { dir: "hld", label: "High-Level Design", icon: "network", blurb: "Architecture, scalability, and distributed systems." },
-    { dir: "lld", label: "Low-Level Design", icon: "chip", blurb: "Object modeling, APIs, and machine coding." },
-    { dir: "patterns", label: "Patterns", icon: "grid", blurb: "Reusable building blocks and techniques." },
-    { dir: "trade-offs", label: "Trade-offs", icon: "scale", blurb: "Decision frameworks and comparisons." },
-    { dir: "interview", label: "Mock Interviews", icon: "mic", blurb: "Prompts, session templates, and checklists." },
-    { dir: "security", label: "Security", icon: "shield", blurb: "Runtime, supply-chain, and operational risk." },
-    { dir: "glossary", label: "Glossary", icon: "book", blurb: "Terms you should be able to define cold." },
-    { dir: "notes", label: "Notes", icon: "note", blurb: "Free-form study notes." },
+    { dir: "guides", label: "Guides", icon: "book", blurb: "Step-by-step walkthroughs." },
+    { dir: "concepts", label: "Concepts", icon: "network", blurb: "How things work, and why." },
+    { dir: "reference", label: "Reference", icon: "chip", blurb: "Options, APIs, and specifications." },
+    { dir: "notes", label: "Notes", icon: "note", blurb: "Working notes and decisions." },
   ],
 
   theme: {
@@ -59,7 +60,8 @@ export default {
   },
 
   // Plugins run in order. Each is a module in generator/plugins/ exporting
-  // { name, setup?, onPage?, onDone? }. `minify` rewrites emitted files, so
-  // it must run last.
+  // { name, setup?, onPage?, onDone? }. Drop your own in plugins/<name>.mjs
+  // and add it here by name. `minify` rewrites emitted files, so it must
+  // run last.
   plugins: ["search-index", "sitemap", "rss", "og-meta", "minify"],
 };

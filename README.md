@@ -1,190 +1,159 @@
-# System Design 365
+# sd365 documentation template
 
-**Learning system design in the open — one case study at a time.**
+A ready-to-use documentation site: **Markdown in, static site out**, deployed to
+GitHub Pages by a workflow that is already wired up.
 
-Live site: **https://sameeralam3127.github.io/system-design-365/**
+This is the `template` branch of
+[system-design-365](https://github.com/sameeralam3127/system-design-365) — the
+generator with an empty `docs/` folder instead of that repository's content.
+Clone it, change five config values, and start writing.
 
----
-
-## What this is
-
-I kept reading system design articles, nodding along, and then freezing the
-moment someone asked me to design something on a whiteboard. Reading is not the
-same as being able to do it.
-
-So this repository is me working through it properly: one system at a time,
-written out end to end — requirements, capacity estimates, the architecture,
-the parts I got wrong, and the trade-offs I only noticed on the second pass.
-It is a study notebook that happens to be public.
-
-I am publishing it for two reasons. Writing something down for other people to
-read forces a level of honesty that private notes never do — you cannot hand-wave
-past the bit you do not understand. And if you are on the same path, you get
-notes that are structured rather than a pile of bookmarks.
-
-**Where it is right now:** 3 of 100 case studies written, plus notes on security
-and a set of mock-interview prompts. The rest are stubbed out with titles so the
-roadmap is visible. I would rather show an honest 3/100 than pad it out.
-
-If you spot something wrong, **please tell me** — a corrected mistake is worth
-more to me than a star. Open an issue or a PR.
-
-## What is inside
-
-| Folder | What lives there |
-|---|---|
-| [docs/case-studies/](docs/case-studies/) | Systems designed end to end — URL shortener, rate limiter, chat, news feed, and 96 more to go |
-| [docs/hld/](docs/hld/) | High-level design: scalability, caching, databases, CAP, sharding, queues |
-| [docs/lld/](docs/lld/) | Low-level design: object modelling, API contracts, concurrency |
-| [docs/patterns/](docs/patterns/) | Reusable building blocks — cache-aside, pub/sub, leader election, circuit breaker |
-| [docs/trade-offs/](docs/trade-offs/) | The comparisons that come up every interview: SQL vs NoSQL, push vs pull, strong vs eventual |
-| [docs/interview/](docs/interview/) | Mock interview prompts, a session template, an interviewer checklist |
-| [docs/security/](docs/security/) | Runtime, supply-chain, and operational security notes |
-| [docs/glossary/](docs/glossary/) | Terms I want to be able to define cold |
-
-Every page is plain Markdown. No database, no CMS — just files you can read on
-GitHub without the site at all.
-
-## How I work through a case study
-
-The same seven steps every time, because the structure is the part that
-transfers to an actual interview:
-
-1. Clarify requirements — functional, non-functional, and what is explicitly out of scope
-2. Estimate scale — traffic, storage, bandwidth, back of the envelope
-3. Define the API and data model
-4. Draw the high-level architecture
-5. Deep dive on the bottleneck
-6. Talk through the trade-offs, including the option I rejected and why
-7. Note what I would improve with more time
-
-[templates/case-study.md](templates/case-study.md) is that structure as a file,
-if you want to use it yourself.
-
----
-
-## The site generator (sd365)
-
-The site is built by **sd365**, a static site generator I wrote from scratch for
-this project. Not because the world needs another one — Docusaurus and MkDocs
-are excellent — but because building the thing that renders your notes teaches
-you more than configuring someone else's. It turned out well enough that it is
-worth sharing on its own.
-
-**It has zero npm dependencies.** The only third-party code is a vendored copy
-of the `marked` markdown parser. `git clone`, `node scripts/sd365.mjs build`,
-done — no `npm install`, no lockfile drift, no supply chain to audit.
-
-What it does:
-
-- **Markdown in, static HTML out** — optional frontmatter, and every field degrades gracefully so a bare `.md` file still renders properly
-- **Full-text search** with BM25 ranking, typo tolerance, and results that deep-link to the exact heading rather than dumping you at the top of a long page
-- **Admonitions** — 12 kinds, custom titles, and collapsible variants that use a native `<details>` so they work without JavaScript
-- **Emoji shortcodes** — `:rocket:` becomes 🚀 in prose, and is left alone inside code
-- **Tags** — frontmatter tags become a browsable `/tags/` index and a page per tag, generated automatically
-- **Mermaid diagrams** from fenced code blocks, click to zoom
-- **Light and dark themes**, no flash on load, respects your system setting
-- **A sidebar that gets out of the way** once you start reading, and content that stays centred whether it is open or closed
-- **Keyboard driven** — see the shortcuts below
-- **Fast**: ~110 ms to build 136 pages; heavy scripts load only on pages that actually need them
-- **Plugin architecture** for search indexing, sitemaps, RSS, SEO checks, and minification
-
-Read [ARCHITECTURE.md](ARCHITECTURE.md) for how it fits together, with diagrams.
-
-### Using it for your own site
-
-`sd365` is on its way to npm. Once published:
-
-```bash
-npm install -D sd365
-npx sd365 init        # scaffolds config, docs folders, and a deploy workflow
-npx sd365 serve       # preview at http://localhost:4365
-```
-
-Until then, clone this repo and point it at your own `docs/` folder.
-
-```bash
-npx sd365 build                            # build into dist/
-npx sd365 serve [port]                     # dev server with live rebuild
-npx sd365 new case-studies "Design X"      # scaffold the next numbered page
-npx sd365 validate                         # check links and frontmatter
-npx sd365 doctor                           # check config, sections, and plugins
-npx sd365 help <command>                   # detail on any command
-```
-
-There is also a **`template` branch**: the generator with an empty starter
-`docs/`, ready to clone for your own documentation.
+## Start
 
 ```bash
 git clone -b template https://github.com/sameeralam3127/system-design-365.git my-docs
-cd my-docs && node scripts/sd365.mjs serve
+cd my-docs
+rm -rf .git && git init      # make it your own repository
+
+npm run serve                # http://localhost:4365/my-docs/
+```
+
+**There is nothing to install.** No `npm install`, no lockfile, no dependency
+tree to audit — the generator has zero npm dependencies, and the only
+third-party code in the repo is a vendored copy of the `marked` markdown parser.
+All you need is Node 20 or newer.
+
+Then open `config/site.config.mjs` and set `title`, `baseUrl`, `origin`, `repo`,
+and `author`. Run `npm run doctor` to check you got them right.
+
+> [!WARNING]
+> For a repository named `my-docs`, GitHub Pages serves it at
+> `https://you.github.io/my-docs/`, so `baseUrl` must be `"/my-docs/"` — with
+> both slashes. Getting this wrong is the most common way to end up with a site
+> that works locally and 404s everywhere once deployed. `npm run doctor` checks
+> it for you.
+
+## What you get
+
+- **Markdown in, static HTML out** — frontmatter is optional and every field degrades gracefully, so a bare `.md` file still renders properly
+- **Full-text search** with BM25 ranking and typo tolerance, deep-linking to the exact heading rather than the top of the page
+- **Admonitions** — 12 kinds, custom titles, and collapsible variants built on a native `<details>`, so they work without JavaScript
+- **Emoji shortcodes** — `:rocket:` becomes 🚀 in prose, and is left alone inside code
+- **Tags** — frontmatter tags generate a browsable `/tags/` index and a page per tag
+- **Mermaid diagrams** from fenced code blocks, click to zoom
+- **Light and dark themes**, no flash on load, following the system setting
+- **Links that work in both places** — `[Guide](../guides/setup.md)` renders correctly on GitHub *and* resolves to the published URL on the site
+- **Keyboard driven** — `/` to search, `\` to toggle the sidebar, `[`/`]` for prev/next, `t` for theme
+- **Fast** — a few hundred pages build in well under a second, and Mermaid and the syntax highlighter load only on the pages that use them
+- **Plugin architecture** for search indexing, sitemaps, RSS, SEO checks, and minification
+
+## Layout
+
+```
+my-docs/
+├── docs/                  # your content — one folder per section
+│   ├── guides/            #   README.md becomes the section landing page
+│   ├── concepts/
+│   ├── reference/
+│   └── notes/
+├── config/site.config.mjs # the only file you must edit
+├── templates/             # scaffolds used by `sd365 new`
+├── assets/                # theme CSS + client JS (override what you like)
+├── public/                # copied to the site root (robots.txt, .nojekyll, CNAME)
+├── generator/             # the generator itself
+├── scripts/sd365.mjs      # CLI entry point
+└── .github/workflows/     # build + deploy to GitHub Pages
 ```
 
 Adding a page is just creating a Markdown file. Navigation, search, reading
-time, and prev/next links all follow automatically:
+time, prev/next links, and tags all follow automatically.
+
+## Commands
+
+| Command | What it does |
+|---|---|
+| `npm run serve` | Build and serve at `:4365` with live rebuild |
+| `npm run build` | Build into `dist/` |
+| `npm run new -- <section> "Title"` | Scaffold a page from `templates/` |
+| `npm run validate` | Check links, slugs, and frontmatter — exits non-zero for CI |
+| `npm run doctor` | Check config, sections, plugins, and Node version |
+
+Each also works directly: `node scripts/sd365.mjs <command>`. Run
+`node scripts/sd365.mjs help <command>` for detail on any of them.
+
+## Sections
+
+The four starter sections are a suggestion, not a rule. Each is one entry in
+`sections` in the config plus one folder under `docs/`:
+
+```js
+sections: [
+  { dir: "guides", label: "Guides", icon: "book", blurb: "Step-by-step walkthroughs." },
+]
+```
+
+Rename, reorder, or delete them. A configured section with no folder is skipped,
+and a folder with no config entry is ignored — so either half of the change can
+land first. Icon names come from `generator/lib/icons.mjs`; `npm run doctor`
+tells you if you typo one.
+
+## Writing
 
 ```yaml
 ---
-title: Rate Limiter
-description: One line for cards, search results, and social previews.
-tags: [redis, token-bucket]
-difficulty: medium
-status: published        # or draft, which renders as "not written yet"
-updated: 2026-08-01
+title: Deploying to production
+description: One line, used in cards, search results, and social previews.
+tags: [deployment, ci]
+difficulty: easy          # optional badge: easy | medium | hard
+status: published         # draft renders as "not written yet"
+updated: 2026-08-06
 ---
 ```
 
-Supported in the body: Mermaid diagrams, admonitions, emoji shortcodes, tables,
-and code blocks with copy buttons and syntax highlighting.
+In the body: Mermaid diagrams, admonitions, emoji shortcodes, tables, and code
+blocks with copy buttons and syntax highlighting.
 
 ```markdown
-> [!TIP] Prefer distributed ID generation
-> Custom title on the marker line.
+> [!TIP] Custom titles go on the marker line
+> A `-` after the marker collapses the box; a `+` makes it foldable but open.
 
-> [!EXAMPLE]- Full capacity calculation
-> A `-` collapses it; a `+` makes it collapsible but open.
-
-Ship it :rocket: — shortcodes in `code` are left alone.
+Ship it :rocket: — shortcodes inside `code` are left alone.
 ```
 
-Admonition kinds: `NOTE` `INFO` `TIP` `IMPORTANT` `SUCCESS` `QUESTION` `WARNING`
-`DANGER` `BUG` `EXAMPLE` `QUOTE` `ABSTRACT`, plus aliases (`HINT`, `CAUTION`,
-`ERROR`, `TLDR`, …). An unrecognised marker stays an ordinary blockquote, so a
-typo is visible rather than silent.
+[docs/reference/markdown.md](docs/reference/markdown.md) renders every supported
+feature next to the source that produced it. Start there, then delete it if you
+don't want it in your site.
 
-The full reference, with every feature rendered next to its source, lives at
-[docs/notes/markdown-reference.md](docs/notes/markdown-reference.md).
+## Deploying
 
-### Keyboard shortcuts
+1. Push to GitHub.
+2. **Settings → Pages → Source → GitHub Actions**.
+3. Push to `main`. The workflow validates, builds, and publishes.
 
-| Key | Action |
-|---|---|
-| `/` or `Ctrl`/`Cmd` + `K` | Search |
-| `\` | Show or hide the sidebar (remembered) |
-| `[` / `]` | Previous / next page |
-| `t` | Toggle light and dark |
-| `Esc` | Close search or a zoomed diagram |
+For a custom domain, add a `CNAME` file to `public/` and set `baseUrl` to `"/"`.
 
-## Contributing
+## Staying up to date
 
-Case studies marked **planned** on the site are unclaimed — pick one:
+The generator lives in this repo rather than in `node_modules`, so you own it —
+edit the theme, add a plugin, change the markdown pipeline. To pull in later
+improvements from upstream:
 
 ```bash
-git clone https://github.com/sameeralam3127/system-design-365.git
-cd system-design-365
-npm run serve
+git remote add upstream https://github.com/sameeralam3127/system-design-365.git
+git fetch upstream
+git merge upstream/template
 ```
 
-Write against the structure in [templates/case-study.md](templates/case-study.md),
-set `status: published`, and open a PR. CI validates links and frontmatter before
-deploying. Corrections to existing pages are just as welcome as new ones — if I
-have explained something badly or got it wrong, I want to know.
+Keeping your own changes inside `docs/`, `config/`, and `public/` makes those
+merges uneventful.
+
+## How it works
+
+[ARCHITECTURE.md](ARCHITECTURE.md) walks through the build pipeline, the page
+model, and the plugin hooks, with diagrams.
 
 ## License
 
-Two licenses, because there are two kinds of work here:
-
-- **Code** (`generator/`, `scripts/`, `assets/`, `templates/`) — [MIT](LICENSE). Reuse it freely, including commercially.
-- **Writing** (`docs/`) — [CC BY 4.0](LICENSE-CONTENT.md). Share and adapt it, just credit and link back.
-
-See [LICENSE-CONTENT.md](LICENSE-CONTENT.md) for the reasoning.
+MIT — see [LICENSE](LICENSE). Use it for anything, including commercially.
+Whatever you write in `docs/` is yours; add your own license for it if you want
+one.

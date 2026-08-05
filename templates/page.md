@@ -2,7 +2,7 @@
 title: {{title}}
 description:
 tags: []
-author: Sameer Alam
+author: Your Name
 created: {{date}}
 updated: {{date}}
 status: draft
