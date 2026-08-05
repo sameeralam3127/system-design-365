@@ -38,15 +38,13 @@
   --toc-w: 208px;
   --content-w: 736px;
   --gutter: 32px;
-  /* Space reserved on BOTH sides of the content column. Because it is
-     symmetric, the column sits exactly in the middle of the viewport and
-     still can never slide under the sidebar (left) or the table of
-     contents (right). It does not change when the sidebar is toggled, so
-     nothing on the page shifts. */
-  --rail: var(--sidebar-w);
-  /* Actual content width: the ideal measure, narrowed only if the viewport
-     can't fit it between the rails. */
-  --cw: min(var(--content-w), calc(100vw - 2 * (var(--rail) + var(--gutter))));
+  /* Horizontal space the fixed sidebar currently occupies. Collapsing the
+     sidebar sets this to 0, which is what lets the article reclaim that
+     space and slide left instead of staying pinned to the viewport centre. */
+  --nav-w: var(--sidebar-w);
+  /* Right-hand space reserved for the table of contents, so the article can
+     never slide underneath it. Zero unless the page actually has a TOC. */
+  --toc-rail: 0px;
   color-scheme: light;
 }
 
@@ -201,9 +199,10 @@ html.sidebar-collapsed .i-open { display: block; }
 /* ============================================================
    Shell: sidebar + main + toc
    ============================================================ */
-/* The sidebar is fixed rather than in the layout flow. That is what keeps
-   the content column anchored to the centre of the viewport: showing or
-   hiding the sidebar changes nothing about the space the article occupies. */
+/* The sidebar is fixed rather than in the layout flow, so it never scrolls
+   with the article. The space it occupies is reserved by --nav-w on .main
+   instead, which means collapsing the sidebar hands that space back to the
+   content rather than leaving a gap. */
 .shell { display: block; padding-top: var(--topbar-h); min-height: calc(100vh - var(--topbar-h)); }
 .sidebar {
   position: fixed; left: 0; top: var(--topbar-h); z-index: 30;
@@ -218,8 +217,10 @@ html.sidebar-collapsed .i-open { display: block; }
 .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 8px; }
 .sidebar-scrim { display: none; }
 
-/* Collapsed (reading mode): slides out of view. The content does not move,
-   because the sidebar never occupied layout space to begin with. */
+/* Collapsed (reading mode): the sidebar slides out and --nav-w drops to 0,
+   so the article widens leftward into the space it just vacated. Both
+   transitions run at the same duration, so they read as one movement. */
+html.sidebar-collapsed { --nav-w: 0px; }
 html.sidebar-collapsed .sidebar {
   transform: translateX(-100%);
   opacity: 0;
@@ -273,11 +274,18 @@ html.sidebar-collapsed .sidebar {
    ============================================================ */
 /* The content column is anchored to the middle of the *viewport*, not the
    middle of the space left over by the sidebar. The left padding absorbs
-   the sidebar's width, so showing or hiding the sidebar doesn't move the
-   text a single pixel — it only changes how much empty space sits beside
-   it. The table of contents takes the remaining right-hand column. */
-.main { display: block; padding: 34px var(--gutter) 88px; }
-.article { width: 100%; max-width: var(--cw); min-width: 0; margin: 0 auto; }
+   the sidebar (left) and the table of contents (right); the article is
+   centred in whatever band is left over. Collapsing the sidebar shrinks the
+   left rail to zero, so the band grows leftward and the text follows. */
+.main {
+  display: block;
+  padding: 34px var(--gutter) 88px;
+  padding-left: calc(var(--nav-w) + var(--gutter));
+  padding-right: calc(var(--toc-rail) + var(--gutter));
+  transition: padding-left .22s ease;
+}
+.main.has-toc { --toc-rail: calc(var(--toc-w) + var(--gutter)); }
+.article { width: 100%; max-width: var(--content-w); min-width: 0; margin: 0 auto; }
 
 .breadcrumbs ol { display: flex; flex-wrap: wrap; gap: 7px; list-style: none; margin: 0 0 20px; padding: 0; font-size: 13px; color: var(--text-faint); }
 .breadcrumbs a { color: var(--text-faint); }
@@ -504,12 +512,12 @@ a.tag:hover .tag-count { color: inherit; border-left-color: currentColor; }
 .zoom-inner { max-width: 94vw; max-height: 92vh; overflow: auto; }
 .zoom-inner svg { width: auto; height: auto; min-width: min(70vw, 900px); }
 
-/* TOC — fixed just to the right of the centred content column, so it never
-   pushes the article off-centre. */
+/* TOC — parked against the right edge of the viewport. .main reserves the
+   matching --toc-rail so the article can never run underneath it. */
 .toc {
   position: fixed;
   top: calc(var(--topbar-h) + 34px);
-  left: calc(50% + var(--cw) / 2 + var(--gutter));
+  right: var(--gutter);
   width: var(--toc-w);
   max-height: calc(100vh - var(--topbar-h) - 70px);
   overflow-y: auto; font-size: 13px; scrollbar-width: thin;
@@ -540,8 +548,9 @@ a.tag:hover .tag-count { color: inherit; border-left-color: currentColor; }
 /* ============================================================
    Home & cards
    ============================================================ */
-/* The landing page is wider than an article but centres on the same axis. */
-.home { max-width: min(1120px, calc(100vw - 2 * (var(--rail) + var(--gutter)))); margin: 0 auto; }
+/* The landing page is wider than an article but centres on the same axis,
+   and widens with the sidebar collapsed exactly like an article does. */
+.home { max-width: 1120px; margin: 0 auto; }
 .hero { position: relative; text-align: center; padding: 60px 0 46px; }
 /* Decorative glow: never wider than its container, or it stretches the
    layout viewport on phones and pushes the topbar controls off-screen. */
@@ -659,12 +668,16 @@ a.tag:hover .tag-count { color: inherit; border-left-color: currentColor; }
 /* ============================================================
    Responsive
    ============================================================ */
-/* Below this the sidebar can't share the row with centred content without
-   squeezing it, so it becomes an overlay drawer and the rail drops to zero —
-   the content stays centred, just wider. */
-@media (max-width: 1200px) {
-  :root { --rail: 0px; }
+/* Sidebar + full-measure column + TOC needs ~1330px. Below that the TOC is
+   the first thing to go: it is a convenience, the prose is the point. */
+@media (max-width: 1400px) {
   .toc { display: none; }
+  .main.has-toc { --toc-rail: 0px; }
+}
+/* Below this the sidebar can't share the row with the content without
+   squeezing it, so it becomes an overlay drawer and stops reserving space. */
+@media (max-width: 1200px) {
+  :root { --nav-w: 0px; }
   .sidebar { transform: translateX(-100%); opacity: 0; pointer-events: none; box-shadow: var(--shadow); }
   body.nav-open .sidebar { transform: none; opacity: 1; pointer-events: auto; }
   body.nav-open .sidebar-scrim { display: block; position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 25; background: rgb(0 0 0 / .38); }
