@@ -7,6 +7,7 @@
 import fs from "node:fs";
 import http from "node:http";
 import path from "node:path";
+import { spawn } from "node:child_process";
 import { build, ROOT, loadConfig } from "./build.mjs";
 import { c, sym, warn, fail, hint } from "./lib/cli.mjs";
 
@@ -30,13 +31,50 @@ export async function serve(port = 4365) {
   const outDir = path.join(ROOT, config.build.outDir);
 
   let pending = null;
+  let restarting = false;
+
+  /**
+   * Editing the generator can't be handled by rebuilding in place: Node
+   * caches every module in the import graph, so a rebuild would keep using
+   * the code loaded at startup and quietly write stale output over a build
+   * that was correct. Hand off to a fresh process instead.
+   */
+  const restart = () => {
+    if (restarting) return;
+    restarting = true;
+    // Cancel any queued rebuild. It would run against the modules already in
+    // memory and write stale output over the build the new process produces.
+    clearTimeout(pending);
+    console.log(c.gray(`\n${sym.info} generator changed — restarting the dev server…`));
+
+    let handedOff = false;
+    const handOff = () => {
+      if (handedOff) return;
+      handedOff = true;
+      // Same argv, inherited stdio, same process group — so the replacement
+      // keeps the terminal and still dies on Ctrl+C.
+      spawn(process.execPath, process.argv.slice(1), { stdio: "inherit" });
+      process.exit(0);
+    };
+
+    server.closeAllConnections?.();
+    server.close(handOff);
+    // close() waits for in-flight sockets and an idle keep-alive connection
+    // can stall it indefinitely. A stalled restart is worse than an abrupt
+    // one, because it silently keeps serving the old build.
+    setTimeout(handOff, 300).unref();
+  };
+
   const rebuild = (why) => {
+    if (restarting) return;
+    if (why === "generator") return restart();
     clearTimeout(pending);
     pending = setTimeout(async () => {
       try { await build({ quiet: false }); }
       catch (e) { fail(`Build failed: ${e.message}`); }
     }, 150);
   };
+
   // Watch the configured content dir rather than a hardcoded name, so a
   // project that renamed it (docs/, notes/, …) still gets live rebuilds.
   const watched = [config.build.contentDir, "config", config.build.assetsDir, config.build.publicDir, "generator"];
