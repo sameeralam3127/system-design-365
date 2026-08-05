@@ -65,6 +65,12 @@ ${SECTIONS.map(
     emoji: true,
   },
 
+  home: {
+    // Curated entry points shown above the Explore grid, in this order.
+    // Paths are relative to the content dir, without the .md extension.
+    startHere: [],
+  },
+
   build: {
     contentDir: "docs",
     assetsDir: "assets",
@@ -161,6 +167,7 @@ export async function init() {
             serve: "sd365 serve",
             new: "sd365 new",
             validate: "sd365 validate",
+            doctor: "sd365 doctor",
           },
           dependencies: { sd365: "^1.0.0" },
         },
@@ -179,6 +186,7 @@ export async function init() {
   console.log(`
 Next:
   1. Edit config/site.config.mjs — set baseUrl, origin, and repo.
-  2. npx sd365 serve      preview at http://localhost:4365
-  3. npx sd365 new case-studies "Design a URL Shortener"`);
+  2. npx sd365 doctor     check those values before you build
+  3. npx sd365 serve      preview at http://localhost:4365
+  4. npx sd365 new case-studies "Design a URL Shortener"`);
 }

@@ -108,24 +108,61 @@ export function pageMeta(page, tags = null) {
   return `<div class="page-meta">${bits.filter(Boolean).join("")}</div>`;
 }
 
-export function card(page) {
+export function card(page, { showDate = false } = {}) {
   const num = page.num != null ? `<span class="card-num">${String(page.num).padStart(3, "0")}</span>` : "";
   const desc = page.placeholder
     ? `<p class="card-desc muted">Not written yet.</p>`
     : `<p class="card-desc">${esc(page.description)}</p>`;
+  const date = showDate && page.updated
+    ? `<p class="card-date">${icon("calendar")}${esc(String(page.updated))}</p>`
+    : "";
   return `<a class="card${page.placeholder ? " card-planned" : ""}" href="${page.url}">
   <div class="card-top">${num}${statusBadge(page)}</div>
   <h3>${esc(page.title)}</h3>
   ${desc}
+  ${date}
+</a>`;
+}
+
+/**
+ * A curated entry point on the home page. Numbered rather than badged,
+ * because the point of the row is the order you read them in.
+ */
+export function startCard(page, i) {
+  return `<a class="card start-card" href="${page.url}">
+  <div class="card-top"><span class="start-num">${i + 1}</span><span class="start-sec">${esc(page.section.label)}</span></div>
+  <h3>${esc(page.title)}</h3>
+  <p class="card-desc">${esc(page.description)}</p>
 </a>`;
 }
 
 export function sectionCard(sec) {
-  const done = sec.pages.filter((p) => !p.isReadme && !p.placeholder).length;
-  const total = sec.pages.filter((p) => !p.isReadme).length;
-  return `<a class="card section-card" href="${sec.url}">
-  <div class="card-top"><span class="card-icon">${icon(sec.icon)}</span><span class="nav-count">${done}/${total}</span></div>
+  const listed = sec.pages.filter((p) => !p.isReadme);
+  const done = listed.filter((p) => !p.placeholder).length;
+  // An empty section showing "0/0" reads as a broken counter rather than as
+  // "nothing here yet", so it gets a word instead of a fraction.
+  const meter = listed.length
+    ? `<span class="nav-count">${done}/${listed.length}</span>`
+    : `<span class="badge badge-planned">Planned</span>`;
+  return `<a class="card section-card${listed.length ? "" : " section-card-empty"}" href="${sec.url}">
+  <div class="card-top"><span class="card-icon">${icon(sec.icon)}</span>${meter}</div>
   <h3>${esc(sec.label)}</h3>
   <p class="card-desc">${esc(sec.blurb)}</p>
 </a>`;
+}
+
+/**
+ * KPI row for the home page. Values are plain counts in text ink — no colour
+ * coding, no fake deltas; there is no time series behind them to compare
+ * against.
+ */
+export function statTiles(stats) {
+  const tiles = stats
+    .filter((s) => s.value != null)
+    .map(
+      (s) => `<div class="stat"><div class="stat-value">${esc(String(s.value))}</div>` +
+        `<div class="stat-label">${esc(s.label)}</div></div>`
+    )
+    .join("");
+  return `<div class="stats">${tiles}</div>`;
 }

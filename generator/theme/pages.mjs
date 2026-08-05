@@ -1,18 +1,61 @@
 /** Page templates: home, section index, article, tag index, tag, 404. */
 
 import { baseLayout } from "./layout.mjs";
-import { esc, icon, breadcrumbs, tocPanel, prevNext, pageMeta, card, sectionCard, tagChips } from "./components.mjs";
+import { esc, icon, breadcrumbs, tocPanel, prevNext, pageMeta, card, startCard, sectionCard, tagChips, statTiles } from "./components.mjs";
 import { tagsForPage } from "../lib/tags.mjs";
+
+/**
+ * Resolve `home.startHere` config entries — content paths without the
+ * extension, e.g. "case-studies/001-url-shortener" — to page objects.
+ * Silently drops entries that don't match a published page, so a curated
+ * list can't break the build when a page is renamed.
+ */
+function resolveStartHere(config, sections) {
+  const wanted = config.home?.startHere;
+  if (!Array.isArray(wanted) || !wanted.length) return [];
+  const byPath = new Map();
+  for (const sec of sections) {
+    for (const p of sec.pages) {
+      if (p.contentRel) byPath.set(p.contentRel.replace(/\.mdx?$/i, "").toLowerCase(), p);
+    }
+  }
+  return wanted
+    .map((ref) => byPath.get(String(ref).replace(/\.mdx?$/i, "").toLowerCase()))
+    .filter((p) => p && !p.placeholder);
+}
 
 export function homePage(config, sections, tags = []) {
   const site = config.site;
   const cs = sections.find((s) => s.dir === "case-studies") || sections[0];
   const csPages = cs ? cs.pages.filter((p) => !p.isReadme) : [];
   const done = csPages.filter((p) => !p.placeholder).length;
-  const total = csPages.length || 1;
-  const pct = Math.round((done / total) * 100);
-  const featured = csPages.filter((p) => !p.placeholder).slice(0, 6);
+  const total = csPages.length;
+
+  const allPages = sections.flatMap((s) => s.pages).filter((p) => !p.isReadme && p.type === "md");
+  const published = allPages.filter((p) => !p.placeholder);
+  const diagrams = published.reduce((n, p) => n + (p.html.match(/class="mermaid"/g)?.length || 0), 0);
+
+  // "Latest" should mean latest. Sort by the updated date, newest first,
+  // and fall back to document order for pages that never set one.
+  const featured = published
+    .filter((p) => p.section.dir === cs?.dir)
+    .slice()
+    .sort((a, b) => String(b.updated || "").localeCompare(String(a.updated || "")))
+    .slice(0, 6);
+
+  const startHere = resolveStartHere(config, sections);
   const topTags = tags.slice(0, 14).map((t) => ({ ...t, count: t.pages.length }));
+
+  // Stat labels are sentence case, so a section called "Case Studies" reads
+  // as "Case studies written" rather than shouting mid-phrase.
+  const sentence = (s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+
+  const stats = [
+    total ? { value: `${done} / ${total}`, label: `${sentence(cs.label)} written` } : null,
+    { value: published.length, label: "Pages published" },
+    diagrams ? { value: diagrams, label: "Diagrams" } : null,
+    tags.length ? { value: tags.length, label: "Tags" } : null,
+  ].filter(Boolean);
 
   const content = `<main class="main home">
 <section class="hero">
@@ -23,26 +66,28 @@ export function homePage(config, sections, tags = []) {
     <a class="btn btn-primary" href="${cs ? cs.url : site.baseUrl}">Browse ${esc((cs?.label || "content").toLowerCase())} ${icon("arrowRight")}</a>
     <a class="btn" href="${site.repo}" target="_blank" rel="noopener">${icon("github")} View on GitHub</a>
   </div>
-  <div class="hero-progress" role="img" aria-label="${done} of ${total} written">
-    <div class="hero-progress-top"><span>${esc(cs?.label || "Pages")} written</span><strong>${done} / ${total}</strong></div>
-    <div class="hero-progress-bar"><div style="width:${pct}%"></div></div>
-  </div>
+  ${statTiles(stats)}
 </section>
+
+${startHere.length ? `<section>
+  <h2 class="home-h2">Start here</h2>
+  <div class="grid grid-3">${startHere.map(startCard).join("")}</div>
+</section>` : ""}
 
 <section>
   <h2 class="home-h2">Explore</h2>
   <div class="grid">${sections.map(sectionCard).join("")}</div>
 </section>
 
+${featured.length ? `<section>
+  <h2 class="home-h2">Latest ${esc((cs?.label || "pages").toLowerCase())}</h2>
+  <div class="grid">${featured.map((p) => card(p, { showDate: true })).join("")}</div>
+</section>` : ""}
+
 ${topTags.length ? `<section>
   <h2 class="home-h2">Browse by tag</h2>
   <div class="tag-cloud">${tagChips(topTags, "tag-row")}</div>
   <p class="tag-more"><a href="${site.baseUrl}tags/">All ${tags.length} tags ${icon("arrowRight")}</a></p>
-</section>` : ""}
-
-${featured.length ? `<section>
-  <h2 class="home-h2">Latest ${esc((cs?.label || "pages").toLowerCase())}</h2>
-  <div class="grid">${featured.map(card).join("")}</div>
 </section>` : ""}
 </main>`;
 
