@@ -47,6 +47,18 @@ export default {
     emoji: true,
   },
 
+  home: {
+    // Curated entry points shown above the Explore grid, in this order.
+    // Paths are relative to the content dir, without the .md extension.
+    // Entries that don't resolve to a published page are skipped, so a
+    // rename can't break the build.
+    startHere: [
+      "case-studies/001-url-shortener",
+      "interview/interviewer-checklist",
+      "security/python-before-your-code-runs",
+    ],
+  },
+
   build: {
     contentDir: "docs",
     assetsDir: "assets",
