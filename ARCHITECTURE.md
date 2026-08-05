@@ -1,6 +1,6 @@
 # sd365 — Architecture
 
-`sd365` is the custom static site generator that powers System Design 365. It is
+`sd365` is the static site generator this template is built on. It is
 built from scratch on Node.js (zero npm dependencies — the only third-party code
 is a vendored copy of the `marked` markdown parser) and turns the Markdown in
 `docs/` into the static site deployed to GitHub Pages.
@@ -15,16 +15,16 @@ is a vendored copy of the `marked` markdown parser) and turns the Markdown in
 | Server-side rendering to plain HTML | SEO, instant first paint, works with JS disabled (search/mermaid degrade gracefully) | Interactivity is layered on with a small client runtime |
 | Mermaid + highlight.js from CDN, loaded per page | Mermaid alone is 3.3 MB, so it is requested only by the pages that actually contain a diagram (2 of 108 today) rather than by every visitor. Both are pinned with Subresource Integrity | Diagrams need JS; pages still readable without it |
 | Inline SVG icon set, no emoji | Emoji render differently per OS/font and carry no semantics; inline SVG inherits `currentColor` and font size, so icons stay optically aligned in both themes | Icons are hand-maintained in one module |
-| Pretty URLs (`/case-studies/001-url-shortener/`) | Clean canonical URLs on GitHub Pages without server rewrites | One folder per page in `dist/` |
+| Pretty URLs (`/guides/001-getting-started/`) | Clean canonical URLs on GitHub Pages without server rewrites | One folder per page in `dist/` |
 
 ## Repository layout
 
 ```
-system-design-365/
+my-docs/
 ├── docs/               # ALL site content — Markdown (+ raw HTML passthrough)
-│   ├── case-studies/   #   001-…100 numbered case studies
-│   ├── hld/  lld/      #   high/low-level design topics
-│   ├── patterns/  trade-offs/  interview/  security/  glossary/  notes/
+│   ├── guides/         #   one folder per section, named in the config
+│   ├── concepts/       #   README.md in a folder is its landing page
+│   ├── reference/  notes/
 ├── templates/          # Markdown scaffolds used by `sd365 new`
 ├── config/             # site.config.mjs — the single source of truth
 ├── generator/          # the SSG itself
@@ -251,7 +251,7 @@ flowchart LR
   V --> B[CI: sd365 build → dist/]
   B --> U[upload-pages-artifact]
   U --> D[deploy-pages]
-  D --> S[sameeralam3127.github.io/system-design-365/]
+  D --> S[your-username.github.io/my-docs/]
 ```
 
 GitHub Pages must be set to **Source: GitHub Actions** (Settings → Pages).
@@ -263,7 +263,7 @@ GitHub Pages must be set to **Source: GitHub Actions** (Settings → Pages).
 ```
 node scripts/sd365.mjs build                      # build into dist/
 node scripts/sd365.mjs serve [port]               # dev server + watch (default :4365)
-node scripts/sd365.mjs new case-studies "Title"   # scaffold next-numbered case study
+node scripts/sd365.mjs new guides "Title"         # scaffold a new page
 node scripts/sd365.mjs validate                   # lint links + frontmatter (CI gate)
 ```
 
