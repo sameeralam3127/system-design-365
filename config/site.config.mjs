@@ -54,9 +54,8 @@ export default {
     // Entries that don't resolve to a published page are skipped, so a
     // rename can't break the build.
     startHere: [
-      "case-studies/001-url-shortener",
-      "interview/interviewer-checklist",
-      "security/python-before-your-code-runs",
+      "guides/001-getting-started",
+      "reference/markdown",
     ],
   },
 
