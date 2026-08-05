@@ -82,7 +82,7 @@ export function articlePage(config, sections, sec, page, tags = []) {
     ? `<div class="prose">${page.html}
 <div class="callout callout-info"><div class="callout-title">${icon("clock")} <span class="callout-label">Not written yet</span></div>
 <p>This page is on the roadmap.
-<a href="${site.repo}" target="_blank" rel="noopener">Contributions are welcome</a> — the structure to follow is in <code>templates/case-study.md</code>.</p></div></div>`
+<a href="${site.repo}" target="_blank" rel="noopener">Contributions are welcome</a> — the structure to follow is in <code>templates/</code>.</p></div></div>`
     : `<div class="prose">${page.html}</div>`;
 
   const content = `<main class="main has-toc">
