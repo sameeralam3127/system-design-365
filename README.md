@@ -22,9 +22,9 @@ read forces a level of honesty that private notes never do — you cannot hand-w
 past the bit you do not understand. And if you are on the same path, you get
 notes that are structured rather than a pile of bookmarks.
 
-**Where it is right now:** 4 of 100 case studies written, plus notes on security
+**Where it is right now:** 5 of 100 case studies written, plus notes on security
 and a set of mock-interview prompts. The rest are stubbed out with titles so the
-roadmap is visible. I would rather show an honest 4/100 than pad it out.
+roadmap is visible. I would rather show an honest 5/100 than pad it out.
 
 If you spot something wrong, **please tell me** — a corrected mistake is worth
 more to me than a star. Open an issue or a PR.
