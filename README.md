@@ -33,7 +33,7 @@ more to me than a star. Open an issue or a PR.
 
 | Folder | What lives there |
 |---|---|
-| [docs/case-studies/](docs/case-studies/) | Systems designed end to end — URL shortener, rate limiter, chat, news feed, and 96 more to go |
+| [docs/case-studies/](docs/case-studies/) | Systems designed end to end — URL shortener, rate limiter, Pastebin, chat, notifications, and 95 more to go |
 | [docs/hld/](docs/hld/) | High-level design: scalability, caching, databases, CAP, sharding, queues |
 | [docs/lld/](docs/lld/) | Low-level design: object modelling, API contracts, concurrency |
 | [docs/patterns/](docs/patterns/) | Reusable building blocks — cache-aside, pub/sub, leader election, circuit breaker |
@@ -86,7 +86,7 @@ What it does:
 - **Light and dark themes**, no flash on load, respects your system setting
 - **A sidebar that gets out of the way** once you start reading, and content that stays centred whether it is open or closed
 - **Keyboard driven** — see the shortcuts below
-- **Fast**: ~110 ms to build 136 pages; heavy scripts load only on pages that actually need them
+- **Fast**: ~150 ms to build 154 pages; heavy scripts load only on pages that actually need them
 - **Plugin architecture** for search indexing, sitemaps, RSS, SEO checks, and minification
 
 Read [ARCHITECTURE.md](ARCHITECTURE.md) for how it fits together, with diagrams.
