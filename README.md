@@ -1,277 +1,190 @@
 # System Design 365
 
-A structured repository for system design interview prep with a FAANG-style focus:
+**Learning system design in the open — one case study at a time.**
 
-- High-Level Design (HLD) for architecture and scalability discussions
-- Low-Level Design (LLD) for object modeling, APIs, and implementation detail
-- Case studies for classic interview systems
-- Reusable patterns, trade-offs, and templates for faster revision
-- Security notes for runtime, supply-chain, and operational risk
+Live site: **https://sameeralam3127.github.io/system-design-365/**
 
-## Goal
+---
 
-Use this repo as a long-term preparation workspace for:
+## What this is
 
-- Product architecture interviews
-- Backend and distributed systems interviews
-- Senior engineer / staff engineer design rounds
-- Revision before FAANG-style interviews
+I kept reading system design articles, nodding along, and then freezing the
+moment someone asked me to design something on a whiteboard. Reading is not the
+same as being able to do it.
+
+So this repository is me working through it properly: one system at a time,
+written out end to end — requirements, capacity estimates, the architecture,
+the parts I got wrong, and the trade-offs I only noticed on the second pass.
+It is a study notebook that happens to be public.
 
-## What Goes Where
+I am publishing it for two reasons. Writing something down for other people to
+read forces a level of honesty that private notes never do — you cannot hand-wave
+past the bit you do not understand. And if you are on the same path, you get
+notes that are structured rather than a pile of bookmarks.
+
+**Where it is right now:** 5 of 100 case studies written, plus notes on security
+and a set of mock-interview prompts. The rest are stubbed out with titles so the
+roadmap is visible. I would rather show an honest 5/100 than pad it out.
+
+If you spot something wrong, **please tell me** — a corrected mistake is worth
+more to me than a star. Open an issue or a PR.
+
+## What is inside
+
+| Folder | What lives there |
+|---|---|
+| [docs/case-studies/](docs/case-studies/) | Systems designed end to end — URL shortener, rate limiter, Pastebin, chat, notifications, and 95 more to go |
+| [docs/hld/](docs/hld/) | High-level design: scalability, caching, databases, CAP, sharding, queues |
+| [docs/lld/](docs/lld/) | Low-level design: object modelling, API contracts, concurrency |
+| [docs/patterns/](docs/patterns/) | Reusable building blocks — cache-aside, pub/sub, leader election, circuit breaker |
+| [docs/trade-offs/](docs/trade-offs/) | The comparisons that come up every interview: SQL vs NoSQL, push vs pull, strong vs eventual |
+| [docs/interview/](docs/interview/) | Mock interview prompts, a session template, an interviewer checklist |
+| [docs/security/](docs/security/) | Runtime, supply-chain, and operational security notes |
+| [docs/glossary/](docs/glossary/) | Terms I want to be able to define cold |
+
+Every page is plain Markdown. No database, no CMS — just files you can read on
+GitHub without the site at all.
+
+## How I work through a case study
+
+The same seven steps every time, because the structure is the part that
+transfers to an actual interview:
+
+1. Clarify requirements — functional, non-functional, and what is explicitly out of scope
+2. Estimate scale — traffic, storage, bandwidth, back of the envelope
+3. Define the API and data model
+4. Draw the high-level architecture
+5. Deep dive on the bottleneck
+6. Talk through the trade-offs, including the option I rejected and why
+7. Note what I would improve with more time
+
+[templates/case-study.md](templates/case-study.md) is that structure as a file,
+if you want to use it yourself.
+
+---
+
+## The site generator (sd365)
+
+The site is built by **sd365**, a static site generator I wrote from scratch for
+this project. Not because the world needs another one — Docusaurus and MkDocs
+are excellent — but because building the thing that renders your notes teaches
+you more than configuring someone else's. It turned out well enough that it is
+worth sharing on its own.
+
+**It has zero npm dependencies.** The only third-party code is a vendored copy
+of the `marked` markdown parser. `git clone`, `node scripts/sd365.mjs build`,
+done — no `npm install`, no lockfile drift, no supply chain to audit.
+
+What it does:
+
+- **Markdown in, static HTML out** — optional frontmatter, and every field degrades gracefully so a bare `.md` file still renders properly
+- **Full-text search** with BM25 ranking, typo tolerance, and results that deep-link to the exact heading rather than dumping you at the top of a long page
+- **Admonitions** — 12 kinds, custom titles, and collapsible variants that use a native `<details>` so they work without JavaScript
+- **Emoji shortcodes** — `:rocket:` becomes 🚀 in prose, and is left alone inside code
+- **Tags** — frontmatter tags become a browsable `/tags/` index and a page per tag, generated automatically
+- **Mermaid diagrams** from fenced code blocks, click to zoom
+- **Light and dark themes**, no flash on load, respects your system setting
+- **A sidebar that gets out of the way** once you start reading, and content that stays centred whether it is open or closed
+- **Keyboard driven** — see the shortcuts below
+- **Fast**: ~150 ms to build 154 pages; heavy scripts load only on pages that actually need them
+- **Plugin architecture** for search indexing, sitemaps, RSS, SEO checks, and minification
 
-### `HLD/`
+Read [ARCHITECTURE.md](ARCHITECTURE.md) for how it fits together, with diagrams.
 
-Use for large-scale system design topics:
+### Using it for your own site
 
-- scalability basics
-- load balancing
-- caching
-- databases
-- CAP theorem
-- sharding and partitioning
-- queues and event-driven systems
-- consistency and availability
+`sd365` is on its way to npm. Once published:
 
-Suggested files:
+```bash
+npm install -D sd365
+npx sd365 init        # scaffolds config, docs folders, and a deploy workflow
+npx sd365 serve       # preview at http://localhost:4365
+```
 
-- `HLD/fundamentals.md`
-- `HLD/scaling-basics.md`
-- `HLD/database-selection.md`
-- `HLD/caching-strategies.md`
-- `HLD/messaging-and-queues.md`
+Until then, clone this repo and point it at your own `docs/` folder.
 
-### `LLD/`
+```bash
+npx sd365 build                            # build into dist/
+npx sd365 serve [port]                     # dev server with live rebuild
+npx sd365 new case-studies "Design X"      # scaffold the next numbered page
+npx sd365 validate                         # check links and frontmatter
+npx sd365 doctor                           # check config, sections, and plugins
+npx sd365 help <command>                   # detail on any command
+```
 
-Use for low-level design and machine coding style prep:
+There is also a **`template` branch**: the generator with an empty starter
+`docs/`, ready to clone for your own documentation.
 
-- object-oriented design
-- class relationships
-- API contracts
-- concurrency basics
-- extensibility and maintainability
+```bash
+git clone -b template https://github.com/sameeralam3127/system-design-365.git my-docs
+cd my-docs && node scripts/sd365.mjs serve
+```
 
-Suggested files:
+Adding a page is just creating a Markdown file. Navigation, search, reading
+time, and prev/next links all follow automatically:
 
-- `LLD/ood-principles.md`
-- `LLD/design-patterns.md`
-- `LLD/api-design.md`
-- `LLD/problem-examples.md`
+```yaml
+---
+title: Rate Limiter
+description: One line for cards, search results, and social previews.
+tags: [redis, token-bucket]
+difficulty: medium
+status: published        # or draft, which renders as "not written yet"
+updated: 2026-08-01
+---
+```
 
-### `case-studies/`
+Supported in the body: Mermaid diagrams, admonitions, emoji shortcodes, tables,
+and code blocks with copy buttons and syntax highlighting.
 
-Use for end-to-end system walkthroughs:
+```markdown
+> [!TIP] Prefer distributed ID generation
+> Custom title on the marker line.
 
-- URL shortener
-- rate limiter
-- chat application
-- notification system
-- news feed
-- ride sharing
-- file storage
-- video streaming
+> [!EXAMPLE]- Full capacity calculation
+> A `-` collapses it; a `+` makes it collapsible but open.
 
-Suggested files:
+Ship it :rocket: — shortcodes in `code` are left alone.
+```
 
-- `case-studies/url-shortener.md`
-- `case-studies/rate-limiter.md`
-- `case-studies/chat-system.md`
-- `case-studies/news-feed.md`
+Admonition kinds: `NOTE` `INFO` `TIP` `IMPORTANT` `SUCCESS` `QUESTION` `WARNING`
+`DANGER` `BUG` `EXAMPLE` `QUOTE` `ABSTRACT`, plus aliases (`HINT`, `CAUTION`,
+`ERROR`, `TLDR`, …). An unrecognised marker stays an ordinary blockquote, so a
+typo is visible rather than silent.
 
-### `patterns/`
+The full reference, with every feature rendered next to its source, lives at
+[docs/notes/markdown-reference.md](docs/notes/markdown-reference.md).
 
-Use for reusable design building blocks:
+### Keyboard shortcuts
 
-- cache-aside
-- pub/sub
-- leader election
-- id generation
-- fan-out
-- circuit breaker
-- retries and backoff
+| Key | Action |
+|---|---|
+| `/` or `Ctrl`/`Cmd` + `K` | Search |
+| `\` | Show or hide the sidebar (remembered) |
+| `[` / `]` | Previous / next page |
+| `t` | Toggle light and dark |
+| `Esc` | Close search or a zoomed diagram |
 
-### `trade-offs/`
+## Contributing
 
-Use for fast interview revision:
+Case studies marked **planned** on the site are unclaimed — pick one:
 
-- SQL vs NoSQL
-- sync vs async
-- push vs pull
-- strong vs eventual consistency
-- monolith vs microservices
-- REST vs gRPC
+```bash
+git clone https://github.com/sameeralam3127/system-design-365.git
+cd system-design-365
+npm run serve
+```
 
-### `templates/`
+Write against the structure in [templates/case-study.md](templates/case-study.md),
+set `status: published`, and open a PR. CI validates links and frontmatter before
+deploying. Corrections to existing pages are just as welcome as new ones — if I
+have explained something badly or got it wrong, I want to know.
 
-Use for repeatable interview answer structure:
+## License
 
-- requirement gathering template
-- back-of-the-envelope estimation template
-- API template
-- database schema template
-- bottleneck checklist
+Two licenses, because there are two kinds of work here:
 
-### `notes/`
+- **Code** (`generator/`, `scripts/`, `assets/`, `templates/`) — [MIT](LICENSE). Reuse it freely, including commercially.
+- **Writing** (`docs/`) — [CC BY 4.0](LICENSE-CONTENT.md). Share and adapt it, just credit and link back.
 
-Use for quick revision, mistakes, and learnings:
-
-- one-page summaries
-- interview mistakes
-- company-specific observations
-- revision notes
-
-### `diagrams/`
-
-Use for architecture sketches, exported diagrams, and image assets.
-
-### `mock-interviews/`
-
-Use for realistic interview practice, reusable prompts, and post-mock feedback.
-
-Suggested files:
-
-- `mock-interviews/session-template.md`
-- `mock-interviews/interviewer-checklist.md`
-- `mock-interviews/prompt-001-url-shortener.md`
-- `mock-interviews/prompt-002-notification-service.md`
-- `mock-interviews/prompt-003-chat-system.md`
-- `mock-interviews/prompt-004-news-feed.md`
-
-### `security/`
-
-Use for security-focused system design notes:
-
-- runtime and toolchain execution surfaces
-- supply-chain attack paths
-- secret handling and CI/CD hardening
-- secure defaults and operational guardrails
-
-Suggested files:
-
-- `security/python-before-your-code-runs.md`
-
-## 12-Week Roadmap
-
-### Week 1: Foundations
-
-- system design interview expectations
-- functional vs non-functional requirements
-- latency, throughput, availability, reliability
-- estimation basics
-
-### Week 2: Core Building Blocks
-
-- load balancers
-- reverse proxies
-- caching basics
-- CDNs
-- databases overview
-
-### Week 3: Data Layer Deep Dive
-
-- SQL vs NoSQL
-- indexing
-- replication
-- partitioning
-- consistency models
-
-### Week 4: Scalability Patterns
-
-- horizontal scaling
-- stateless services
-- queues
-- pub/sub
-- rate limiting
-
-### Week 5: Reliability and Resilience
-
-- retries
-- timeouts
-- circuit breakers
-- failover
-- observability basics
-
-### Week 6: API and LLD Focus
-
-- REST and gRPC basics
-- API versioning
-- object modeling
-- SOLID principles
-- common LLD interview questions
-
-### Week 7: Case Study 1
-
-- design a URL shortener
-- design a rate limiter
-- design a pastebin
-
-### Week 8: Case Study 2
-
-- design a chat system
-- design a notification service
-- design a news feed
-
-### Week 9: Case Study 3
-
-- design Dropbox / file storage
-- design YouTube / video processing
-- design Uber / ride matching
-
-### Week 10: Advanced Topics
-
-- multi-region systems
-- leader election
-- distributed locks
-- id generation
-- stream processing
-
-### Week 11: Interview Simulation
-
-- timed design rounds
-- structured whiteboarding
-- trade-off communication
-- bottleneck analysis
-
-### Week 12: Revision and Weak Areas
-
-- revisit weak topics
-- summarize core patterns
-- redo 3 to 5 case studies without notes
-- create personal cheat sheets
-
-## FAANG-Style Interview Prep Flow
-
-For each problem, practice this order:
-
-1. Clarify requirements
-2. Estimate scale
-3. Define APIs and data model
-4. Draw high-level components
-5. Deep dive into bottlenecks
-6. Discuss trade-offs
-7. Mention scaling and reliability improvements
-
-## Suggested First Files To Create Next
-
-- `HLD/fundamentals.md`
-- `HLD/caching-strategies.md`
-- `LLD/ood-principles.md`
-- `case-studies/url-shortener.md`
-- `trade-offs/sql-vs-nosql.md`
-- `templates/interview-template.md`
-
-## Daily Study Pattern
-
-- 30 minutes: one concept
-- 30 minutes: one case study section
-- 15 minutes: revise trade-offs
-- 15 minutes: summarize notes in your own words
-
-## Progress Tracker
-
-- [ ] HLD fundamentals
-- [ ] database design basics
-- [ ] caching and queues
-- [ ] consistency and partitioning
-- [ ] 5 core case studies
-- [ ] 5 mock interviews
-- [ ] one-page revision sheet
+See [LICENSE-CONTENT.md](LICENSE-CONTENT.md) for the reasoning.

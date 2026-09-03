@@ -1,0 +1,57 @@
+{
+  "name": "sd365",
+  "version": "1.0.0",
+  "description": "A small, dependency-free static site generator for documentation and study notes: markdown in, searchable static site out.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Sameer Alam",
+  "homepage": "https://sameeralam3127.github.io/system-design-365/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sameeralam3127/system-design-365.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sameeralam3127/system-design-365/issues"
+  },
+  "keywords": [
+    "static-site-generator",
+    "ssg",
+    "documentation",
+    "markdown",
+    "mermaid",
+    "github-pages",
+    "docs",
+    "search",
+    "bm25",
+    "zero-dependency"
+  ],
+  "bin": {
+    "sd365": "scripts/sd365.mjs"
+  },
+  "exports": {
+    ".": "./generator/build.mjs",
+    "./icons": "./generator/lib/icons.mjs",
+    "./markdown": "./generator/lib/markdown.mjs"
+  },
+  "files": [
+    "generator/",
+    "scripts/",
+    "assets/",
+    "templates/",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node scripts/sd365.mjs build",
+    "serve": "node scripts/sd365.mjs serve",
+    "new": "node scripts/sd365.mjs new",
+    "validate": "node scripts/sd365.mjs validate",
+    "test": "node scripts/sd365.mjs validate"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
