@@ -22,7 +22,7 @@ Licensed under the
 
 You are free to share and adapt this material, including commercially, as long
 as you give appropriate credit. A link back to
-<https://github.com/sameeralam3127/system-design-365> is enough.
+<https://github.com/sameeralam3127/devops-case-studies> is enough.
 
 ### Why split them
 

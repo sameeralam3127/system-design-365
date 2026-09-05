@@ -20,11 +20,11 @@ is a vendored copy of the `marked` markdown parser) and turns the Markdown in
 ## Repository layout
 
 ```
-system-design-365/
+devops-case-studies/
 ├── docs/               # ALL site content — Markdown (+ raw HTML passthrough)
-│   ├── case-studies/   #   001-…100 numbered case studies
-│   ├── hld/  lld/      #   high/low-level design topics
-│   ├── patterns/  trade-offs/  interview/  security/  glossary/  notes/
+│   ├── 01-linux/ … 12-platform-engineering/   #   DevOps case studies by domain
+│   ├── labs/  adr/  interview/                 #   labs, decision records, prep
+│   ├── system-design/  glossary/  notes/       #   distributed systems, reference
 ├── templates/          # Markdown scaffolds used by `sd365 new`
 ├── config/             # site.config.mjs — the single source of truth
 ├── generator/          # the SSG itself
@@ -251,7 +251,7 @@ flowchart LR
   V --> B[CI: sd365 build → dist/]
   B --> U[upload-pages-artifact]
   U --> D[deploy-pages]
-  D --> S[sameeralam3127.github.io/system-design-365/]
+  D --> S[sameeralam3127.github.io/devops-case-studies/]
 ```
 
 GitHub Pages must be set to **Source: GitHub Actions** (Settings → Pages).

@@ -83,7 +83,7 @@ ${table([
   ["sd365 doctor", "diagnose a misconfigured site"],
 ])}
 
-${c.gray("Docs: https://github.com/sameeralam3127/system-design-365")}`;
+${c.gray("Docs: https://github.com/sameeralam3127/devops-case-studies")}`;
 }
 
 function commandHelp(name) {

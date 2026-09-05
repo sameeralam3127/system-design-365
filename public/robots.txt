@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://sameeralam3127.github.io/system-design-365/sitemap.xml
+Sitemap: https://sameeralam3127.github.io/devops-case-studies/sitemap.xml

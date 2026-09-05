@@ -1,47 +1,21 @@
-# Mock Interviews
+# Interview Prep
 
-Use this folder to simulate real system design rounds, track performance, and improve weak areas over time.
+Scenario-driven questions, organised by domain. Every question here starts from
+a system in a particular state, because that is how the round actually goes —
+"what is Kubernetes" is not a question anyone senior gets asked.
 
-## Suggested Structure
+Each hard question is written with four parts:
 
-- `session-template.md` for recording one mock interview
-- `interviewer-checklist.md` for evaluating performance consistently
-- `prompt-*.md` for ready-to-use interview scenarios
+- **What the interviewer is testing** — the judgement behind the question
+- **A strong answer** — what a good response covers, and in what order
+- **A common weak answer** — the shape of the response that loses the round
+- **Follow-ups** — where the interviewer goes next if you answer well
 
-## Recommended Mock Format
+Until this section is filled in, the **Interview Questions** section at the end
+of every case study is the fastest route to the same material — those questions
+are written against a scenario you have just read in full.
 
-### 45 to 60 minute session
+## Planned
 
-1. 5 minutes: clarify requirements
-2. 5 minutes: estimate scale
-3. 10 minutes: high-level design
-4. 10 to 15 minutes: deep dive into bottlenecks
-5. 5 to 10 minutes: trade-offs, reliability, scaling
-6. 10 minutes: feedback and recap
-
-## What To Track After Every Mock
-
-- Did I clarify requirements before designing?
-- Did I estimate traffic, storage, and throughput?
-- Did I explain trade-offs clearly?
-- Did I drive the conversation confidently?
-- Did I identify bottlenecks and failure modes?
-- Did I communicate in a structured way?
-
-## Suggested Practice Order
-
-- `prompt-001-url-shortener.md`
-- `prompt-002-notification-service.md`
-- `prompt-003-chat-system.md`
-- `prompt-004-news-feed.md`
-
-## Scoring Areas
-
-- Requirement gathering
-- Estimation
-- API and data model
-- Architecture clarity
-- Scalability
-- Reliability
-- Trade-off discussion
-- Communication
+Linux · Networking · Docker · Kubernetes · AWS · Terraform/OpenTofu · CI/CD ·
+GitOps · Observability · SRE · Security · Platform Engineering

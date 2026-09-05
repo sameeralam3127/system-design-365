@@ -5,13 +5,13 @@
   "type": "module",
   "license": "MIT",
   "author": "Sameer Alam",
-  "homepage": "https://sameeralam3127.github.io/system-design-365/",
+  "homepage": "https://sameeralam3127.github.io/devops-case-studies/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sameeralam3127/system-design-365.git"
+    "url": "git+https://github.com/sameeralam3127/devops-case-studies.git"
   },
   "bugs": {
-    "url": "https://github.com/sameeralam3127/system-design-365/issues"
+    "url": "https://github.com/sameeralam3127/devops-case-studies/issues"
   },
   "keywords": [
     "static-site-generator",

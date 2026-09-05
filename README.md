@@ -1,190 +1,216 @@
-# System Design 365
+# DevOps Engineering Case Studies
 
-**Learning system design in the open — one case study at a time.**
+**Learn the problem. Design the solution. Understand the trade-offs. Operate the system.**
 
-Live site: **https://sameeralam3127.github.io/system-design-365/**
+Practical DevOps, SRE, Cloud and Platform Engineering case studies covering
+architecture, troubleshooting, automation, reliability, security and production
+operations.
+
+Live site: **https://sameeralam3127.github.io/devops-case-studies/**
+
+---
+
+## Contents
+
+- [What this is](#what-this-is)
+- [Who it is for](#who-it-is-for)
+- [How a case study is structured](#how-a-case-study-is-structured)
+- [Categories](#categories)
+- [Written so far](#written-so-far)
+- [Roadmap](#roadmap)
+- [Related projects](#related-projects)
+- [System design](#system-design)
+- [The site generator (sd365)](#the-site-generator-sd365)
+- [Contributing](#contributing)
+- [Disclaimer](#disclaimer)
+- [License](#license)
 
 ---
 
 ## What this is
 
-I kept reading system design articles, nodding along, and then freezing the
-moment someone asked me to design something on a whiteboard. Reading is not the
-same as being able to do it.
+Most DevOps learning material is either a definition ("Kubernetes is a container
+orchestrator") or a command list. Neither is what the job is. The job is being
+handed a system that is already broken, already in production, and already
+costing money, and working out what is true before the clock runs out.
 
-So this repository is me working through it properly: one system at a time,
-written out end to end — requirements, capacity estimates, the architecture,
-the parts I got wrong, and the trade-offs I only noticed on the second pass.
-It is a study notebook that happens to be public.
+So every entry here starts from a system in a specific state:
 
-I am publishing it for two reasons. Writing something down for other people to
-read forces a level of honesty that private notes never do — you cannot hand-wave
-past the bit you do not understand. And if you are on the same path, you get
-notes that are structured rather than a pile of bookmarks.
+> Your production API deployment has entered `CrashLoopBackOff` after a release.
+> Three replicas are restarting continuously, the surviving pods are carrying
+> 2.2× their normal load, and the error rate has reached 12%. You have 15
+> minutes before this goes on the status page.
 
-**Where it is right now:** 5 of 100 case studies written, plus notes on security
-and a set of mock-interview prompts. The rest are stubbed out with titles so the
-roadmap is visible. I would rather show an honest 5/100 than pad it out.
+and then works through it the way you would actually work through it —
+investigation, the evidence that separates one root cause from another, the
+mitigation, the trade-offs of the fix, the observability that should have caught
+it earlier, the runbook, and the postmortem.
 
-If you spot something wrong, **please tell me** — a corrected mistake is worth
-more to me than a star. Open an issue or a PR.
+Where a case study makes a claim about how a system behaves, it names the
+version. Where it discusses cost, it discusses cost *drivers* rather than
+invented prices. Scenarios are constructed for teaching; the mechanisms are real.
 
-## What is inside
+## Who it is for
 
-| Folder | What lives there |
+- **Engineers preparing for DevOps/SRE/Platform interviews** who are past the
+  definitions stage and need scenario practice.
+- **Engineers new to on-call** who want to have seen a failure mode once before
+  meeting it at 03:00.
+- **Anyone building the operational side of a platform** — the prevention and
+  observability sections are written as things to go and implement.
+
+## How a case study is structured
+
+Every case study follows the same template
+([`templates/case-study.md`](templates/case-study.md)):
+
+```text
+Scenario → Context → Symptoms → Impact → Requirements → Constraints
+   → Initial Architecture → Investigation → Root Cause → Solution
+   → Architecture → Implementation → Observability → Security → Reliability
+   → Cost → Trade-offs → Failure Scenarios → Runbook → Prevention
+   → Postmortem → Interview Questions → Key Takeaways → Related Projects
+```
+
+The consistency is deliberate. It is the same order a competent engineer works
+in, and repeating it is how the order becomes a habit.
+
+## Categories
+
+Not everything is an incident. Case studies are tagged by type:
+
+| Type | What it covers |
 |---|---|
-| [docs/case-studies/](docs/case-studies/) | Systems designed end to end — URL shortener, rate limiter, Pastebin, chat, notifications, and 95 more to go |
-| [docs/hld/](docs/hld/) | High-level design: scalability, caching, databases, CAP, sharding, queues |
-| [docs/lld/](docs/lld/) | Low-level design: object modelling, API contracts, concurrency |
-| [docs/patterns/](docs/patterns/) | Reusable building blocks — cache-aside, pub/sub, leader election, circuit breaker |
-| [docs/trade-offs/](docs/trade-offs/) | The comparisons that come up every interview: SQL vs NoSQL, push vs pull, strong vs eventual |
-| [docs/interview/](docs/interview/) | Mock interview prompts, a session template, an interviewer checklist |
-| [docs/security/](docs/security/) | Runtime, supply-chain, and operational security notes |
-| [docs/glossary/](docs/glossary/) | Terms I want to be able to define cold |
+| **Architecture** | Designing a platform, an observability stack, a CI/CD system |
+| **Troubleshooting** | A specific production failure, investigated from the alert |
+| **Migration** | VM to containers, Jenkins to Actions, single- to multi-region |
+| **Optimisation** | Cost, image size, pipeline duration, MTTR, logging volume |
+| **Security** | Compromised credentials, excessive RBAC, supply-chain risk |
+| **Incident** | A full outage with timeline and blameless postmortem |
 
-Every page is plain Markdown. No database, no CMS — just files you can read on
-GitHub without the site at all.
+## Written so far
 
-## How I work through a case study
+| Case study | Domain | Type | Difficulty |
+|---|---|---|---|
+| [CrashLoopBackOff After a Release](docs/04-kubernetes/crashloopbackoff-after-release.md) | Kubernetes | Troubleshooting | Medium |
+| [OOMKilled Under Load](docs/04-kubernetes/oomkilled-under-load.md) | Kubernetes | Troubleshooting | Hard |
+| [Python Execution Surfaces Before Your Code Runs](docs/10-security/python-before-your-code-runs.md) | Security | Reference | Medium |
 
-The same seven steps every time, because the structure is the part that
-transfers to an actual interview:
+Plus five distributed-systems designs under [System design](#system-design).
 
-1. Clarify requirements — functional, non-functional, and what is explicitly out of scope
-2. Estimate scale — traffic, storage, bandwidth, back of the envelope
-3. Define the API and data model
-4. Draw the high-level architecture
-5. Deep dive on the bottleneck
-6. Talk through the trade-offs, including the option I rejected and why
-7. Note what I would improve with more time
+This is an honest count. The repository is being rebuilt from a previous
+incarnation ("System Design 365") and I would rather show three finished case
+studies than a hundred stubs — the stubs are exactly what was removed.
 
-[templates/case-study.md](templates/case-study.md) is that structure as a file,
-if you want to use it yourself.
+## Roadmap
 
----
+Each domain has an index page listing what is written and what is planned:
+
+| Domain | Index |
+|---|---|
+| Linux | [`docs/01-linux/`](docs/01-linux/README.md) |
+| Networking | [`docs/02-networking/`](docs/02-networking/README.md) |
+| Docker | [`docs/03-docker/`](docs/03-docker/README.md) |
+| Kubernetes | [`docs/04-kubernetes/`](docs/04-kubernetes/README.md) |
+| CI/CD | [`docs/05-cicd/`](docs/05-cicd/README.md) |
+| GitOps | [`docs/06-gitops/`](docs/06-gitops/README.md) |
+| Infrastructure as Code | [`docs/07-infrastructure-as-code/`](docs/07-infrastructure-as-code/README.md) |
+| Observability | [`docs/08-observability/`](docs/08-observability/README.md) |
+| SRE | [`docs/09-sre/`](docs/09-sre/README.md) |
+| Security | [`docs/10-security/`](docs/10-security/README.md) |
+| Cloud | [`docs/11-cloud/`](docs/11-cloud/README.md) |
+| Platform Engineering | [`docs/12-platform-engineering/`](docs/12-platform-engineering/README.md) |
+
+Supporting sections: [Labs](docs/labs/README.md) ·
+[Decision Records](docs/adr/README.md) ·
+[Interview Prep](docs/interview/README.md) ·
+[Glossary](docs/glossary/README.md) · [Notes](docs/notes/README.md)
+
+## Related projects
+
+These case studies are written alongside implementations, not instead of them.
+Where a case study describes a pattern one of these projects implements, it says
+so and links to it.
+
+| Project | What it is |
+|---|---|
+| [KubeRescue](https://github.com/sameeralam3127/KubeRescue) | Autonomous Kubernetes failure detection and policy-driven auto-remediation (Go) |
+| [ANSARI](https://github.com/sameeralam3127/ansari) | Internal developer platform that scaffolds services and keeps the fleet on the paved road (Python) |
+| [Kubernetes Platform](https://github.com/sameeralam3127/kubernetes-platform) | Production-grade platform: GitOps, IaC, CI/CD, observability, security, autoscaling |
+| [LinuxVitals](https://github.com/sameeralam3127/linux-vitals) | Agentless Ansible collection for Linux fleet health checks with opt-in self-healing |
+| [IPMG](https://github.com/sameeralam3127/ipmg) | IP management and ping-monitoring CLI: parallel scanning, subnet discovery, scheduled monitoring |
+| [Monitoring](https://github.com/sameeralam3127/Monitoring) | Docker-based Prometheus, Grafana, Node Exporter and cAdvisor stack |
+| [SRE Toolkit](https://github.com/sameeralam3127/sre-toolkit) | Browser-based SRE utilities — encoders, CIDR calculator, DevOps converters |
+
+## System design
+
+The [`docs/system-design/`](docs/system-design/README.md) section holds five
+distributed systems designed end to end (URL shortener, rate limiter, Pastebin,
+chat, notifications), plus mock-interview prompts and a scoring checklist. It is
+kept because design decisions become operational problems: whether a redirect
+can be revoked, whether a fan-out is push or pull, whether a rate limiter fails
+open or closed.
 
 ## The site generator (sd365)
 
-The site is built by **sd365**, a static site generator I wrote from scratch for
-this project. Not because the world needs another one — Docusaurus and MkDocs
-are excellent — but because building the thing that renders your notes teaches
-you more than configuring someone else's. It turned out well enough that it is
-worth sharing on its own.
+The site is built by **sd365**, a static site generator written from scratch for
+this project. **Zero npm dependencies** — the only third-party code is a
+vendored copy of the `marked` markdown parser. `git clone`, `node scripts/sd365.mjs build`,
+done.
 
-**It has zero npm dependencies.** The only third-party code is a vendored copy
-of the `marked` markdown parser. `git clone`, `node scripts/sd365.mjs build`,
-done — no `npm install`, no lockfile drift, no supply chain to audit.
-
-What it does:
-
-- **Markdown in, static HTML out** — optional frontmatter, and every field degrades gracefully so a bare `.md` file still renders properly
-- **Full-text search** with BM25 ranking, typo tolerance, and results that deep-link to the exact heading rather than dumping you at the top of a long page
-- **Admonitions** — 12 kinds, custom titles, and collapsible variants that use a native `<details>` so they work without JavaScript
-- **Emoji shortcodes** — `:rocket:` becomes 🚀 in prose, and is left alone inside code
-- **Tags** — frontmatter tags become a browsable `/tags/` index and a page per tag, generated automatically
-- **Mermaid diagrams** from fenced code blocks, click to zoom
-- **Light and dark themes**, no flash on load, respects your system setting
-- **A sidebar that gets out of the way** once you start reading, and content that stays centred whether it is open or closed
-- **Keyboard driven** — see the shortcuts below
-- **Fast**: ~150 ms to build 154 pages; heavy scripts load only on pages that actually need them
-- **Plugin architecture** for search indexing, sitemaps, RSS, SEO checks, and minification
-
-Read [ARCHITECTURE.md](ARCHITECTURE.md) for how it fits together, with diagrams.
-
-### Using it for your own site
-
-`sd365` is on its way to npm. Once published:
+Markdown in, static HTML out, with BM25 full-text search that deep-links to the
+matching heading, admonitions, Mermaid diagrams, tags, light/dark themes, and a
+plugin architecture for search indexing, sitemaps, RSS, SEO and minification.
+It builds the site in roughly 150 ms.
 
 ```bash
-npm install -D sd365
-npx sd365 init        # scaffolds config, docs folders, and a deploy workflow
-npx sd365 serve       # preview at http://localhost:4365
+node scripts/sd365.mjs build       # build into dist/
+node scripts/sd365.mjs serve       # dev server with live rebuild
+node scripts/sd365.mjs new 04-kubernetes "Pods Stuck in Pending"
+node scripts/sd365.mjs validate    # check links and frontmatter
+node scripts/sd365.mjs doctor      # check config, sections, and plugins
 ```
 
-Until then, clone this repo and point it at your own `docs/` folder.
-
-```bash
-npx sd365 build                            # build into dist/
-npx sd365 serve [port]                     # dev server with live rebuild
-npx sd365 new case-studies "Design X"      # scaffold the next numbered page
-npx sd365 validate                         # check links and frontmatter
-npx sd365 doctor                           # check config, sections, and plugins
-npx sd365 help <command>                   # detail on any command
-```
-
+[ARCHITECTURE.md](ARCHITECTURE.md) explains how it fits together, with diagrams.
 There is also a **`template` branch**: the generator with an empty starter
 `docs/`, ready to clone for your own documentation.
 
-```bash
-git clone -b template https://github.com/sameeralam3127/system-design-365.git my-docs
-cd my-docs && node scripts/sd365.mjs serve
-```
-
-Adding a page is just creating a Markdown file. Navigation, search, reading
-time, and prev/next links all follow automatically:
-
-```yaml
----
-title: Rate Limiter
-description: One line for cards, search results, and social previews.
-tags: [redis, token-bucket]
-difficulty: medium
-status: published        # or draft, which renders as "not written yet"
-updated: 2026-08-01
----
-```
-
-Supported in the body: Mermaid diagrams, admonitions, emoji shortcodes, tables,
-and code blocks with copy buttons and syntax highlighting.
-
-```markdown
-> [!TIP] Prefer distributed ID generation
-> Custom title on the marker line.
-
-> [!EXAMPLE]- Full capacity calculation
-> A `-` collapses it; a `+` makes it collapsible but open.
-
-Ship it :rocket: — shortcodes in `code` are left alone.
-```
-
-Admonition kinds: `NOTE` `INFO` `TIP` `IMPORTANT` `SUCCESS` `QUESTION` `WARNING`
-`DANGER` `BUG` `EXAMPLE` `QUOTE` `ABSTRACT`, plus aliases (`HINT`, `CAUTION`,
-`ERROR`, `TLDR`, …). An unrecognised marker stays an ordinary blockquote, so a
-typo is visible rather than silent.
-
-The full reference, with every feature rendered next to its source, lives at
-[docs/notes/markdown-reference.md](docs/notes/markdown-reference.md).
-
-### Keyboard shortcuts
-
-| Key | Action |
-|---|---|
-| `/` or `Ctrl`/`Cmd` + `K` | Search |
-| `\` | Show or hide the sidebar (remembered) |
-| `[` / `]` | Previous / next page |
-| `t` | Toggle light and dark |
-| `Esc` | Close search or a zoomed diagram |
-
 ## Contributing
 
-Case studies marked **planned** on the site are unclaimed — pick one:
+Corrections are more valuable than additions. If a case study describes a
+Kubernetes behaviour that is wrong, a command that does not do what it claims,
+or a root cause that would not actually produce those symptoms, **please open an
+issue** — a corrected mistake is worth more than a star.
+
+To add a case study, pick one marked *planned* in a domain index:
 
 ```bash
-git clone https://github.com/sameeralam3127/system-design-365.git
-cd system-design-365
-npm run serve
+git clone https://github.com/sameeralam3127/devops-case-studies.git
+cd devops-case-studies
+node scripts/sd365.mjs serve
 ```
 
-Write against the structure in [templates/case-study.md](templates/case-study.md),
-set `status: published`, and open a PR. CI validates links and frontmatter before
-deploying. Corrections to existing pages are just as welcome as new ones — if I
-have explained something badly or got it wrong, I want to know.
+Write against [`templates/case-study.md`](templates/case-study.md), set
+`status: published`, and open a PR. CI runs `sd365 validate` (broken links,
+missing frontmatter) before deploying.
+
+The quality bar, in order: technically correct, realistic scenario, actionable
+investigation, honest trade-offs. A case study that cannot say what it costs or
+what could still fail is not finished.
+
+## Disclaimer
+
+The scenarios are constructed for teaching. Company names, incident timelines,
+traffic figures and error rates are illustrative. The failure mechanisms,
+commands, configuration and reasoning are real and are written to be correct for
+the versions named in each case study — but they are educational material, not
+operational advice for your specific system. Test in a non-production
+environment first, and prefer official documentation as the reference for
+version-specific behaviour.
 
 ## License
 
-Two licenses, because there are two kinds of work here:
-
-- **Code** (`generator/`, `scripts/`, `assets/`, `templates/`) — [MIT](LICENSE). Reuse it freely, including commercially.
-- **Writing** (`docs/`) — [CC BY 4.0](LICENSE-CONTENT.md). Share and adapt it, just credit and link back.
+- **Code** (`generator/`, `scripts/`, `assets/`, `templates/`) — [MIT](LICENSE)
+- **Writing** (`docs/`) — [CC BY 4.0](LICENSE-CONTENT.md)
 
 See [LICENSE-CONTENT.md](LICENSE-CONTENT.md) for the reasoning.
